@@ -1,0 +1,32 @@
+- name: aaa authentication
+  tags:
+  - aaa
+  - authentication
+  matches:
+  - name: aaa authentication login
+    template: aaa/authentication/login.j2
+    lines:
+    - regex: '^aaa authentication login (?!(default))(.+)$'
+      examples:
+      - 'aaa authentication login CONSOLE line'
+      captures:
+      - not_default
+      - methods
+      path:
+        aaa:
+          authentication:
+            login:
+              activated:
+                methods: "{{ methods.split(' ') }}"
+    - regex: '^aaa authentication login default (group \S+)(.*)$'
+      examples:
+      - 'aaa authentication login default group tacacs+ line'
+      captures:
+      - groups
+      - methods
+      path:
+        aaa:
+          authentication:
+            login:
+              default:
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"

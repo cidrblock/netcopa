@@ -1,0 +1,153 @@
+- name: ip
+  tags:
+  - ip
+  matches:
+  - name: ip classless
+    template: ip/classless.j2
+    lines:
+    - regex: '^ip classless$'
+      examples:
+      - 'ip classless'
+      path:
+        ip:
+          classless: True
+  - name: ip domain-list
+    template: ip/domain_list.j2
+    lines:
+    - regex: '^ip domain-list ([A-Za-z0-9-]{1,63}.+[A-Za-z]{2,6})$'
+      examples:
+      - 'ip domain-list company.net'
+      captures:
+      - domain_list
+      path:
+        ip:
+          domain_lists:
+          - domain_name: "{{ domain_list }}"
+  - name: ip domain name
+    template: ip/domain_name.j2
+    lines:
+    - regex: '^ip domain-name ([A-Za-z0-9-]{1,63}.+[A-Za-z]{2,6})$'
+      examples:
+      - 'ip domain-name company.net'
+      captures:
+      - domain_name
+      path:
+        ip:
+          domain_names:
+          - domain_name: "{{ domain_name }}"
+  - name: ip http secure-server
+    template: ip/http_secure-server.j2
+    lines:
+    - regex: '^ip http secure-server$'
+      examples:
+      - 'ip http secure-server'
+      path:
+        ip:
+          http:
+            secure_server: True
+  - name: ip http secure-server (no)
+    template: ip/http_secure-server.j2
+    lines:
+    - regex: '^no ip http secure-server$'
+      examples:
+      - 'no ip http secure-server'
+      path:
+        ip:
+          http:
+            secure_server: False
+  - name: ip http server
+    template: ip/http_server.j2
+    lines:
+    - regex: '^ip http server$'
+      exmaples:
+      - 'ip http server'
+      path:
+        ip:
+          http:
+            server: True
+  - name: ip http server (no)
+    template: ip/http_server.j2
+    lines:
+    - regex: '^no ip http server$'
+      examples:
+      - 'ip http server'
+      path:
+        ip:
+          http:
+            server: False
+  - name: ip name-server
+    template: ip/name-server.j2
+    lines:
+    - regex: '^ip name-server (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'ip name-server 8.8.8.8'
+      captures:
+      - name_server_ip
+      path:
+        ip:
+          name-servers:
+          - name_server: "{{ name_server_ip }}"
+  - name: ip ospf name-lookup
+    template: ip/ospf_name-lookup.j2
+    lines:
+    - regex: '^ip ospf name-lookup$'
+      examples:
+      - 'ip ospf name-lookup'
+      path:
+        ip:
+          ospf_name-lookup: True
+  - name: ip routes
+    template: ip/routes.j2
+    lines:
+    - regex: '^ip route (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'ip route 170.94.0.0 255.255.0.0 10.0.150.1'
+      captures:
+        - network
+        - netmask
+        - next_hop
+      path:
+        ip:
+          routes:
+          - network: "{{ network }}"
+            netmask: "{{ netmask }}"
+            next_hop: "{{ next_hop }}"
+  - name: ip routing
+    template: ip/routing.j2
+    lines:
+    - regex: '^ip routing$'
+      exmaples:
+      - 'ip routing'
+      path:
+        ip:
+          routing: True
+  - name: ip subnet-zero
+    template: ip/subnet-zero.j2
+    lines:
+    - regex: '^ip subnet-zero$'
+      examples:
+      - 'ip subnet-zero'
+      path:
+        ip:
+          subnet-zero: True
+  - name: ip source-route
+    template: ip/source-route.j2
+    lines:
+    - regex: '^ip source-route$'
+      examples:
+      - 'ip source-route'
+      path:
+        ip:
+          source-route: True
+  - name: ip tacacs source-interface
+    template: ip/tacacs_source-interface.j2
+    lines:
+    - regex: '^ip tacacs source-interface (\w+)$'
+      examples:
+      - 'ip tacacs source-interface Loopback0'
+      captures:
+        - source_interface
+      path:
+        ip:
+          tacacs:
+            source_interface: "{{ source_interface }}"

@@ -1,0 +1,5 @@
+{% if 'hostname' in vars -%}
+- parents:
+  lines:
+  - hostname {{ vars['hostname'] }}
+{% endif %}

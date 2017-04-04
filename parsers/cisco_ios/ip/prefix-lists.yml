@@ -1,0 +1,48 @@
+- name: ip prefix-list
+  tags:
+  - ip
+  - prefix-list
+  matches:
+  - name: ip prefix-list
+    template: ip/prefix-lists.j2
+    lines:
+    - regex: '^ip prefix-list (\S+) seq (\d{1,5}) (permit|deny) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,3})$'
+      examples:
+      - 'ip prefix-list rt-default-route seq 5 permit 0.0.0.0/0'
+      captures:
+      - name
+      - sequence
+      - action
+      - network
+      - netmask
+      path:
+        ip:
+          prefix_lists:
+            "{{ name }}":
+                name: "{{ name }}"
+                entries:
+                - action: "{{ action }}"
+                  sequence: "{{ sequence }}"
+                  network: "{{ network }}"
+                  netmask: "{{ netmask }}"
+    - regex: '^ip prefix-list (\S+) seq (\d{1,5}) (permit|deny) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,3}) le (\d{1,2})$'
+      examples:
+      - 'ip prefix-list rt-default-route seq 5 permit 0.0.0.0/0 le 32'
+      captures:
+      - name
+      - sequence
+      - action
+      - network
+      - netmask
+      - le_bits
+      path:
+        ip:
+          prefix_lists:
+            "{{ name }}":
+                name: "{{ name }}"
+                entries:
+                - action: "{{ action }}"
+                  sequence: "{{ sequence }}"
+                  network: "{{ network }}"
+                  netmask: "{{ netmask }}"
+                  le_bits: "{{ le_bits }}"

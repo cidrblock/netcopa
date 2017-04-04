@@ -1,0 +1,139 @@
+- name: router ospf
+  tags:
+  - router
+  - ospf
+  matches:
+  - name: router ospf
+    template: router/ospf.j2
+    lines:
+    - regex: '^router ospf (\d+)$'
+      examples:
+      - 'router ospf 100'
+      captures:
+      - parent_process_id
+      path:
+        router:
+          ospf:
+            "{{ parent_process_id }}":
+              process_id: "{{ parent_process_id }}"
+      lines:
+      - regex: '^ router-id (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' router-id 10.250.255.1'
+        captures:
+        - router_id
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                router_id: "{{ router_id }}"
+      - regex: '^ log-adjacency-changes$'
+        examples:
+        - ' log-adjacency-changes'
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                log_adjacency_changes: True
+      - regex: '^ auto-cost reference-bandwidth (\d+)$'
+        examples:
+        - ' auto-cost reference-bandwidth 40000'
+        captures:
+        - reference_bandwidth
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                auto_cost_reference_bandwidth: "{{ reference_bandwidth }}"
+      - regex: '^ summary-address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' summary-address 10.250.0.0 255.254.0.0'
+        captures:
+        - summary_network
+        - summary_netmask
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                  summary_addresses:
+                  - network: "{{ summary_network }}"
+                    netmask: "{{ summary_netmask }}"
+      - regex: '^ redistribute static subnets$'
+        examples:
+        - ' redistribute static subnets'
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                redistribute:
+                  static:
+                    protocol: static
+                    subnets: True
+      - regex: '^ redistribute (\w+) (\d+) (metric-type \d) subnets route-map (\S+)$'
+        examples:
+        - ' redistribute eigrp 900 metric-type 1 subnets route-map eigrp900-ospf100'
+        captures:
+        - protocol
+        - redist_process_id
+        - metric_types
+        - route_map
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                redistribute:
+                  "{{ protocol }}":
+                    protocol: "{{ protocol }}"
+                    process_id: "{{ redist_process_id }}"
+                    metric_types: "{{ metric_types.replace(\"metric-type \", \"\").split(' ') }}"
+                    subnets: True
+                    route_map: "{{ route_map }}"
+
+      - regex: '^ passive-interface default$'
+        examples:
+        - ' passive-interface default'
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                passive_interface_default: True
+      - regex: '^ no passive-interface (\S+)$'
+        examples:
+        - ' no passive-interface GigabitEthernet0/1'
+        captures:
+        - no_passive_interface
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                passive_interfaces:
+                - interface: "{{ no_passive_interface }}"
+                  negate: True
+      - regex: '^ network (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) area (\S+)$'
+        examples:
+        - ' network 10.0.250.0 0.0.0.15 area 0'
+        captures:
+        - network_network
+        - network_netmask
+        - network_area
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                  network_statements:
+                  - network: "{{ network_network }}"
+                    netmask: "{{ network_netmask }}"
+                    area: "{{ network_area }}"
+      - regex: '^ distribute-list route-map (\S+) (\w+)$'
+        examples:
+        - ' distribute-list route-map rt-seassc-ospf100-eigrp900 in'
+        captures:
+        - distribute_list_route_map
+        - direction
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                  distribute_lists:
+                  - route_map: "{{ distribute_list_route_map }}"
+                    direction: "{{ direction }}"

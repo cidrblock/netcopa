@@ -1,0 +1,15 @@
+- name: vlan
+  tags:
+  - vlan
+  matches:
+  - name: svlan internal allocation policy
+    template: vlan/internal_allocation_policy.j2
+    lines:
+    - regex: '^vlan internal allocation policy (\S+)$'
+      examples:
+      - 'vlan internal allocation policy ascending'
+      captures:
+      - direction
+      path:
+        vlan:
+          internal_allocation_policy: "{{ direction }}"

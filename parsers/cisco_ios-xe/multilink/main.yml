@@ -1,0 +1,16 @@
+- name: multilink
+  tags:
+  - multilink
+  matches:
+  - name: multilink
+    template: multilink/default.j2
+    lines:
+    - regex: '^multilink bundle-name (\S+)$'
+      examples:
+      - 'multilink bundle-name authenticated'
+      captures:
+      - method
+      path:
+        multilink:
+          bundle_name:
+            method: "{{ method }}"

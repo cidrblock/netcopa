@@ -1,0 +1,9 @@
+{% if 'views' in vars['snmp']['server'] %}
+{% for view in vars['snmp']['server']['views'] %}
+{% for entry in vars['snmp']['server']['views'][view]['entries'] %}
+- parents:
+  - snmp-server view {{ vars['snmp']['server']['views'][view]['name'] }} {{ entry['snmp_id'] }} {{ entry['action'] }}
+  lines:
+{% endfor %}
+{% endfor %}
+{% endif %}

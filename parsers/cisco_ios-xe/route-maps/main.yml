@@ -1,0 +1,40 @@
+- name: route-map
+  tags:
+  - route-map
+  matches:
+  - name: route-map
+    template: route-maps/default.j2
+    lines:
+    - regex: '^route-map (\S+) (permit|deny) (\d{1,4})$'
+      examples:
+      - 'route-map rt-bgp65139-bgp65003 permit 320'
+      captures:
+      - name
+      - action
+      - sequence
+      path:
+        route_maps:
+          "{{ name }}":
+            name: "{{ name }}"
+            statements:
+              "{{ sequence }}":
+                action: "{{ action }}"
+                sequence: "{{ sequence }}"
+      lines:
+      - regex: '^ (match|set) (.*)$'
+        examples:
+        - ' match ip address rt-320-apac-ent-video-networks'
+        captures:
+        - clause
+        - value
+        path:
+          route_maps:
+            "{{ name }}":
+              name: "{{ name }}"
+              statements:
+                "{{ sequence }}":
+                  action: "{{ action }}"
+                  sequence: "{{ sequence }}"
+                  clauses:
+                  - clause: "{{ clause }}"
+                    value: "\"{{ value }}\""

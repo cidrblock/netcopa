@@ -1,0 +1,5 @@
+- parents:
+  lines:
+    {% if 'spanning-tree' in vars and 'extend_system-id' in vars['spanning-tree'] %}
+  - spanning-tree extend system-id
+    {% endif %}

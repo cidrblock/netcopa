@@ -1,0 +1,26 @@
+{% for key, value in vars['access_lists']|dictsort(false, 'key') -%}
+{% if value['type'] == 'standard' -%}
+{% for entry in value['entries'] -%}
+{% if 'action' in entry -%}
+{% if entry['source_wildcard'] == '0.0.0.0' -%}
+- parents:
+  lines:
+  - access-list {{ value['number'] }} {{ entry['action'] }}{{ entry['whitespace'] }}{{ entry['source_network'] }}
+{% elif entry['source_network'] == 'any' -%}
+- parents:
+  lines:
+  - access-list {{ value['number'] }} {{ entry['action'] }}{{ entry['whitespace'] }}{{ entry['source_network'] }}
+{% else %}
+- parents:
+  lines:
+  - access-list {{ value['number'] }} {{ entry['action'] }}{{ entry['whitespace'] }}{{ entry['source_network'] }} {{ entry['source_wildcard'] }}
+{% endif %}
+{% endif -%}
+{% if 'remark' in entry -%}
+- parents:
+  lines:
+  - access-list {{ value['number'] }} remark {{ entry['remark'] }}
+{% endif %}
+{% endfor -%}
+{% endif -%}
+{% endfor -%}

@@ -1,0 +1,24 @@
+- name: spanning-tree
+  tags:
+  - spanning-tree
+  matches:
+  - name: spanning-tree mode
+    template: spanning-tree/mode.j2
+    lines:
+    - regex: '^spanning-tree mode (\S+)$'
+      examples:
+      - 'spanning-tree mode pvst+'
+      captures:
+      - mode
+      path:
+        spanning-tree:
+          mode: "{{ mode }}"
+  - name: spanning-tree extend system-id
+    template: spanning-tree/extend_system-id.j2
+    lines:
+    - regex: '^spanning-tree extend system-id$'
+      examples:
+      - 'spanning-tree extend system-id'
+      path:
+        spanning-tree:
+          extend_system-id: True

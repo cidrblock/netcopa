@@ -1,0 +1,14 @@
+- name: hostname
+  tags:
+  - hostname
+  matches:
+  - name: hostname
+    template: hostname/default.j2
+    lines:
+    - regex: '^hostname (\S+)$'
+      exmaples:
+      - 'hostname device.company.net'
+      captures:
+      - hostname
+      path:
+        hostname: "{{ hostname }}"

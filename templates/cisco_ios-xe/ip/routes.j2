@@ -1,0 +1,7 @@
+{% if 'routes' in vars['ip'] %}
+{% for route in vars['ip']['routes'] %}
+- parents:
+  lines:
+    - ip route {{ route['network'] }} {{ route['netmask'] }} {{ route['next_hop'] }}
+{% endfor %}
+{% endif %}

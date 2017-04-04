@@ -1,0 +1,42 @@
+- name: services
+  tags:
+  - service
+  matches:
+  - name: service timestamps
+    template: service/timestamps.j2
+    lines:
+    - regex: '^service timestamps (\w+) (.+)$'
+      examples:
+      - 'service timestamps debug datetime msec localtime show-timezone'
+      captures:
+      - type
+      - modifiers
+      path:
+        services:
+          timestamps:
+          - type: "{{ type }}"
+            modifiers: "{{ modifiers.split(' ') }}"
+  - name: enabled services
+    template: service/enabled.j2
+    lines:
+    - regex: '^service (\S+)$'
+      examples:
+      - 'service password-encryption'
+      captures:
+      - service_name
+      path:
+        services:
+          enabled:
+          - service_name: "{{ service_name }}"
+  - name: disabled services
+    template: service/disabled.j2
+    lines:
+    - regex: '^no service (\w+)$'
+      examples:
+      - 'no service pad'
+      captures:
+      - service_name
+      path:
+        services:
+          disabled:
+          - service_name: "{{ service_name }}"

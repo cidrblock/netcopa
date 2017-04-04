@@ -1,0 +1,13 @@
+- name: udld
+  tags:
+  - udld
+  matches:
+  - name: udld
+    template: udld/default.j2
+    lines:
+    - regex: '^udld enable$'
+      examples:
+      - 'udld enable'
+      path:
+        udld:
+          enable: True

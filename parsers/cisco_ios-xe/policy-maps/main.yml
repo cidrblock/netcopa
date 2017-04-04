@@ -1,0 +1,112 @@
+- name: policy-map
+  tags:
+  - policy-map
+  matches:
+  - name: policy-map
+    template: policy-maps/default.j2
+    lines:
+    - regex: '^policy-map (\S+)$'
+      examples:
+      - 'policy-map na-shape-egress-25mbs'
+      captures:
+      - policy_name
+      path:
+        policy_maps:
+          "{{ policy_name }}":
+            name: "{{ policy_name }}"
+      lines:
+      - regex: '^ description (.*)$'
+        examples:
+        - ' description gress matching policy'
+        captures:
+        - description
+        path:
+          policy_maps:
+            "{{ policy_name }}":
+              description: "\"{{ description }}\""
+      - regex: '^ class (\S+)$'
+        examples:
+        - ' class na-cos1'
+        captures:
+        - class_name
+        path:
+          policy_maps:
+            "{{ policy_name }}":
+              sequence:
+              - "{{ class_name }}"
+              classes:
+                "{{ class_name }}":
+                  name: "{{ class_name }}"
+        lines:
+        - regex: '^\s+set dscp (\S+)$'
+          examples:
+          - '  set dscp ef'
+          captures:
+          - set_ipv4_ipv6_dscp_value
+          path:
+            policy_maps:
+              "{{ policy_name }}":
+                classes:
+                  "{{ class_name }}":
+                    set_ipv4_ipv6_dscp: "{{ set_ipv4_ipv6_dscp_value }}"
+        - regex: '^\s+set ip dscp (\S+)$'
+          examples:
+          - '  set ip dscp af21'
+          captures:
+          - set_ipv4_dscp_value
+          path:
+            policy_maps:
+              "{{ policy_name }}":
+                classes:
+                  "{{ class_name }}":
+                    set_ipv4_dscp: "{{ set_ipv4_dscp_value }}"
+        - regex: '^\s+priority percent (\d+)$'
+          examples:
+          - '  priority percent 3'
+          captures:
+          - priority_percent
+          path:
+            policy_maps:
+              "{{ policy_name }}":
+                classes:
+                  "{{ class_name }}":
+                    priority:
+                      percent: "{{ priority_percent }}"
+        - regex: '^\s+bandwidth percent (\d+)$'
+          examples:
+          - '  bandwidth percent 5'
+          captures:
+          - bandwidth_percent
+          path:
+            policy_maps:
+              "{{ policy_name }}":
+                classes:
+                  "{{ class_name }}":
+                    bandwidth:
+                      percent: "{{ bandwidth_percent }}"
+        - regex: '^\s+shape (average|peak) (\d+)$'
+          examples:
+          - '  shape average 26214400'
+          captures:
+          - token_bucket
+          - mean_rate
+          path:
+            policy_maps:
+              "{{ policy_name }}":
+                classes:
+                  "{{ class_name }}":
+                    shape:
+                      threshold: "{{ token_bucket }}"
+                      mean_rate: "{{ mean_rate }}"
+        - regex: '^\s+service-policy (\S+)$'
+          examples:
+          - '  service-policy global-na-wan-25mbs'
+          captures:
+          - service_policy_name
+          path:
+            policy_maps:
+              "{{ policy_name }}":
+                classes:
+                  "{{ class_name }}":
+                    shape:
+                      service_policy: "{{ service_policy_name }}"

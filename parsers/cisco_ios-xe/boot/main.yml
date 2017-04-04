@@ -1,0 +1,20 @@
+# ['boot system flash bootflash:asr1000rp1-adventerprisek9.02.03.02.122-33.XNC2.bin',
+- name: boot
+  tags:
+  - boot
+  matches:
+  - name: boot
+    template: boot/default.j2
+    lines:
+    - regex: '^boot system flash (\w+):(\S+)$'
+      examples:
+      - 'boot system flash bootflash:asr1000rp1-adventerprisek9.02.03.02.122-33.XNC2.bin'
+      captures:
+      - flash_fs
+      - filename
+      path:
+        boot:
+          system:
+          - from: flash
+            flash_fs: "{{ flash_fs }}"
+            filename: "{{ filename }}"

@@ -1,0 +1,80 @@
+- name: line vty
+  tags:
+  - line
+  - vty
+  matches:
+  - name: line con
+    template: line/vty.j2
+    lines:
+    - regex: '^line vty (\d+) (\d+)'
+      examples:
+      - 'line vty 0 4'
+      captures:
+      - start
+      - finish
+      path:
+        line:
+          vty:
+            "{{ start }}to{{ finish }}":
+              start: "{{ start }}"
+              finish: "{{ finish }}"
+      lines:
+      - regex: '^ exec-timeout (\d+) (\d+)$'
+        examples:
+        - ' exec-timeout 15 0'
+        captures:
+        - minutes
+        - seconds
+        path:
+          line:
+            vty:
+              "{{ start }}to{{ finish }}":
+                exec_timeout:
+                  minutes: "{{ minutes }}"
+                  seconds: "{{ seconds }}"
+      - regex: '^ password (\d) (\S+)$'
+        examples:
+        - ' password 7 010150137D5A552E01427F1E3F57064B11'
+        captures:
+        - encryption_type
+        - password
+        path:
+          line:
+            vty:
+              "{{ start }}to{{ finish }}":
+                password:
+                  encryption_type: "{{ encryption_type }}"
+                  password: "{{ password }}"
+      - regex: '^ transport (\w+) (.*)$'
+        examples:
+        - ' transport input ssh'
+        captures:
+        - direction
+        - protocols
+        path:
+          line:
+            vty:
+              "{{ start }}to{{ finish }}":
+                transport:
+                  "{{ direction }}":
+                    protocols: "{{ protocols.split() }}"
+      - regex: '^ escape-character (\S+)$'
+        examples:
+        - ' escape-character BREAK'
+        captures:
+        - escape_character
+        path:
+          line:
+            vty:
+              "{{ start }}to{{ finish }}":
+                escape_character: "{{ escape_character }}"
+      - regex: '^ privilege level (\d+)$'
+        examples:
+        - ' privilege level 15'
+        captures:
+        - privilege_level
+        path:
+          line:
+            vty:
+              "{{ start }}to{{ finish }}":
+                privilege_level: "{{ privilege_level }}"

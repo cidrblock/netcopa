@@ -1,0 +1,56 @@
+- name: aaa accounting
+  tags:
+  - aaa
+  - accounting
+  matches:
+  - name: aaa accounting system
+    template: aaa/accounting/system.j2
+    lines:
+    - regex: '^aaa accounting system default (start-stop|stop-only|none) (group \S+)(.*)$'
+      examples:
+      - 'aaa accounting system default start-stop group tacacs+'
+      captures:
+      - events
+      - groups
+      - methods
+      path:
+        aaa:
+          accounting:
+            system:
+              default:
+                events: "{{ events }}"
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"
+  - name: aaa accounting connection
+    template: aaa/accounting/connection.j2
+    lines:
+    - regex: '^aaa accounting connection default (start-stop|stop-only|none) (group \S+)(.*)$'
+      examples:
+      - 'aaa accounting connection default start-stop group tacacs+'
+      captures:
+      - events
+      - groups
+      - methods
+      path:
+        aaa:
+          accounting:
+            connection:
+              default:
+                events: "{{ events }}"
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"
+  - name: aaa accounting exec
+    template: aaa/accounting/exec.j2
+    lines:
+    - regex: '^aaa accounting exec default (start-stop|stop-only|none) (group \S+)(.*)$'
+      examples: 
+      - 'aaa accounting exec default start-stop group tacacs+'
+      captures:
+      - events
+      - groups
+      - methods
+      path:
+        aaa:
+          accounting:
+            exec:
+              default:
+                events: "{{ events }}"
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"

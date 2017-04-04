@@ -1,0 +1,28 @@
+- name: banner
+  tags:
+  - banner
+  matches:
+  - name: banner
+    template: banners/default.j2
+    lines:
+    - regex: '^banner (\w+) (.+)$'
+      exmaples:
+      - 'banner exec ^C'
+      captures:
+      - type
+      - delimeter
+      path:
+        banner:
+          "{{ type }}":
+            delimeter: "{{ delimeter }}" # this is special, helps EOL
+      lines:
+      - regex: '^(.*)$'
+        examples:
+        - 'WARNING: NOT YOUR ROUTER'
+        captures:
+        - text_line
+        path:
+          banner:
+            "{{ type }}":
+              text:
+              - "\"{{ text_line }}\""

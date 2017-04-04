@@ -1,0 +1,15 @@
+- name: snmp
+  tags:
+  - snmp
+  matches:
+  - name: snmp ifmib
+    template: snmp/default.j2
+    lines:
+    - regex: '^snmp ifmib ifindex persist'
+      examples:
+      - 'snmp ifmib ifindex persist'
+      path:
+        snmp:
+          ifmib:
+            ifindex:
+              persist: True

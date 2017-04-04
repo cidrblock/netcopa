@@ -1,0 +1,75 @@
+- name: access-list standard
+  tags:
+  - access-list
+  - standard
+  matches:
+  - name: access-list standard
+    template: access-list/standard.j2
+    lines:
+    - regex: '^access-list (\d{1,2}) (permit|deny)(\s+)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'access-list 5 permit 10.13.230.206'
+      captures:
+      - number
+      - action
+      - whitespace
+      - source_network
+      path:
+        access_lists:
+          "{{ number }}":
+              number: "{{ number }}"
+              type: standard
+              entries:
+              - action: "{{ action }}"
+                whitespace: "\"{{ whitespace }}\""
+                source_network: "{{ source_network }}"
+                source_wildcard: 0.0.0.0
+    - regex: '^access-list (\d{1,2}) (permit|deny)(\s+)(any)$'
+      examples:
+      - 'access-list 99 permit any'
+      captures:
+      - number
+      - action
+      - whitespace
+      - source_network
+      path:
+        access_lists:
+          "{{ number }}":
+              number: "{{ number }}"
+              type: standard
+              entries:
+              - action: "{{ action }}"
+                whitespace: "\"{{ whitespace }}\""
+                source_network: "{{ source_network }}"
+                source_wildcard: any
+    - regex: '^access-list (\d{1,2}) (permit|deny)(\s+)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'access-list 5 permit 10.5.1.0 0.0.0.255'
+      captures:
+      - number
+      - action
+      - whitespace
+      - source_network
+      - source_wildcard
+      path:
+        access_lists:
+          "{{ number }}":
+              number: "{{ number  }}"
+              type: standard
+              entries:
+              - action: "{{ action }}"
+                whitespace: "\"{{ whitespace }}\""
+                source_network: "{{ source_network }}"
+                source_wildcard: "{{ source_wildcard }}"
+    - regex: '^access-list (\d{1,2}) remark (.+)$'
+      examples:
+      - 'access-list 15 remark --/permit summary lab'
+      captures:
+      - number
+      - remark
+      path:
+        access_lists:
+          "{{ number }}":
+              number: "{{ number  }}"
+              entries:
+              - remark: "{{ remark }}"

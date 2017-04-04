@@ -1,0 +1,12 @@
+- name: control-plane
+  tags:
+  - control-plane
+  matches:
+  - name: control-plane
+    template: control-plane/default.j2
+    lines:
+    - regex: '^control-plane$'
+      exmaples:
+      - 'control-plane'
+      path:
+        control_plane:

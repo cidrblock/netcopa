@@ -1,0 +1,14 @@
+- name: version
+  tags:
+  - version
+  matches:
+  - name: version
+    template: version/default.j2
+    lines:
+    - regex: '^version (\S+)$'
+      examples:
+      - 'version 12.2'
+      captures:
+      - version
+      path:
+        version: "{{ version }}"

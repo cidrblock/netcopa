@@ -1,0 +1,49 @@
+- name: ip flow
+  tags:
+  - ip
+  - flow
+  matches:
+  - name: ip flow-export
+    template: ip/flow.j2
+    lines:
+    - regex: '^ip flow-export source (\S+)$'
+      examples:
+      - 'ip flow-export source Loopback0'
+      captures:
+        - source
+      path:
+        ip:
+          flow_export:
+            source: "{{ source }}"
+    - regex: '^ip flow-export version (\d)$'
+      examples:
+      - 'ip flow-export version 9'
+      captures:
+      - source
+      path:
+        ip:
+          flow_export:
+            version: "{{ source }}"
+    - regex: '^ip flow-export destination (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d+)$'
+      examples:
+      - 'ip flow-export destination 10.13.10.10 2055'
+      captures:
+      - destination
+      - destination_port
+      path:
+        ip:
+          flow_export:
+            destinations:
+            - ipv4_address: "{{ destination }}"
+              port: "{{ destination_port }}"
+    - regex: '^ip flow-cache timeout active (\d+)$'
+      examples:
+      - 'ip flow-cache timeout active 1'
+      captures:
+      - active_timeout
+      path:
+        ip:
+          flow_cache:
+            timeout:
+              active:
+                minutes: "{{ active_timeout }}"

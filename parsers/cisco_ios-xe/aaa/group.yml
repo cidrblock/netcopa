@@ -1,0 +1,37 @@
+- name: aaa groups
+  tags:
+  - aaa
+  - group
+  matches:
+  - name: aaa group
+    template: aaa/groups.j2
+    lines:
+    - regex: '^aaa group server (\S+) (\S+)$'
+      examples:
+      - 'aaa group server tacacs+ tacacs-servers'
+      captures:
+      - group_type
+      - group_name
+      path:
+        aaa:
+          groups:
+            "{{ group_name }}":
+              name: "{{ group_name }}"
+              type: "{{ group_type }}"
+      lines:
+      - regex: '^ server-private (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) key (\d) (\S+)$'
+        examples:
+        - ' server-private 10.5.1.254 key 7 AAAAAAA'
+        captures:
+        - server_private_ip
+        - encryption_type
+        - key
+        path:
+          aaa:
+            groups:
+              "{{ group_name }}":
+                servers:
+                - ip: "{{ server_private_ip }}"
+                  encryption_type: "{{ encryption_type }}"
+                  key: "{{ key }}"
+                  private: True

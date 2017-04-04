@@ -1,0 +1,41 @@
+- name: class-map
+  tags:
+  - class-map
+  matches:
+  - name: class-map
+    template: class-maps/default.j2
+    lines:
+    - regex: '^class-map (\S+) (\S+)$'
+      examples:
+      - 'class-map match-any company-na-cos5'
+      captures:
+      - match_type
+      - name
+      path:
+        class_maps:
+          "{{ name }}":
+            match_type: "{{ match_type }}"
+            name: "{{ name }}"
+      lines:
+        - regex: '^\s+match ip dscp (.*)$'
+          examples:
+          - ' match ip dscp cs3  af31  af32  cs4  af41'
+          captures:
+          - dscp_values
+          path:
+            class_maps:
+              "{{ name }}":
+                entries:
+                  - type: dscp
+                    dscp_values: "{{ dscp_values.split() }}"
+        - regex: '^\s+match access-group name (\S+)$'
+          examples:
+          - ' match access-group name qo-global-core-voice-signal'
+          captures:
+          - access_group_name
+          path:
+            class_maps:
+              "{{ name }}":
+                entries:
+                  - type: access-group
+                    name: "{{ access_group_name }}"

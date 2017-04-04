@@ -1,0 +1,65 @@
+- name: snmp-server
+  tags:
+  - snmp
+  - server
+  matches:
+  - name: snmp-server community
+    template: snmp/server/communities.j2
+    lines:
+    - regex: '^snmp-server community (\S+) (RO|RW) (\S+)$'
+      examples:
+      - 'snmp-server community foo RW 10'
+      captures:
+      - community
+      - type
+      - acl
+      path:
+        snmp:
+          server:
+            communities:
+            - community: "{{ community }}"
+              type: "{{ type }}"
+              acl: "{{ acl }}"
+  - name: snmp-server contact
+    template: snmp/server/contact.j2
+    lines:
+    - regex: '^snmp-server contact (.+)$'
+      examples:
+      - 'snmp-server contact IT Operations'
+      captures:
+      - contact
+      path:
+        snmp:
+          server:
+            contact: "{{ contact }}"
+  - name: snmp-server location
+    template: snmp/server/location.j2
+    lines:
+    - regex: '^snmp-server location (.+)$'
+      examples:
+      - 'snmp-server location MDF 5'
+      captures:
+      - location
+      path:
+        snmp:
+          server:
+            location: "\"{{ location }}\""
+  - name: snmp-server view
+    template: snmp/server/view.j2
+    lines:
+    - regex: '^snmp-server view (\S+) (\S+) (included|excluded)$'
+      examples:
+      - 'snmp-server view global iso included'
+      captures:
+      - name
+      - snmp_id
+      - action
+      path:
+        snmp:
+          server:
+            views:
+              "{{ name }}":
+                  name: "{{ name }}"
+                  entries:
+                  - snmp_id: "{{ snmp_id }}"
+                    action: "{{ action }}"

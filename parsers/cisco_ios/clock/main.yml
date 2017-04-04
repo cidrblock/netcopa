@@ -1,0 +1,17 @@
+- name: clock
+  tags:
+  - clock
+  matches:
+  - name: clock timezone
+    template: clock/timezone.j2
+    lines:
+    - regex: '^clock timezone (\w+) (\d)'
+      exmaples:
+      - 'clock timezone utc 0'
+      captures:
+      - timezone
+      - hours_offset
+      path:
+        clock:
+          timezone: "{{ timezone }}"
+          hours_offset: "{{ hours_offset }}"

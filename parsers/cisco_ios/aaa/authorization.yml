@@ -1,0 +1,37 @@
+- name: aaa authorization
+  tags:
+  - aaa
+  - authorization
+  matches:
+  - name: aaa authorization
+    template: aaa/authorization/commands.j2
+    lines:
+    - regex: '^aaa authorization commands (\d{1,2}) default (group \S+)(.*)$'
+      examples:
+      - 'aaa authorization commands 15 default group tacacs+ none'
+      captures:
+      - privilege_level
+      - groups
+      - methods
+      path:
+        aaa:
+          authorization:
+            commands:
+              default:
+                privilege_level: "{{ privilege_level }}"
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"
+  - name: aaa authorization
+    template: aaa/authorization/exec.j2
+    lines:
+    - regex: '^aaa authorization exec default (group \S+)(.*)$'
+      examples:
+      - 'aaa authorization exec default group tacacs+ none'
+      captures:
+      - groups
+      - methods
+      path:
+        aaa:
+          authorization:
+            exec:
+              default:
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"

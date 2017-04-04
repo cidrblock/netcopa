@@ -1,0 +1,9 @@
+{% for type in vars['banner'] %}
+- parents:
+  - 'banner {{ type }} {{ vars['banner'][type]['delimeter'] }}'
+  lines:
+  {% for line in vars['banner'][type]['text'] -%}
+  - '{{ line }}'
+  {% endfor -%}
+  - '{{ vars['banner'][type]['delimeter'] }}'
+{% endfor %}

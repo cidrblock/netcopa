@@ -1,0 +1,665 @@
+- name: ip access-list extended
+  tags:
+  - ip
+  - access-list
+  - extended
+  matches:
+  - name: ip access-list extended
+    template: ip/access-lists/extended.j2
+    lines:
+    - regex: '^ip access-list extended (\S+)$'
+      examples:
+      - 'ip access-list extended qo-global-core-voice-signal'
+      captures:
+      - name
+      path:
+        ip:
+          access_lists:
+            "{{ name }}":
+                name: "{{ name }}"
+                type: extended
+      lines:
+      - regex: '^ (permit|deny) (\S+) any any$'
+        examples:
+        - ' permit ospf any any'
+        captures:
+        - action
+        - protocol
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+# ANY HOST
+      - regex: '^ (permit|deny) (\S+) any host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit ip any host 10.255.0.44'
+        captures:
+        - action
+        - protocol
+        - destination_network
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: 0.0.0.0
+# HOST ANY
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) any$'
+        examples:
+        - ' permit ip host 10.200.0.44 any'
+        captures:
+        - action
+        - protocol
+        - source_network
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+# NET HOST
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit ip 10.70.3.0 0.0.255.255 host 10.112.68.129'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - destination_network
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: 0.0.0.0
+# HOST NET
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit ip host 10.12.68.129 10.70.0.0 0.0.255.255'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - destination_network
+        - destination_wildcard
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+
+# EQ
+      - regex: '^ (permit|deny) (\S+) any any eq (\S+)$'
+        examples:
+        - ' permit tcp any any eq ftp'
+        captures:
+        - action
+        - protocol
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) any eq (\S+) any$'
+        examples:
+        - ' permit tcp any eq ftp-data any'
+        captures:
+        - action
+        - protocol
+        - source_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      source_port: "{{ source_port }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+) any$'
+        examples:
+        - ' permit udp host 10.4.9.20 eq 2000 any'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      source_port: "{{ source_port }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) any eq (\S+)$'
+        examples:
+        - ' permit udp host 132.114.204.110 any eq 555'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) any host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+)$'
+        examples:
+        - ' permit udp any host 10.1.9.20 eq 2114'
+        captures:
+        - action
+        - protocol
+        - destination_network
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: 0.0.0.0
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) any (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+)$'
+        examples:
+        - ' permit tcp any 10.74.25.0 0.0.0.255 eq 443'
+        captures:
+        - action
+        - protocol
+        - destination_network
+        - destination_wildcard
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+) any$'
+        examples:
+        - ' permit tcp 10.74.25.0 0.0.0.255 eq 443 any'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - source_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      source_port: "{{ source_port }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) any eq (\S+)$'
+        examples:
+        - ' permit tcp 10.2.0.0 0.0.255.255 any eq 1443'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+)$'
+        examples:
+        - ' permit tcp 10.2.153.0 0.0.0.127 host 10.255.0.148 eq www'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - destination_network
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: 0.0.0.0
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit tcp host 10.255.0.148 eq 8014 10.2.153.0 0.0.0.127'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_port
+        - destination_network
+        - destination_wildcard
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      source_port: "{{ source_port }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+)$'
+        examples:
+        - ' permit tcp 10.1.80.0 0.0.0.255 10.70.80.0 0.0.0.255 eq 1720'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - destination_network
+        - destination_wildcard
+        - destination_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+                      destination_port: "{{ destination_port }}"
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) eq (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit tcp 10.1.80.0 0.0.0.255 eq 1720 10.70.80.0 0.0.0.255'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - source_port
+        - destination_network
+        - destination_wildcard
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      source_port: "{{ source_port }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+# RANGE
+      - regex: '^ (permit|deny) (\S+) any any range (\S+) (\S+)$'
+        examples:
+        - ' permit tcp any any range 3225 3227'
+        captures:
+        - action
+        - protocol
+        - destination_start_port
+        - destination_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_start_port: "{{ destination_start_port }}"
+                      destination_end_port: "{{ destination_end_port }}"
+      - regex: '^ (permit|deny) (\S+) any range (\S+) (\S+) any$'
+        examples:
+        - ' permit tcp any range 3225 3227 any'
+        captures:
+        - action
+        - protocol
+        - source_start_port
+        - source_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      source_start_port: "{{ source_start_port }}"
+                      source_end_port: "{{ source_end_port }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) range (\S+) (\S+) any$'
+        examples:
+        - ' permit tcp 10.6.0.0 0.1.255.255 range 2000 2002 any'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - source_start_port
+        - source_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      source_start_port: "{{  source_start_port }}"
+                      source_end_port: "{{ source_end_port }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) range (\S+) (\S+) any$'
+        examples:
+        - ' permit tcp host 10.69.8.76 range 3148 3149 any'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_start_port
+        - source_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      source_start_port: "{{ source_start_port }}"
+                      source_end_port: "{{ source_end_port }}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+      - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) any range (\S+) (\S+)$'
+        examples:
+        - ' permit udp host 115.114.204.108 any range 1024 65535'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - destination_start_port
+        - destination_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_start_port: "{{ destination_start_port }}"
+                      destination_end_port: "{{ destination_end_port }}"
+      - regex: '^ (permit|deny) (\S+) any host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) range (\S+) (\S+)$'
+        examples:
+        - ' permit udp any host 135.114.204.108 range 1024 65535'
+        captures:
+        - action
+        - protocol
+        - destination_network
+        - destination_start_port
+        - destination_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: 0.0.0.0
+                      destination_start_port: "{{ destination_start_port }}"
+                      destination_end_port: "{{ destination_end_port }}"
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) any range (\S+) (\S+)$'
+        examples:
+        - ' permit tcp 10.2.0.0 0.0.255.255 any range 3200 3600'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - destination_start_port
+        - destination_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard}}"
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_start_port: "{{ destination_start_port }}"
+                      destination_end_port: "{{ destination_end_port }}"
+      - regex: '^ (permit|deny) (\S+) any range (\S+) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit tcp any range 3200 3600 10.2.0.0 0.0.255.255'
+        captures:
+        - action
+        - protocol
+        - source_start_port
+        - source_end_port
+        - destination_network
+        - destination_wildcard
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      source_start_port: "{{ source_start_port }}"
+                      source_end_port: "{{ source_end_port }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+      - regex: '^ (permit|deny) (\S+) any (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) range (\S+) (\S+)$'
+        examples:
+        - ' permit tcp any 10.2.0.0 0.0.255.255 range 3200 3600'
+        captures:
+        - action
+        - protocol
+        - destination_network
+        - destination_wildcard
+        - destination_start_port
+        - destination_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+                      destination_start_port: "{{ destination_start_port }}"
+                      destination_end_port: "{{ destination_end_port }}"
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) range (\S+) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit tcp 10.1.80.0 0.0.0.255 range 49152 65535 10.70.80.0 0.0.0.255'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - source_start_port
+        - source_end_port
+        - destination_network
+        - destination_wildcard
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      source_start_port: "{{ source_start_port }}"
+                      source_end_port: "{{ source_end_port }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+      #' permit tcp 10.1.80.0 0.0.0.255 10.70.80.0 0.0.0.255 range 49152 65535',
+      - regex: '^ (permit|deny) (\S+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) range (\S+) (\S+)$'
+        examples:
+        - ' permit tcp 10.1.80.0 0.0.0.255 10.70.80.0 0.0.0.255 range 49152 65535'
+        captures:
+        - action
+        - protocol
+        - source_network
+        - source_wildcard
+        - destination_network
+        - destination_wildcard
+        - destination_start_port
+        - destination_end_port
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: "{{ source_wildcard }}"
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: "{{ destination_wildcard }}"
+                      destination_start_port: "{{ destination_start_port }}"
+                      destination_end_port: "{{ destination_end_port }}"
+
+# DSCP
+      - regex: '^ (permit|deny) (\S+) any any dscp (\S+)$'
+        examples:
+        - ' permit ip any any dscp cs6'
+        captures:
+        - action
+        - protocol
+        - destination_dscp
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: 0.0.0.0
+                      destination_wildcard: 255.255.255.255
+                      destination_dscp: "{{ destination_dscp }}"
+# REMARKS
+      - regex: '^ remark (.*)$'
+        examples:
+        - ' remark foo'
+        captures:
+        - remark
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                  - remark: "\"{{ remark }}\""
+      - regex: '^ remark$'
+        examples:
+        - ' remark foo'
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                  - remark:

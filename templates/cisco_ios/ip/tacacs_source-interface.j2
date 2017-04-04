@@ -1,0 +1,5 @@
+- parents:
+  lines:
+    {% if 'tacacs' in vars['ip'] and 'source_interface' in vars['ip']['tacacs'] %}
+    - ip tacacs source-interface {{ vars['ip']['tacacs']['source_interface'] }}
+    {% endif %}

@@ -1,0 +1,218 @@
+- name: interface
+  tags:
+  - interface
+  matches:
+  - name: interface
+    template: interface/default.j2
+    lines:
+    - regex: '^interface (\S+)$'
+      examples:
+      - 'interface GigabitEthernet0/2/3'
+      captures:
+      - name
+      path:
+        interfaces:
+          "{{ name }}":
+            name: "{{ name }}"
+      lines:
+      - regex: '^ description (.*)$'
+        examples:
+        - ' description mx400-lan1'
+        captures:
+        - description
+        path:
+          interfaces:
+            "{{ name }}":
+              description: "\"{{ description }}\""
+      - regex: '^ vrf forwarding (\S+)'
+        examples:
+        - ' vrf forwarding blue'
+        captures:
+        - vrf
+        path:
+          interfaces:
+            "{{ name }}":
+              vrf: "{{ vrf }}"
+      - regex: '^ encapsulation (\S+) (\d+)'
+        examples:
+        - ' encapsulation dot1Q 61'
+        captures:
+        - encapsulation_protocol
+        - encapsulation_tag
+        path:
+          interfaces:
+            "{{ name }}":
+              encapsulation:
+                protocol: "{{ encapsulation_protocol }}"
+                tag: "{{ encapsulation_tag }}"
+      - regex: '^ switchport access vlan (\d{1,4})$'
+        examples:
+        - ' switchport access vlan 107'
+        captures:
+        - vlan
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                access:
+                  vlan: "{{ vlan }}"
+      - regex: '^ switchport trunk native vlan (\d{1,4})$'
+        examples:
+        - ' switchport trunk native vlan 700'
+        captures:
+        - vlan
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                trunk:
+                  native_vlan: "{{ vlan }}"
+      - regex: '^ switchport trunk allowed vlan (?!(add))(.*)$'
+        examples:
+        - ' switchport trunk allowed vlan 700,714,742,743'
+        captures:
+        - not add
+        - vlans
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                trunk:
+                  allowed_vlans:
+                    vlans: "\"{{ vlans }}\""
+      - regex: '^ switchport trunk allowed vlan add (.*)$'
+        examples:
+        - 'switchport trunk allowed vlan add 818-824'
+        captures:
+        - vlans
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                trunk:
+                  allowed_vlans:
+                    add: "\"{{ vlans }}\""
+      - regex: '^ switchport mode (.*)$'
+        examples:
+        - ' switchport mode access'
+        captures:
+        - mode
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                mode: "{{ mode.split() }}"
+      - regex: '^ channel-group (\d{1,3}) mode (.*)$'
+        examples:
+        - ' channel-group 29 mode active'
+        captures:
+        - channel_group
+        - channel_group_mode
+        path:
+          interfaces:
+            "{{ name }}":
+              channel_group: "{{ channel_group }}"
+              channel_group_mode: "{{ channel_group_mode.split() }}"
+      - regex: '^ no switchport$'
+        examples:
+        - ' no switchport'
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                negate: True
+      - regex: '^ bandwidth (.*)$'
+        examples:
+        - ' bandwidth 42'
+        captures:
+        - bandwidth
+        path:
+          interfaces:
+            "{{ name }}":
+              bandwidth: "{{ bandwidth }}"
+      - regex: '^ ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' ip address 10.7.200.82 255.255.255.128'
+        captures:
+        - ipv4_address
+        - ipv4_netmask
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                address:
+                  ipv4_address: "{{ ipv4_address }}"
+                  ipv4_netmask: "{{ ipv4_netmask }}"
+      - regex: '^ no ip address$'
+        examples:
+        - ' no ip address'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                address:
+                  negate: True
+      - regex: '^ ip flow (\S+)$'
+        examples:
+        - ' ip flow ingress'
+        captures:
+        - flow_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                flow:
+                  directions:
+                  - "{{ flow_direction }}"
+      - regex: '^ negotiation (\S+)'
+        examples:
+        - ' negotiation auto'
+        captures:
+        - negotiation
+        path:
+          interfaces:
+            "{{ name }}":
+              negotiation:
+                type: "{{ negotiation }}"
+                negate: False
+      - regex: '^ no negotiation (\S+)'
+        examples:
+        - ' no negotiation auto'
+        captures:
+        - negotiation
+        path:
+          interfaces:
+            "{{ name }}":
+              negotiation:
+                type: "{{ negotiation }}"
+                negate: True
+      - regex: '^ shutdown$'
+        examples:
+        - ' shutdown'
+        path:
+          interfaces:
+            "{{ name }}":
+              shutdown: True
+      - regex: '^ ip pim (sparse-mode|sparse-dense-mode)'
+        examples:
+        - ' ip pim sparse-mode'
+        captures:
+        - pim_mode
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                pim:
+                  mode: "{{ pim_mode }}"
+      - regex: '^ service-policy (input|output) (\S+)'
+        examples:
+        - ' service-policy input qo-global-core-ingress-lan'
+        captures:
+        - service_policy_direction
+        - service_policy_name
+        path:
+          interfaces:
+            "{{ name }}":
+              service_policies:
+              - name: "{{ service_policy_name }}"
+                direction: "{{ service_policy_direction }}"

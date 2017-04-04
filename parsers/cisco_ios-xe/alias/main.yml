@@ -1,0 +1,19 @@
+- name: alias
+  tags:
+  - alias
+  matches:
+  - name: alias
+    template: alias/default.j2
+    lines:
+    - regex: '^alias (\w+) (\S+) (.*)$'
+      examples:
+      - 'alias exec tbgp show ip bgp vpnv4 vrf foo'
+      captures:
+      - mode
+      - alias
+      - command
+      path:
+        aliases:
+        - mode: "{{ mode }}"
+          alias: "{{ alias }}"
+          command: "{{ command }}"

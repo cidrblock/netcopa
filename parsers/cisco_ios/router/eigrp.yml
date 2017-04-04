@@ -1,0 +1,84 @@
+- name: router eigrp
+  tags:
+  - router
+  - eigrp
+  matches:
+  - name: router eigrp
+    template: router/eigrp.j2
+    lines:
+    - regex: '^router eigrp (\d+)$'
+      examples:
+      - 'router eigrp 900'
+      captures:
+      - parent_process_id
+      path:
+        router:
+          eigrp:
+            "{{ parent_process_id }}":
+              process_id: "{{ parent_process_id }}"
+      lines:
+      - regex: '^ redistribute (\w+)$'
+        examples:
+        - ' redistribute static'
+        captures:
+        - protocol
+        path:
+          router:
+            eigrp:
+              "{{ parent_process_id }}":
+                redistribute:
+                  "{{ protocol }}":
+                    protocol: "{{ protocol }}"
+      - regex: '^ redistribute (\w+) (\d+) metric (\d+) (\d+) (\d+) (\d+) (\d+) route-map (\S+)$'
+        examples:
+        - ' redistribute ospf 100 metric 1500 1000 255 1 1500 route-map ospf100-eigrp900-lab'
+        captures:
+        - protocol
+        - redist_process_id
+        - bandwidth
+        - delay
+        - reliability
+        - load
+        - mtu
+        - route_map
+        path:
+          router:
+            eigrp:
+              "{{ parent_process_id }}":
+                redistribute:
+                  "{{ protocol }}":
+                    protocol: "{{ protocol }}"
+                    process_id: "{{ redist_process_id }}"
+                    metric:
+                      bandwidth: "{{ bandwidth }}"
+                      delay: "{{ delay }}"
+                      reliability: "{{ reliability }}"
+                      load: "{{ load }}"
+                      mtu: "{{ mtu }}"
+                    route_map: "{{ route_map }}"
+      - regex: '^ distribute-list route-map (\S+) (\w+)$'
+        examples:
+        - ' distribute-list route-map eigrp900-ospf100 in'
+        captures:
+        - distribute_list_route_map
+        - direction
+        path:
+          router:
+            eigrp:
+              "{{ parent_process_id }}":
+                  distribute_lists:
+                  - route_map: "{{ distribute_list_route_map }}"
+                    direction: "{{ direction }}"
+      - regex: '^ network (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' network 10.2.15.0 0.0.7.255'
+        captures:
+        - network_network
+        - network_netmask
+        path:
+          router:
+            eigrp:
+              "{{ parent_process_id }}":
+                  network_statements:
+                  - network: "{{ network_network }}"
+                    netmask: "{{ network_netmask }}"

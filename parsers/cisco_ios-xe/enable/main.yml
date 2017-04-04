@@ -1,0 +1,18 @@
+- name: enable secret
+  tags:
+  - enable
+  matches:
+  - name: enable secret
+    template: enable/secret.j2
+    lines:
+    - regex: '^enable secret (\d) (\S+)$'
+      examples:
+      - 'enable secret 5 AAAAAAAAA'
+      captures:
+      - encryption_type
+      - secret
+      path:
+        enable:
+          secret:
+            encryption_type: "{{ encryption_type }}"
+            secret: "{{ secret }}"

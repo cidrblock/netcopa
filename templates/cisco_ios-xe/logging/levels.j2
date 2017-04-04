@@ -1,0 +1,5 @@
+{% for entry in vars['logging']['levels'] -%}
+- parents:
+  lines:
+  - 'logging {{ entry['type'] }} {{ entry['level'] }}'
+{% endfor -%}

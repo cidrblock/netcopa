@@ -1,0 +1,24 @@
+- name: aaa
+  tags:
+  - aaa
+  matches:
+  - name: aaa new-model
+    template: aaa/new_model.j2
+    lines:
+    - regex: '^aaa new-model$'
+      exmaples:
+      - 'aaa new-model'
+      path:
+        aaa:
+          new_model: True
+  - name: aaa session-id
+    template: aaa/session_id.j2
+    lines:
+    - regex: '^aaa session-id (\S+)$'
+      examples:
+      - 'aaa session-id common'
+      captures:
+      - session_id
+      path:
+        aaa:
+          session_id: "{{ session_id }}"

@@ -1,0 +1,19 @@
+- name: username
+  tags:
+  - username
+  matches:
+  - name: username
+    template: username/default.j2
+    lines:
+    - regex: '^username (\w+) password (\d) (\S+)$'
+      examples:
+      - 'username admin password 7 AAAAAAAA'
+      captures:
+      - username
+      - encryption_type
+      - password
+      path:
+        usernames:
+        - username: "{{ username }}"
+          encryption_type: "{{ encryption_type }}"
+          password: "{{ password }}"

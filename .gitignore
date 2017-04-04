@@ -1,0 +1,4 @@
+venv/
+debug.log
+utilities/keywords.yml
+a_configurations/*

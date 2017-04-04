@@ -1,0 +1,99 @@
+- name: line con/aux
+  tags:
+  - line
+  - con
+  - aux
+  matches:
+  - name: line con
+    template: line/con_aux.j2
+    lines:
+    - regex: '^line (con|aux) (\d)'
+      examples:
+      - 'line con 0'
+      captures:
+      - type
+      - number
+      path:
+        line:
+          "{{ type }}":
+            type: "{{ type }}"
+            numbers:
+              "{{ number }}":
+                number: "{{ number }}"
+      lines:
+      - regex: '^ exec-timeout (\d+) (\d+)$'
+        exmaples:
+        - ' exec-timeout 15 0'
+        captures:
+        - minutes
+        - seconds
+        path:
+          line:
+            "{{ type }}":
+              numbers:
+                "{{ number }}":
+                  exec_timeout:
+                    minutes: "{{ minutes }}"
+                    seconds: "{{ seconds }}"
+      - regex: '^ password (\d) (\S+)$'
+        exmaples:
+        - ' password 7 AAAAAAAAAAAA'
+        captures:
+        - encryption_type
+        - password
+        path:
+          line:
+            "{{ type }}":
+              numbers:
+                "{{ number }}":
+                  password:
+                    encryption_type: "{{ encryption_type }}"
+                    password: "{{ password }}"
+      - regex: '^ login authentication (\S+)$'
+        exmaples:
+        - ' login authentication CONSOLE'
+        captures:
+        - named_list
+        path:
+          line:
+            "{{ type }}":
+              numbers:
+                "{{ number }}":
+                  login:
+                    authentication: "{{ named_list }}"
+      - regex: '^ transport (\w+) (.*)$'
+        examples:
+        - ' transport input ssh'
+        captures:
+        - direction
+        - protocols
+        path:
+          line:
+            "{{ type }}":
+              numbers:
+                "{{ number }}":
+                  transport:
+                    "{{ direction }}":
+                      protocols: "{{ protocols.split() }}"
+      - regex: '^ escape-character (\S+)$'
+        examples:
+        - ' escape-character BREAK'
+        captures:
+        - escape_character
+        path:
+          line:
+            "{{ type }}":
+              numbers:
+                "{{ number }}":
+                  escape_character: "{{ escape_character }}"
+      - regex: '^ stopbits (\d+)$'
+        exmaples:
+        - 'stopbits 8'
+        captures:
+        - stopbits
+        path:
+          line:
+            "{{ type }}":
+              numbers:
+                "{{ number }}":
+                  stopbits: "{{ stopbits }}"

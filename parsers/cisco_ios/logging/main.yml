@@ -1,0 +1,41 @@
+- name: logging
+  tags:
+  - logging
+  matches:
+  - name: logging levels
+    template: logging/levels.j2
+    lines:
+    - regex: '^logging (buffered|console|monitor) (\w+)$'
+      examples:
+      - 'logging buffered informational'
+      captures:
+      - type
+      - level
+      path:
+        logging:
+          levels:
+          - type: "{{ type }}"
+            level: "{{ level }}"
+  - name: logging facility
+    template: logging/facility.j2
+    lines:
+    - regex: '^logging facility (\w+)$'
+      examples:
+      - 'logging facility local6'
+      captures:
+      - facility
+      path:
+        logging:
+          facility: "{{ facility }}"
+  - name: logging host
+    template: logging/hosts.j2
+    lines:
+    - regex: '^logging (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'logging 10.5.1.1'
+      captures:
+      - host
+      path:
+        logging:
+          hosts:
+            - host: "{{ host }}"

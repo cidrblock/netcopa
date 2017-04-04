@@ -1,0 +1,13 @@
+{% if 'prefix_lists' in vars['ip'] %}
+{% for prefix_list in vars['ip']['prefix_lists'] %}
+{% for entry in vars['ip']['prefix_lists'][prefix_list]['entries'] %}
+- parents:
+  lines:
+  {% if 'le_bits' in entry -%}
+  - ip prefix-list {{ vars['ip']['prefix_lists'][prefix_list]['name'] }} seq {{ entry['sequence'] }} {{ entry['action'] }} {{ entry['network'] }}/{{ entry['netmask'] }} le {{ entry['le_bits'] }}
+  {% else -%}
+  - ip prefix-list {{ vars['ip']['prefix_lists'][prefix_list]['name'] }} seq {{ entry['sequence'] }} {{ entry['action'] }} {{ entry['network'] }}/{{ entry['netmask'] }}
+  {% endif -%}
+{% endfor %}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,22 @@
+- name: redundancy
+  tags:
+  - redundancy
+  matches:
+  - name: redundancy
+    template: redundancy/default.j2
+    lines:
+    - regex: '^redundancy$'
+      examples:
+      - 'redundancy'
+      path:
+        redundancy:
+          enabled: True
+      lines:
+      - regex: '^ mode (\S+)$'
+        examples:
+        - ' mode sso'
+        captures:
+        - mode
+        path:
+          redundancy:
+            mode: "{{ mode }}"

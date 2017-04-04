@@ -1,0 +1,64 @@
+- name: tacacs-server
+  tags:
+  - tacacs-server
+  matches:
+  - name: tacacs-server directed-request
+    template: tacacs-server/directed-request.j2
+    lines:
+    - regex: '^tacacs-server directed-request$'
+      examples:
+      - 'tacacs-server directed-request'
+      path:
+        tacacs_server:
+          directed_request: True
+  - name: tacacs-server host
+    template: tacacs-server/hosts.j2
+    lines:
+    - regex: '^tacacs-server host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'tacacs-server host 10.5.1.2'
+      captures:
+      - host
+      path:
+        tacacs_server:
+          hosts:
+          - ip: "{{ host }}"
+    - regex: '^tacacs-server host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) key (\d) (\S+)$'
+      examples:
+      - 'tacacs-server host 10.5.1.2 key 7 AAAAAAA'
+      captures:
+      - host
+      - encryption_type
+      - password
+      path:
+        tacacs_server:
+          hosts:
+          - ip: "{{ host }}"
+            encryption_type: "{{ encryption_type }}"
+            password: "{{ password }}"
+
+  - name: tacacs-server key
+    template: tacacs-server/key.j2
+    lines:
+    - regex: '^tacacs-server key (\d) (\S+)$'
+      examples:
+      - 'tacacs-server key 7 AAAAAAA'
+      captures:
+      - encryption_type
+      - password
+      path:
+        tacacs_server:
+          key:
+            encryption_type: "{{ encryption_type }}"
+            password: "{{ password }}"
+  - name: tacacs-server timeout
+    template: tacacs-server/timeout.j2
+    lines:
+    - regex: '^tacacs-server timeout (\d+)$'
+      examples:
+      - 'tacacs-server timeout 10'
+      captures:
+      - timeout
+      path:
+        tacacs_server:
+          timeout: "{{ timeout }}"

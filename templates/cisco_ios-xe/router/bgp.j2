@@ -1,0 +1,164 @@
+{% if 'router' in vars and 'bgp' in vars['router'] -%}
+{% for process in vars['router']['bgp'] %}
+- parents:
+  - router bgp {{ vars['router']['bgp'][process]['process_id'] }}
+  lines:
+  {% if 'synchronization' in vars['router']['bgp'][process] -%}
+  {% if not vars['router']['bgp'][process]['synchronization'] -%}
+  - " no synchronization"
+  {%- endif -%}{# synchronization -#}
+  {% endif -%}{# synchronization -#}
+  {%- if 'router_id' in vars['router']['bgp'][process] %}
+  - " bgp router-id {{ vars['router']['bgp'][process]['router_id'] }}"
+  {%- endif -%}{# router_id -#}
+  {%- if 'log_neighbor_changes' in vars['router']['bgp'][process] and vars['router']['bgp'][process]['log_neighbor_changes']  %}
+  - " bgp log-neighbor-changes"
+  {%- endif -%}{# log_neighbor_changes -#}
+  {%- if 'aggregate_addresses' in vars['router']['bgp'][process] -%}
+  {%- for aggregate_address in vars['router']['bgp'][process]['aggregate_addresses'] -%}
+  {% if 'summary_only' in aggregate_address and aggregate_address['summary_only'] %}
+  - " aggregate-address {{ aggregate_address['network'] }} {{ aggregate_address['netmask'] }} summary-only"
+  {%- endif -%}{# summary-only -#}
+  {% endfor -%}{# aggregate-address -#}
+  {% endif -%}{# aggregate_addresses -#}
+  {% if 'redistribute' in vars['router']['bgp'][process] %}
+  {% for protocol in ['connected', 'ospf'] -%}
+  {% if protocol in vars['router']['bgp'][process]['redistribute'] -%}
+  {% set line = [] -%}
+  {% set _ = line.append('redistribute') -%}
+  {% set _ = line.append(vars['router']['bgp'][process]['redistribute'][protocol]['protocol']) -%}
+  {% if 'process_id' in vars['router']['bgp'][process]['redistribute'][protocol] -%}
+  {% set _ = line.append(vars['router']['bgp'][process]['redistribute'][protocol]['process_id']) -%}
+  {% endif -%}{# process_id -#}
+  {% if 'match' in vars['router']['bgp'][process]['redistribute'][protocol] -%}
+  {% set _ = line.append('match') -%}
+  {% set _ = line.append(vars['router']['bgp'][process]['redistribute'][protocol]['match']|join(' ')) -%}
+  {% endif -%}{# match -#}
+  {% if 'route_map' in vars['router']['bgp'][process]['redistribute'][protocol] -%}
+  {% set _ = line.append('route-map') -%}
+  {% set _ = line.append(vars['router']['bgp'][process]['redistribute'][protocol]['route_map']) -%}
+  {% endif -%}{# route-map -#}
+  - " {{ line|join(' ') }}"
+  {% endif -%}{# protocol -#}
+  {% endfor -%}{# protocols -#}
+  {%- endif -%}{# redistribute -#}
+
+  {% if 'neighbors' in vars['router']['bgp'][process] -%}
+  {% for key, value in vars['router']['bgp'][process]['neighbors']|sort_by_ip_as_int() -%}
+  {% if 'remote_as' in value -%}
+  - " neighbor {{ value['ipv4_address'] }} remote-as {{ value['remote_as'] }}"
+  {% endif -%}{# remote_as -#}
+  {% if 'description' in value -%}
+  - " neighbor {{ value['ipv4_address'] }} description {{ value['description'] }}"
+  {% endif -%}{# description -#}
+  {% if 'next_hop_self' in value and value['next_hop_self']-%}
+  - " neighbor {{ value['ipv4_address'] }} next-hop-self"
+  {% endif -%}{# next-hop-self -#}
+  {% if 'default_originate' in value and 'enabled' in value['default_originate'] and value['default_originate']['enabled'] -%}
+  {% if 'route_map' in value['default_originate'] -%}
+  - " neighbor {{ value['ipv4_address'] }} default-originate route-map {{ value['default_originate']['route_map'] }}"
+  {% else -%}
+  - " neighbor {{ value['ipv4_address'] }} default-originate"
+  {% endif -%}{# route_map -#}
+  {% endif -%}{# default_originate -#}
+  {% if 'soft_reconfiguration_inbound' in value and value['soft_reconfiguration_inbound']-%}
+  - " neighbor {{ value['ipv4_address'] }} soft-reconfiguration inbound"
+  {% endif -%}{# soft_reconfiguration_inbound -#}
+  {% if 'route_map_in' in value -%}
+  - " neighbor {{ value['ipv4_address'] }} route-map {{ value['route_map_in']}} in"
+  {% endif -%}{# route_map_in -#}
+  {% if 'route_map_out' in value -%}
+  - " neighbor {{ value['ipv4_address'] }} route-map {{ value['route_map_out']}} out"
+  {% endif -%}{# route_map_out -#}
+  {% endfor -%}{# neighbors -#}
+  {% endif -%}{# neighbors -#}
+  {% if 'auto_summary' in vars['router']['bgp'][process] and not vars['router']['bgp'][process]['auto_summary'] -%}
+  - " no auto-summary"
+  {% endif -%}{# auto_summary -#}
+  {% if 'distance' in vars['router']['bgp'][process] -%}
+  - " distance {{ vars['router']['bgp'][process]['distance'] }}"
+  {% endif -%}{# distance -#}
+
+  {# -------------ADDRESS FAMILIES BEGIN---------------- -#}
+  {% if 'address_families' in vars['router']['bgp'][process] -%}
+  {% for ip_version in vars['router']['bgp'][process]['address_families'] -%}
+  {% for vrf_name, vrf in vars['router']['bgp'][process]['address_families'][ip_version]['vrfs'].iteritems() -%}
+  - " !"
+  - " address-family {{ vars['router']['bgp'][process]['address_families'][ip_version]['ip_version'] }} vrf {{ vrf['vrf_name'] }}"
+  {% if 'synchronization' in vrf -%}
+  {% if not vars['router']['bgp'][process]['synchronization'] -%}
+  - "  no synchronization"
+  {%- endif -%}{# synchronization -#}
+  {% endif -%}{# synchronization -#}
+  {%- if 'router_id' in vrf %}
+  - "  bgp router-id {{ vrf['router_id'] }}"
+  {% endif -%}{# router_id -#}
+  {% if 'redistribute' in vrf %}
+  {% for protocol in ['connected', 'ospf'] -%}
+  {% if protocol in vrf['redistribute'] -%}
+  {% set line = [] -%}
+  {% set _ = line.append('redistribute') -%}
+  {% set _ = line.append(vrf['redistribute'][protocol]['protocol']) -%}
+  {% if 'process_id' in vrf['redistribute'][protocol] -%}
+  {% set _ = line.append(vrf['redistribute'][protocol]['process_id']) -%}
+  {% endif -%}{# process_id -#}
+  {% if 'match' in vrf['redistribute'][protocol] -%}
+  {% set _ = line.append('match') -%}
+  {% set _ = line.append(vrf['redistribute'][protocol]['match']|join(' ')) -%}
+  {% endif -%}{# match -#}
+  {% if 'route_map' in vrf['redistribute'][protocol] -%}
+  {% set _ = line.append('route-map') -%}
+  {% set _ = line.append(vrf['redistribute'][protocol]['route_map']) -%}
+  {% endif -%}{# route-map -#}
+  - "  {{ line|join(' ') }}"
+  {% endif -%}{# protocol -#}
+  {% endfor -%}{# protocols -#}
+  {%- endif -%}{# redistribute -#}
+  {% if 'neighbors' in vrf -%}
+  {% for key, value in vrf['neighbors']|sort_by_ip_as_int() -%}
+  {% if 'remote_as' in value -%}
+  - "  neighbor {{ value['ipv4_address'] }} remote-as {{ value['remote_as'] }}"
+  {% endif -%}{# remote_as -#}
+  {% if 'local_as' in value -%}
+  - "  neighbor {{ value['ipv4_address'] }} local-as {{ value['local_as'] }}"
+  {% endif -%}{# remote_as -#}
+  {% if 'description' in value -%}
+  - "  neighbor {{ value['ipv4_address'] }} description {{ value['description'] }}"
+  {% endif -%}{# description -#}
+  {% if 'password' in value -%}
+  - "  neighbor {{ value['ipv4_address'] }} password {{ value['password']['encryption_type'] }} {{ value['password']['password'] }}"
+  {% endif -%}{# description -#}
+  {% if 'activate' in value and value['activate'] -%}
+  - "  neighbor {{ value['ipv4_address'] }} activate"
+  {% endif -%}{# activate -#}
+  {% if 'next_hop_self' in value and value['next_hop_self']-%}
+  - "  neighbor {{ value['ipv4_address'] }} next-hop-self"
+  {% endif -%}{# next-hop-self -#}
+  {% if 'default_originate' in value and 'enabled' in value['default_originate'] and value['default_originate']['enabled'] -%}
+  {% if 'route_map' in value['default_originate'] -%}
+  - "  neighbor {{ value['ipv4_address'] }} default-originate route-map {{ value['default_originate']['route_map'] }}"
+  {% else -%}
+  - "  neighbor {{ value['ipv4_address'] }} default-originate"
+  {% endif -%}{# route_map -#}
+  {% endif -%}{# default_originate -#}
+  {% if 'soft_reconfiguration_inbound' in value and value['soft_reconfiguration_inbound']-%}
+  - "  neighbor {{ value['ipv4_address'] }} soft-reconfiguration inbound"
+  {% endif -%}{# soft_reconfiguration_inbound -#}
+  {% if 'route_map_in' in value -%}
+  - "  neighbor {{ value['ipv4_address'] }} route-map {{ value['route_map_in']}} in"
+  {% endif -%}{# route_map_in -#}
+  {% if 'route_map_out' in value -%}
+  - "  neighbor {{ value['ipv4_address'] }} route-map {{ value['route_map_out']}} out"
+  {% endif -%}{# route_map_out -#}
+  {% endfor -%}{# neighbors -#}
+  {% endif -%}{# neighbors -#}
+
+
+  {% endfor -%}{# vrf -#}
+  {% endfor -%}{# ip_version -#}
+  - " exit-address-family"
+  {% endif -%}{# address_families -#}
+
+
+{% endfor %}{# process #}
+{% endif -%}{# router #}

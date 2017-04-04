@@ -1,0 +1,28 @@
+- name: ntp servers
+  tags:
+  - ntp
+  matches:
+  - name: all ntp servers
+    template: ntp/servers.j2
+    lines:
+    - regex: '^ntp server (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      examples:
+      - 'ntp server 10.1.28.22'
+      captures:
+      - server_ip
+      path:
+        ntp:
+          servers:
+            - server_ip: "{{ server_ip }}"
+  - name: ntp source
+    template: ntp/source.j2
+    lines:
+    - regex: '^ntp source (\S+)$'
+      examples:
+      - 'ntp source Loopback0'
+      captures:
+      - interface
+      path:
+        ntp:
+          source:
+            interface: "{{ interface }}"

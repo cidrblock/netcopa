@@ -1,0 +1,28 @@
+- name: banner
+  tags:
+  - banner
+  matches:
+  - name: banner
+    template: banners/default.j2
+    lines:
+    - regex: '^banner (\w+) (.+)$'
+      examples:
+      - 'banner motd ^C'
+      captures:
+      - type
+      - delimeter
+      path:
+        banner:
+          "{{ type }}":
+            delimeter: "{{ delimeter }}" # this is special, helps EOL
+      lines:
+      - regex: '^(.*)$'
+        examples:
+        - 'Unauthorized access to this system is a violation of the'
+        captures:
+        - text_line
+        path:
+          banner:
+            "{{ type }}":
+              text:
+              - "\"{{ text_line }}\""

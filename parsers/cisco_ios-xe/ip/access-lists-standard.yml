@@ -1,0 +1,83 @@
+- name: ip access-list standard
+  tags:
+  - ip
+  - access-list
+  - standard
+  matches:
+  - name: ip access-list standard
+    template: ip/access-lists/standard.j2
+    lines:
+    - regex: '^ip access-list standard (\S+)$'
+      examples:
+      - 'ip access-list standard rt-260-site-ien-networks'
+      captures:
+      - name
+      path:
+        ip:
+          access_lists:
+            "{{ name }}":
+                name: "{{ name }}"
+                type: standard
+      lines:
+      - regex: '^ (permit|deny) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit 88.88.254.253'
+        captures:
+        - action
+        - source_network
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - action: "{{ action }}"
+                      source_network: "{{ source_network }}"
+                      source_wildcard: 0.0.0.0
+      - regex: '^ (permit|deny) (any)$'
+        examples: ' permit any'
+        captures:
+        - action
+        - source_network
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                  - action: "{{ action }}"
+                    source_network: "{{ source_network }}"
+                    source_wildcard: any
+      - regex: '^ (permit|deny) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        - ' permit 10.5.32.16 0.0.0.7'
+        captures:
+        - action
+        - source_network
+        - source_wildcard
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                  - action: "{{ action }}"
+                    source_network: "{{ source_network }}"
+                    source_wildcard: "{{ source_wildcard }}"
+      - regex: '^ remark (.*)$'
+        exmaples:
+        - ' remark foo'
+        captures:
+        - remark
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                  - remark: "\"{{ remark }}\""
+      - regex: '^ remark$'
+        examples:
+        - ' remark'
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                  - remark:
