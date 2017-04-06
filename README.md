@@ -41,7 +41,6 @@ interfaces:
       voice:
         vlan: 867
 ```
->>>>>>> Stashed changes
 
 The engine takes four inputs:
   - A network device configuration
@@ -67,8 +66,8 @@ Python 2.7+ will need to be installed.
 - Review the host_vars directory for the resulting yaml extractions
 
 ```shell
-git clone https://github.com/cidrblock/running-pipe-freedom
-cd running-pipe-freedom
+git clone https://github.com/cidrblock/netcopa
+cd netcopa
 virtualenv venv
 <...>
 source venv/bin/activate
