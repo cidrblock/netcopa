@@ -11,6 +11,9 @@
   - " server {{ server['ip'] }} key {{ server['encryption_type'] }} {{ server['key'] }}"
   {% endif -%}
   {% endfor -%}
+  {% if 'tacacs_source_interface' in vars['aaa']['groups'][group] -%}
+  - " ip tacacs source-interface {{ vars['aaa']['groups'][group]['tacacs_source_interface'] }}"
+  {% endif -%}
   {% endif -%}
 {% endfor -%}
 {% endif -%}

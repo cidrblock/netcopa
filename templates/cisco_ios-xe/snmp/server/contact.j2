@@ -1,7 +1,8 @@
 {% if 'server' in vars['snmp'] -%}
 {% if 'contact' in vars['snmp']['server'] -%}
 - parents:
-  - snmp-server contact {{ vars['snmp']['server']['contact'] }}
   lines:
+  - "snmp-server contact {{ vars['snmp']['server']['contact'] }}"
+
 {% endif -%}
 {% endif -%}

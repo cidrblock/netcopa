@@ -35,3 +35,13 @@
                   encryption_type: "{{ encryption_type }}"
                   key: "{{ key }}"
                   private: True
+      - regex: '^ ip tacacs source-interface (\S+)$'
+        examples:
+        - '  ip tacacs source-interface Vlan2'
+        captures:
+        - source_interface
+        path:
+          aaa:
+            groups:
+              "{{ group_name }}":
+                tacacs_source_interface: "{{ source_interface }}"
