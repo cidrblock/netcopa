@@ -17,7 +17,8 @@
           authentication:
             login:
               activated:
-                methods: "{{ methods.split(' ') }}"
+                methods:
+                - "{{ methods.split(' ') }}"
     - regex: '^aaa authentication login default (group \S+)(.*)$'
       examples:
       - 'aaa authentication login default group tacacs+ line'

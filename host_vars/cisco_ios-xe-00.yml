@@ -21,8 +21,8 @@ vars:
       login:
         activated:
           methods:
-          - CONSOLE
-          - line
+          - - CONSOLE
+            - line
         default:
           methods:
           - group tacacs+

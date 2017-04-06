@@ -834,7 +834,9 @@ def main():
     logging.basicConfig(filename='debug.log', level=args.loglevel,
                         format='%(levelname)s: '
                                '%(message)s')
-    run(args)
+    devices = run(args)
+    for device in devices:
+        pprint(device['working_configuration'])
 
 if __name__ == "__main__":
     main()

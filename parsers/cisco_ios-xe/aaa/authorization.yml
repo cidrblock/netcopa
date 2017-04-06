@@ -21,17 +21,32 @@
                 privilege_level: "{{ privilege_level }}"
                 methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"
   - name: aaa authorization
-    template: aaa/authorization/exec.j2
+    template: aaa/authorization/default.j2
     lines:
-    - regex: '^aaa authorization exec default (group \S+)(.*)$'
+    - regex: '^aaa authorization (\S+) default (group \S+)(.*)$'
       examples:
+      - 'aaa authorization reverse-access default group tacacs-servers none'
       - 'aaa authorization exec default group tacacs+ none'
       captures:
+      - aaa_kind
       - groups
       - methods
       path:
         aaa:
           authorization:
-            exec:
+            "{{ aaa_kind }}":
               default:
                 methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"
+    - regex: '^aaa authorization (\S+) (group \S+) (.*)$'
+      examples:
+      - 'aaa authorization reverse-access group group tacacs+'
+      captures:
+      - aaa_kind
+      - groups
+      - methods
+      path:
+        aaa:
+          authorization:
+            "{{ aaa_kind }}":
+              activated:
+                methods: "{{ groups.replace(\"group \", \"^group \").split(\"^\")[1:] + methods.split(' ') }}"
