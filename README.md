@@ -3,7 +3,7 @@
 
 ### Overview
 
-running-pipe-freedom is an engine which implements a template based state machine for parsing semi-formatted text and storing it as structured data as yaml.
+netcopa is an engine which implements a template based state machine for parsing semi-formatted text and storing it as structured data as yaml.
 
 The engine takes four inputs:
   - A network device configuration
