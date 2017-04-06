@@ -27,9 +27,9 @@ interfaces:
     name: GigabitEthernet1/3
     service_policies:
     - direction: input
-      name: sbux-user-access-450x
+      name: company-user-access-450x
     - direction: output
-      name: sbux-user-access-dbl
+      name: company-user-access-dbl
     spanning-tree:
       bpduguard: true
       portfast: true
