@@ -50,6 +50,11 @@
   - " bandwidth {{ vars['interfaces'][interface]['bandwidth'] }}"
   {% endif -%} #bandwidth
   {% if 'ip' in vars['interfaces'][interface] -%}
+  {% if 'flow' in vars['interfaces'][interface]['ip'] -%}
+  {% for monitor in vars['interfaces'][interface]['ip']['flow']['monitors'] -%}
+  - " ip flow monitor {{ monitor['name'] }} {{ monitor['direction'] }}"
+  {% endfor -%}{# flow monitor -#}
+  {% endif -%}{# flow -#}
   {% if 'address' in vars['interfaces'][interface]['ip'] -%}
   {% if 'ipv4_address' in vars['interfaces'][interface]['ip']['address'] and 'ipv4_netmask' in vars['interfaces'][interface]['ip']['address'] -%}
   - " ip address {{ vars['interfaces'][interface]['ip']['address']['ipv4_address'] }} {{ vars['interfaces'][interface]['ip']['address']['ipv4_netmask'] }}"
@@ -57,7 +62,12 @@
   {% if 'negate' in vars['interfaces'][interface]['ip']['address'] and vars['interfaces'][interface]['ip']['address']['negate'] -%}
   - " no ip address"
   {% endif -%} #negate
-  {% endif -%} #address
+  {% endif -%} #address  
+  {% if 'nat' in vars['interfaces'][interface]['ip'] -%}
+  {% for direction in vars['interfaces'][interface]['ip']['nat']['directions'] -%}
+  - " ip nat {{ direction }}"
+  {% endfor -%} # #nat directions
+  {% endif -%} #nat
   {% if 'flow' in vars['interfaces'][interface]['ip'] -%}
   {% for direction in vars['interfaces'][interface]['ip']['flow']['directions'] -%}
   - " ip flow {{ direction }}"

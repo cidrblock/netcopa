@@ -13,7 +13,7 @@
       path:
         interfaces:
           "{{ name }}":
-            name: "{{ name }}"
+            name: "\"{{ name }}\""
       lines:
       - regex: '^ description (.*)$'
         examples:
@@ -138,6 +138,20 @@
           interfaces:
             "{{ name }}":
               bandwidth: "{{ bandwidth }}"
+      - regex: '^ ip flow monitor (\S+) (\w+)$'
+        examples:
+        - ' ip flow monitor LIVEACTION-FLOWMONITOR input'
+        captures:
+        - monitor_name
+        - monitor_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                flow:
+                  monitors:
+                  - name: "{{ monitor_name }}"
+                    direction: "{{ monitor_direction }}"
       - regex: '^ ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
         examples:
         - ' ip address 10.7.200.82 255.255.255.128'
@@ -151,6 +165,18 @@
                 address:
                   ipv4_address: "{{ ipv4_address }}"
                   ipv4_netmask: "{{ ipv4_netmask }}"
+      - regex: '^ ip nat (inside|outside)$'
+        examples:
+        - ' ip nat inside'
+        captures:
+        - nat_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nat:
+                  directions:
+                  - "{{ nat_direction }}"
       - regex: '^ no ip address$'
         examples:
         - ' no ip address'
@@ -160,7 +186,7 @@
               ip:
                 address:
                   negate: True
-      - regex: '^ ip flow (\S+)$'
+      - regex: '^ ip flow (ingress|egress)$'
         examples:
         - ' ip flow ingress'
         captures:

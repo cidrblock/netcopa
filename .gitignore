@@ -2,3 +2,5 @@ venv/
 debug.log
 utilities/keywords.yml
 a_configurations/*
+configurations/*
+host_vars/*
