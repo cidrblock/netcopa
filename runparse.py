@@ -707,15 +707,15 @@ def fail_extract(device, match, raw_results):
     device['failed_reason'] = "Failed to extract jinja output from configuration."
     print_log(device['failed_reason'], 'failed')
     print_log(' ')
-    print_log('######## JINJA RESULT RAW')
-    print_log(raw_results.split('\n'))
+    # print_log('######## JINJA RESULT RAW')
+    # print_log(raw_results.split('\n'))
     print_log('######## JINJA RESULT YAML')
     print_log(match)
     print_log('######## POSSIBLE MATCHES')
     indexes = [i for i, x in enumerate(device['working_configuration'])\
                if x == match[0]]
     for idx in indexes:
-        print_log(device['working_configuration'][idx:idx+len(match)])
+        print_log(device['working_configuration'][idx:idx+len(match)+3])
     return device
 
 def report(devices):

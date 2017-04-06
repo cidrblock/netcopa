@@ -1,25 +1,61 @@
 # netcopa (Network Configuration Parser)
 
-
 ### Overview
 
-netcopa is an engine which implements a template based state machine for parsing semi-formatted text and storing it as structured data as yaml.
+netcopa is an engine which implements a template based state machine for parsing semi-formatted text and storing it as structured data in yaml.
+
+Network device configurations can be converted from text to yaml:
+
+Start with this:
+```
+!
+interface GigabitEthernet1/3
+ switchport access vlan 267
+ switchport mode access
+ switchport voice vlan 867
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ service-policy input company-user-access-450x
+ service-policy output company-user-access-dbl
+!
+```
+Finish with this:
+
+```yaml
+interfaces:
+  GigabitEthernet1/3:
+    name: GigabitEthernet1/3
+    service_policies:
+    - direction: input
+      name: sbux-user-access-450x
+    - direction: output
+      name: sbux-user-access-dbl
+    spanning-tree:
+      bpduguard: true
+      portfast: true
+    switchport:
+      access:
+        vlan: 267
+      mode:
+      - access
+      voice:
+        vlan: 867
+```
+>>>>>>> Stashed changes
 
 The engine takes four inputs:
   - A network device configuration
   - A hierarchy of parsers
   - A hierarchy of rendering templates, referenced by the parsers
-  - An initial variable file for the configuration, indicating the OS
+  - An initial variable file for the configuration, indicating the OS of the device
 
 Upon running the engine:
-  - Each device configuration is loaded into memory
-  - The device's OS is retrieved from the file system
-  - Each parser for the device's OS is added to the device record
+  - Each configuration is loaded into memory
+  - The OS is retrieved from the file system (`./host_vars/device_name.yml`)
+  - Each parser for the device's OS is added to the device runtime dictionary
   - Each parser is run against the configuration, data extracted, rendered with the template and compared back to the initial extraction.  This checks the integrity of the data as well as ensures the data can be used to exactly reproduce the original configuration.
   - Only if the match is successful, the extracted data is written to the filesystem.
   - Extraction success is reported when the engine is complete
-
-
 
 ### Getting started
 
@@ -150,10 +186,15 @@ localhost                                                              [ok]
 The project has a specific directory layout outlined below:
 
 `./configurations`: The directory from which configurations are pulled
+
 `./host_vars`: The directory in which the extracted structured data is stored
+
 `./parsers`: The directory of parsers, organized by OS and global keyword family
+
 `./removers`: Lines that will be removed from the configuration after data extraction, organized by OS
+
 `./templates`: The templates used to recreate the original configuration and validate data integrity, organized by OS and global keywork family
+
 `./utilities`: additional scripts used during development
 
 ### Parser and template design
@@ -203,9 +244,9 @@ Using a parser located in `./parsers/cisco_ios-xe/logging/main.yml`:
             level: "{{ level }}"
 ```
 
-Regular expression always match full lines. The regex catures two pieces of information, the logging type and logging level, stored as `type` and `level` respectively.
+Regular expression always match full lines. This regex captures two pieces of information, the logging type and logging level, stored as `type` and `level` respectively.
 
-The path is treated as a jinja template, and the capture values are passed to the jinja2 rendering engine.  The resulting text is:
+The path is treated as a jinja2 template, and the capture values are passed to the jinja2 rendering engine.  The resulting text is:
 
 ```yaml
 logging:
@@ -220,7 +261,7 @@ logging:
 
 The path is then converted from yaml to a python dictionary and stored as extracted data for the device.
 
-After each extraction, the device's data is passwed to the `template` refernced in the parser.  From `./templates/cisco_ios-xe/logging/levels.j2`:
+After each extraction, the device's data is passed to the `template` referenced in the parser.  From `./templates/cisco_ios-xe/logging/levels.j2`:
 
 
 ```jinja
@@ -251,6 +292,101 @@ logging console informational
 logging monitor informational
 ```
 
-The jinja result is first compared to the lines that were extracted. If a match is found the initial full configuration is then walked to find an exact match for the text.  If an exact match is not found, the device will be marked as failed for the remainder of the run.
+The template result is first compared to the lines that were extracted from the configuration. If a match is found the initial full configuration is then walked to find an exact match for the text.  If an exact match is not found, the device will be marked as failed for the remainder of the run.
 
-If a match is found the lines are removed from the configration and the next parser is run.
+If a match is found the lines are removed from the configuration and the next parser is run.
+
+### Adding a parser
+
+It will be necessary to add parsers to extract lines not covered by the included parsers.  Please feel free to issue a pull request to have additional parsers added.
+
+The following error is generated when parsing a configuration:
+
+```shell
+'######## JINJA RESULT YAML'
+['interface GigabitEthernet7/9',
+ ' switchport access vlan 267',
+ ' switchport mode access',
+ ' switchport voice vlan 867',
+ ' spanning-tree portfast',
+ ' service-policy input company-user-access-450x',
+ ' service-policy output company-user-access-dbl']
+ '######## POSSIBLE MATCHES'
+ ['interface GigabitEthernet7/9',
+  ' switchport access vlan 267',
+  ' switchport mode access',
+  ' switchport voice vlan 867',
+  ' spanning-tree portfast',
+  ' spanning-tree bpduguard enable',
+  ' service-policy input company-user-access-450x',
+  ' service-policy output company-user-access-dbl',
+  '!',
+  'interface GigabitEthernet7/10']
+```
+
+The line ` spanning-tree bpduguard enable` is missing from the extraction.  Since this is a cisco_ios-xe device, navigate to `/parsers/cisco_ios-xe/interface` and open the `main.yml` file.
+
+Add the following parser near the bottom above the `service-policy` parser.
+
+```yaml
+    - regex: '^ spanning-tree bpduguard enable'
+      examples:
+      -  ' spanning-tree bpduguard enable'
+      path:
+        interfaces:
+          "{{ name }}":
+            spanning-tree:
+              bpduguard: True
+```
+
+The corresponding temple needs to be modified as well. Open `./templates/cisco_ios-xe/interface/default.j2` and add the following just above `service_policies`:
+
+**Note: Sequence matters.** The jinja template has to produce the exact syntax and sequence of lines found and extracted from the configuration.  This validates the completeness and intergrity of the data.
+
+```jinja
+{% if 'spanning-tree' in vars['interfaces'][interface] and 'bpduguard' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['bpduguard'] -%}
+- " spanning-tree bpduguard enable"
+{% endif -%}{# bpduguard -#}
+```
+
+The process would be repeated until the errors are removed.
+
+### Command-line tag and skip-tag support
+
+During the development of parsers or the extraction of data, it may be necessary to focus on subsections of the configuration. Each parser is assigned tags which can be used to either include or exclude the parser from the run.
+
+For instance, to run only the extended ACL parser:
+```
+python runparse.py --tags ip access-list extended
+```
+
+The tags reference the tags found in the parser:
+
+```yaml
+- name: ip access-list extended
+  tags:
+  - ip
+  - access-list
+  - extended
+  matches:
+  - name: ip access-list extended
+    template: ip/access-lists/extended.j2
+    lines:
+    - regex: '^ip access-list extended (\S+)$'
+      examples:
+      - 'ip access-list extended qo-global-core-voice-signal'
+      captures:
+      - name
+      path:
+        ip:
+          access_lists:
+            "{{ name }}":
+                name: "{{ name }}"
+                type: extended
+```
+
+To skip the boot and aaa parsers:
+
+```
+python runparse.py --skip-tags extended boot aaa
+```

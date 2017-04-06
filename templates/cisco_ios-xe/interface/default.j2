@@ -4,9 +4,6 @@
   lines:
   {% if 'description' in vars['interfaces'][interface] -%}
   - " description {{ vars['interfaces'][interface]['description'] }}"
-  {% if 'subdescription' in vars['interfaces'][interface] -%}
-  - "  subdescription {{ vars['interfaces'][interface]['subdescription'] }}"
-  {% endif -%}
   {% endif -%}
   {% if 'vrf' in vars['interfaces'][interface] -%}
   - " vrf forwarding {{ vars['interfaces'][interface]['vrf'] }}"
@@ -15,6 +12,9 @@
   - " encapsulation {{ vars['interfaces'][interface]['encapsulation']['protocol'] }} {{ vars['interfaces'][interface]['encapsulation']['tag'] }}"
   {% endif -%}
   {% if 'switchport' in vars['interfaces'][interface] -%}
+  {% if 'present' in vars['interfaces'][interface]['switchport'] and vars['interfaces'][interface]['switchport']['present'] -%}
+  - " switchport"
+  {% endif -%}{# switch present -#}
   {% if 'access' in vars['interfaces'][interface]['switchport'] -%}
   {% if 'vlan' in vars['interfaces'][interface]['switchport']['access'] -%}
   - " switchport access vlan {{ vars['interfaces'][interface]['switchport']['access']['vlan'] }}"
@@ -87,10 +87,19 @@
   {% if 'ip' in vars['interfaces'][interface] and 'pim' in vars['interfaces'][interface]['ip'] -%}
   - " ip pim {{ vars['interfaces'][interface]['ip']['pim']['mode'] }}"
   {% endif %} #pim mode
+  {% if 'switchport' in vars['interfaces'][interface] and 'voice' in vars['interfaces'][interface]['switchport'] and 'vlan' in vars['interfaces'][interface]['switchport']['voice'] -%}
+  - " switchport voice vlan {{ vars['interfaces'][interface]['switchport']['voice']['vlan'] }}"
+  {% endif -%}{# voice_vlan -#}
+  {% if 'spanning-tree' in vars['interfaces'][interface] and 'portfast' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['portfast'] -%}
+  - " spanning-tree portfast"
+  {% endif -%}{# portfast -#}
+  {% if 'spanning-tree' in vars['interfaces'][interface] and 'bpduguard' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['bpduguard'] -%}
+  - " spanning-tree bpduguard enable"
+  {% endif -%}{# bpduguard -#}
   {% if 'service_policies' in vars['interfaces'][interface] -%}
   {% for service_policy in vars['interfaces'][interface]['service_policies'] -%}
   - " service-policy {{ service_policy['direction'] }} {{ service_policy['name'] }}"
-  {% endfor -%} # helpers
-  {% endif -%} #helper_addresses
+  {% endfor -%} # service-policy
+  {% endif -%} #service_policies
 
 {%- endfor -%}

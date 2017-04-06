@@ -45,6 +45,14 @@
               encapsulation:
                 protocol: "{{ encapsulation_protocol }}"
                 tag: "{{ encapsulation_tag }}"
+      - regex: '^ switchport$'
+        examples:
+        - ' switchport'
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                present: True
       - regex: '^ switchport access vlan (\d{1,4})$'
         examples:
         - ' switchport access vlan 107'
@@ -204,6 +212,33 @@
               ip:
                 pim:
                   mode: "{{ pim_mode }}"
+      - regex: '^ switchport voice vlan (\d{1,4})'
+        examples:
+        -  ' switchport voice vlan 867'
+        captures:
+        - voice_vlan
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                voice:
+                  vlan: "{{ voice_vlan }}"
+      - regex: '^ spanning-tree portfast'
+        examples:
+        -  ' spanning-tree portfast'
+        path:
+          interfaces:
+            "{{ name }}":
+              spanning-tree:
+                portfast: True
+      - regex: '^ spanning-tree bpduguard enable'
+        examples:
+        -  ' spanning-tree bpduguard enable'
+        path:
+          interfaces:
+            "{{ name }}":
+              spanning-tree:
+                bpduguard: True
       - regex: '^ service-policy (input|output) (\S+)'
         examples:
         - ' service-policy input qo-global-core-ingress-lan'
