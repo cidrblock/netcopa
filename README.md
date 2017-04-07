@@ -389,3 +389,16 @@ To skip the boot and aaa parsers:
 ```
 python runparse.py --skip-tags extended boot aaa
 ```
+
+### Using netcopa output with Ansible
+
+See this repo for an example of using the netcopa output in Ansible
+
+https://github.com/cidrblock/ansible_and_netcopa
+
+Note: Two changes needed to be made
+
+- The `vars` key was removed from the host_vars file.
+- An additional blank line was added to the top of the template to force a line feed before `- parents`
+
+The example doesn't account for the removal of lines from the config, a `default interface` could be added or addtional logic to compare the template output to the running configuration and prepend deltas with `no`.
