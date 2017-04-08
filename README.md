@@ -403,7 +403,7 @@ Note: Two changes needed to be made
 
 The example doesn't account for the removal of lines from the config, a `default interface` could be added or addtional logic to compare the template output to the running configuration and prepend deltas with `no`.
 
-### netcopa Data Model
+## netcopa Data Model
 
 This is here as an example.  See the utilities folder in the project for an example of how to extract the model from the parsers.
 
