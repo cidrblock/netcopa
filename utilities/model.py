@@ -82,6 +82,6 @@ models = load_parsers('cisco_ios-xe')
 
 for model in models:
     print '### %s' %model['name']
-    print '```'
+    print '```yaml'
     print(yaml.safe_dump(model['model'], default_flow_style=False))
     print '```'
