@@ -8,3 +8,4 @@ configurations/*
 host_vars/*
 !host_vars/cisco_ios-00.yml
 !!host_vars/cisco_ios-xe-00.yml
+configurations_rebuilt/*

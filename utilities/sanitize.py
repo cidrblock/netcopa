@@ -77,7 +77,10 @@ def swap_desc(line):
     regex = r'(description (.*))'
     for match in re.findall(regex, line):
         replace = match[1]
-        line = line.replace(replace, fake.text(len(replace)))
+        length = len(replace)
+        if len(replace) < 6:
+            length = 5
+        line = line.replace(replace, fake.text(length))
     return line
 
 def swap_remark(line):
