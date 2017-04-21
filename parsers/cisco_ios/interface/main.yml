@@ -24,6 +24,28 @@
           interfaces:
             "{{ name }}":
               description: "\"{{ description }}\""
+      - regex: '^ vrf forwarding (\S+)$'
+        examples:
+        - ' vrf forwarding blue'
+        - ' vrf forwarding 1:1000'
+        captures:
+        - vrf
+        path:
+          interfaces:
+            "{{ name }}":
+              vrf: "\"{{ vrf }}\""
+      - regex: '^ encapsulation (\S+) (\d+)'
+        examples:
+        - ' encapsulation dot1Q 61'
+        captures:
+        - encapsulation_protocol
+        - encapsulation_tag
+        path:
+          interfaces:
+            "{{ name }}":
+              encapsulation:
+                protocol: "{{ encapsulation_protocol }}"
+                tag: "{{ encapsulation_tag }}"
       - regex: '^ switchport access vlan (\d{1,4})$'
         examples:
         - ' switchport access vlan 900'
@@ -180,3 +202,20 @@
           interfaces:
             "{{ name }}":
               shutdown: True
+      - regex: '^ no platform qos channel-consistency$'
+        examples:
+        - ' no platform qos channel-consistency'
+        path:
+          interfaces:
+            "{{ name }}":
+              platform_qos_channel-consistency:
+                negate: True
+      - regex: '^ switch virtual link (\d+)$'
+        examples:
+        - ' switch virtual link 1'
+        captures:
+        - switch_virtual_link
+        path:
+          interfaces:
+            "{{ name }}":
+              virtual_link: "{{ switch_virtual_link }}"
