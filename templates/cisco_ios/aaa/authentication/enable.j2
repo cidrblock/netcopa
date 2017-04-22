@@ -1,0 +1,12 @@
+{% if 'aaa' in vars and 'authentication' in vars['aaa'] and 'enable' in vars['aaa']['authentication'] -%}
+{% if 'activated' in vars['aaa']['authentication']['enable'] -%}
+- parents:
+  lines:
+  - aaa authentication login{% for group in vars['aaa']['authentication']['enable']['activated']['groups'] %} group{{ group }}{% endfor %} {{ vars['aaa']['authentication']['enable']['activated']['methods']|join(' ') }}
+{% endif -%}
+{% if 'default' in vars['aaa']['authentication']['enable'] -%}
+- parents:
+  lines:
+  - aaa authentication enable default {{ vars['aaa']['authentication']['enable']['default']['methods']|join(' ') }}
+{% endif -%}
+{% endif %}
