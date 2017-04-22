@@ -12,5 +12,11 @@
   {% endif -%}
   {% endfor -%}
   {% endif -%}
+  {% if 'forwarding_vrf' in vars['aaa']['groups'][group] -%}
+  - " ip vrf forwarding {{ vars['aaa']['groups'][group]['forwarding_vrf'] }}"
+  {% endif -%}
+  {% if 'source-interface' in vars['aaa']['groups'][group] -%}
+  - " ip tacacs source-interface {{ vars['aaa']['groups'][group]['source-interface'] }}"
+  {% endif -%}
 {% endfor -%}
 {% endif -%}

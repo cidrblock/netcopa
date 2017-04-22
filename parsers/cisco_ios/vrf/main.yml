@@ -1,0 +1,76 @@
+- name: vrf
+  tags:
+  - vrf
+  matches:
+  - name: vrf
+    template: vrfs/default.j2
+    lines:
+    - regex: '^vrf definition (\S+)$'
+      examples:
+      - 'vrf definition Mgmt-intf'
+      captures:
+      - name
+      path:
+        vrfs:
+          "{{ name }}":
+            name: "\"{{ name }}\""
+      lines:
+      - regex: '^ (!)$'
+        examples:
+        - ' !'
+        path:
+          vrfs:
+            "{{ name }}":
+              address_family_delimeter: bang
+      - regex: '^ description (.*)$'
+        examples:
+        - ' description M&A network'
+        captures:
+        - description
+        path:
+          vrfs:
+            "{{ name }}":
+              description: "{{ description }}"
+      - regex: '^ rd (\d{1,5}):(\d+)$'
+        examples:
+        - ' rd 48061:2'
+        captures:
+        - as
+        - arbitrary_number
+        path:
+          vrfs:
+            "{{ name }}":
+              route_distinguisher:
+                as: "{{ as }}"
+                arbitrary_number: "{{ arbitrary_number }}"
+      - regex: '^ route-target (import|export) (\S+)$'
+        examples:
+        - ' route-target import 1:1000'
+        - ' route-target export 1:1000'
+        captures:
+        - direction
+        - route_distinguisher
+        path:
+          vrfs:
+            "{{ name }}":
+              route-target:
+              - direction: "{{ direction }}"
+                route_distinguisher: "\"{{ route_distinguisher }}\""
+      - regex: '^ address-family (\S+)$'
+        examples:
+        - ' address-family ipv4'
+        captures:
+        - address_family
+        path:
+          vrfs:
+            "{{ name }}":
+              address_families:
+                "{{ address_family }}":
+                  address_family: "{{ address_family }}"
+      - regex: '^ exit-address-family$'
+        examples:
+        - ' exit-address-family'
+        path:
+          vrfs:
+            "{{ name }}":
+              address_family_exit_command: exit-address-family

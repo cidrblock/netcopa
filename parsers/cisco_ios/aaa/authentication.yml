@@ -30,3 +30,18 @@
             login:
               default:
                 methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"
+  - name: aaa authentication login
+    template: aaa/authentication/enable.j2
+    lines:
+    - regex: '^aaa authentication enable default (group \S+)(.*)$'
+      examples:
+      - 'aaa authentication enable default group tacacs+ enable'
+      captures:
+      - groups
+      - methods
+      path:
+        aaa:
+          authentication:
+            enable:
+              default:
+                methods: "{{ groups.replace(\"group\", \"^group\").split(\"^\")[1:] + methods.split(' ') }}"

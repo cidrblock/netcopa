@@ -8,11 +8,11 @@
   - "  subdescription {{ vars['interfaces'][interface]['subdescription'] }}"
   {% endif -%}
   {% endif -%}
-  {% if 'vrf' in vars['interfaces'][interface] -%}
-  - " vrf forwarding {{ vars['interfaces'][interface]['vrf'] }}"
-  {% endif -%}
   {% if 'encapsulation' in vars['interfaces'][interface] -%}
   - " encapsulation {{ vars['interfaces'][interface]['encapsulation']['protocol'] }} {{ vars['interfaces'][interface]['encapsulation']['tag'] }}"
+  {% endif -%}
+  {% if 'vrf' in vars['interfaces'][interface] -%}
+  - " vrf forwarding {{ vars['interfaces'][interface]['vrf'] }}"
   {% endif -%}
   {% if 'switchport' in vars['interfaces'][interface] -%}
   {% if 'access' in vars['interfaces'][interface]['switchport'] -%}
@@ -92,5 +92,12 @@
   - " service-policy {{ service_policy['direction'] }} {{ service_policy['name'] }}"
   {% endfor -%} # helpers
   {% endif -%} #helper_addresses
+  {% if 'platform_qos_channel-consistency' in vars['interfaces'][interface] and vars['interfaces'][interface]['platform_qos_channel-consistency']['negate'] -%}
+  - " no platform qos channel-consistency"
+  {% endif -%} #no platform qos channel-consistency
+  {% if 'virtual_link' in vars['interfaces'][interface] -%}
+  - " switch virtual link {{ vars['interfaces'][interface]['virtual_link'] }}"
+  {% endif -%} #virtual link
+
 
 {%- endfor -%}

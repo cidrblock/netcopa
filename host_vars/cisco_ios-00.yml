@@ -18,6 +18,11 @@ vars:
           methods:
           - group tacacs+
     authentication:
+      enable:
+        default:
+          methods:
+          - group tacacs+
+          - enable
       login:
         activated:
           methods:
@@ -41,6 +46,7 @@ vars:
           - none
     groups:
       tacacs-servers:
+        forwarding_vrf: 1:1000
         name: tacacs-servers
         servers:
         - encryption_type: 7
@@ -51,6 +57,7 @@ vars:
           ip: 10.0.0.254
           key: ABCDEFGHIJKLMNOPQRSTUVWXYZ
           private: true
+        source-interface: Loopback0
         type: tacacs+
     new_model: true
     session_id: common
@@ -204,6 +211,10 @@ vars:
       - Federal Electronics Communications Privacy Act of 1986,
       - and may result in fines of 50,000 and/or imprisonment.
       - (Title 18, USC)
+  boot:
+    system:
+    - filename: s2t54-advipservicesk9-mz.SPA.152-1.SY1a.bin
+      flash_fs: bootdisk
   clock:
     hours_offset: 0
     timezone: utc
@@ -359,6 +370,14 @@ vars:
           ipv4_address: 10.0.0.1
           ipv4_netmask: 255.255.255.255
       name: Loopback0
+    Loopback1100:
+      description: Dolor sit amet | 1:1100 | consectetur adipiscing
+      ip:
+        address:
+          ipv4_address: 10.38.0.1
+          ipv4_netmask: 255.255.255.240
+      name: Loopback1100
+      vrf: 1:1100
     Port-channel1:
       description: Fuga excepturi.
       name: Port-channel1
@@ -370,6 +389,37 @@ vars:
             vlans: 1,2,915-918,940,1002-1005
           encapsulation: dot1q
           native_vlan: 5
+    Port-channel10.10:
+      description: Faucibus orci luctus et ultrices posuere cubilia.
+      encapsulation:
+        protocol: dot1Q
+        tag: 10
+      ip:
+        address:
+          ipv4_address: 10.38.0.2
+          ipv4_netmask: 255.255.255.252
+      name: Port-channel10.10
+      vrf: 1:1000
+    Port-channel127:
+      description: VSL 1 Class aptent taciti sociosqu ad litora.
+      ip:
+        address:
+          negate: true
+      name: Port-channel127
+      platform_qos_channel-consistency:
+        negate: true
+      virtual_link: 1
+    Port-channel128:
+      description: VSL 2 Morbi in ipsum sit amet pede facilisis laoreet.
+      ip:
+        address:
+          negate: true
+      name: Port-channel128
+      platform_qos_channel-consistency:
+        negate: true
+      switchport:
+        negate: true
+      virtual_link: 2
     Vlan1:
       ip:
         address:
@@ -2436,7 +2486,23 @@ vars:
     - name_server: 10.0.0.27
     ospf_name-lookup: true
     prefix_lists:
+      TEST_1:1000_PLIST:
+        description: Testing Colon(:) in Description and Name
+        entries:
+        - action: permit
+          ge_bits: 25
+          le_bits: 32
+          netmask: 24
+          network: 10.38.0.0
+          sequence: 5
+        - action: permit
+          le_bits: 32
+          netmask: 24
+          network: 10.38.1.0
+          sequence: 5
+        name: TEST_1:1000_PLIST
       rt-default-route:
+        description: Allow Default Route
         entries:
         - action: permit
           netmask: 0
@@ -2937,3 +3003,36 @@ vars:
   version: 12.2
   vlan:
     internal_allocation_policy: ascending
+  vrfs:
+    1:1100:
+      address_families:
+        ipv4:
+          address_family: ipv4
+      address_family_delimeter: bang
+      address_family_exit_command: exit-address-family
+      description: Qui ipsum invidunt cu.
+      name: 1:1100
+      route-target:
+      - direction: export
+        route_distinguisher: 1:1100
+      - direction: import
+        route_distinguisher: 1:1100
+      route_distinguisher:
+        arbitrary_number: 1100
+        as: 1
+    testdef:
+      address_families:
+        ipv4:
+          address_family: ipv4
+      address_family_delimeter: bang
+      address_family_exit_command: exit-address-family
+      description: Duo ei laudem regione.
+      name: testdef
+      route-target:
+      - direction: export
+        route_distinguisher: 1:1000
+      - direction: import
+        route_distinguisher: 1:1000
+      route_distinguisher:
+        arbitrary_number: 1000
+        as: 1

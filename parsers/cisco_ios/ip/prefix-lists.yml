@@ -18,8 +18,8 @@
       path:
         ip:
           prefix_lists:
-            "{{ name }}":
-                name: "{{ name }}"
+            "\"{{ name }}\"":
+                name: "\"{{ name }}\""
                 entries:
                 - action: "{{ action }}"
                   sequence: "{{ sequence }}"
@@ -38,11 +38,46 @@
       path:
         ip:
           prefix_lists:
-            "{{ name }}":
-                name: "{{ name }}"
+            "\"{{ name }}\"":
+                name: "\"{{ name }}\""
                 entries:
                 - action: "{{ action }}"
                   sequence: "{{ sequence }}"
                   network: "{{ network }}"
                   netmask: "{{ netmask }}"
                   le_bits: "{{ le_bits }}"
+    - regex: '^ip prefix-list (\S+) seq (\d{1,5}) (permit|deny) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,3}) ge (\d{1,2}) le (\d{1,2})$'
+      examples:
+      - 'ip prefix-list rt-default-route seq 5 permit 10.38.0.0/24 ge 25 le 32'
+      captures:
+      - name
+      - sequence
+      - action
+      - network
+      - netmask
+      - ge_bits
+      - le_bits
+      path:
+        ip:
+          prefix_lists:
+            "\"{{ name }}\"":
+                name: "\"{{ name }}\""
+                entries:
+                - action: "{{ action }}"
+                  sequence: "{{ sequence }}"
+                  network: "{{ network }}"
+                  netmask: "{{ netmask }}"
+                  ge_bits: "{{ ge_bits }}"
+                  le_bits: "{{ le_bits }}"
+    - regex: '^ip prefix-list (\S+) description (.*)$'
+      examples:
+      - 'ip prefix-list rt-default-route description TEST TEST 1:1000 TEST'
+      captures:
+      - name
+      - description
+      path:
+        ip:
+          prefix_lists:
+            "\"{{ name }}\"":
+                name: "\"{{ name }}\""
+                description: "\"{{ description }}\""

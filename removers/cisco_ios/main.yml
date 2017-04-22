@@ -4,3 +4,5 @@
 - 'Building configuration...'
 - '^(?![\s\S])'
 - 'ntp clock-period \d+'
+- 'boot-start-marker'
+- 'boot-end-marker'

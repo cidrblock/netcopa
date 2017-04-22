@@ -35,3 +35,23 @@
                   encryption_type: "{{ encryption_type }}"
                   key: "{{ key }}"
                   private: True
+      - regex: '^ ip vrf forwarding (\S+)$'
+        examples:
+        - ' ip vrf forwarding 1:1000'
+        captures:
+        - vrf
+        path:
+          aaa:
+            groups:
+              "{{ group_name }}":
+                forwarding_vrf: "\"{{ vrf }}\""
+      - regex: '^ ip tacacs source-interface (\S+)$'
+        examples:
+        - ' ip tacacs source-interface Loopback0'
+        captures:
+        - interface
+        path:
+          aaa:
+            groups:
+              "{{ group_name }}":
+                source-interface: "{{ interface }}"
