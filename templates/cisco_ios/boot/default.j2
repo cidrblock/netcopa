@@ -1,0 +1,15 @@
+{% if 'boot' in vars -%}
+{% for system in vars['boot'] -%}
+{% if 'system' in vars['boot'] -%}
+{% for entry in vars['boot'][system] -%}
+- parents:
+  lines:
+  {% if 'from' in entry -%}
+  - boot {{ system }} {{ entry['from'] }} {{ entry['flash_fs'] }}:{{ entry['filename'] }}
+  {% else -%}
+  - boot {{ system }} {{ entry['flash_fs'] }}:{{ entry['filename'] }}
+  {% endif -%}
+{% endfor -%}
+{% endif -%}
+{% endfor -%}
+{% endif -%}
