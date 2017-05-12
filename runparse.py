@@ -681,8 +681,8 @@ def fail_actual_match(device, matcher, raw_results):
     device['failed'] = True
     device['failed_reason'] = "Jinja result does not match actual (%s)." % matcher['name']
     print_log(device['failed_reason'], 'failed')
-    print_log('######## EXTRACTIONS')
-    print_log(device['extractions'])
+    # print_log('######## EXTRACTIONS')
+    # print_log(device['extractions'])
     print_log('######## JINJA RESULT RAW')
     print_log(raw_results.split('\n'))
     print_log('######## JINJA RESULT')
@@ -835,8 +835,8 @@ def main():
                         format='%(levelname)s: '
                                '%(message)s')
     devices = run(args)
-    for device in devices:
-        pprint(device['working_configuration'])
+    # for device in devices:
+    #     pprint(device['working_configuration'])
 
 if __name__ == "__main__":
     main()
