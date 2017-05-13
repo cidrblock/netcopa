@@ -205,13 +205,12 @@
                "{{ parent_process_id }}":
                 address_family_exit_command: exit-address-family
 
-
-        - regex: '^\s+address-family (\S+) vrf (\S+)$'
+######## BEGIN
+        - regex: '^\s+address-family (\S+)$'
           examples:
-          - ' address-family ipv4 vrf foo'
+          - ' address-family ipv4'
           captures:
           - ip_version
-          - vrf_name
           path:
             router:
               bgp:
@@ -219,124 +218,39 @@
                   address_families:
                     "\"{{ ip_version }}\"":
                       ip_version: "{{ ip_version }}"
-                      vrfs:
-                        "{{ vrf_name }}":
-                          vrf_name: "{{ vrf_name }}"
           lines:
-          - regex: '^\s+no synchronization'
+          - regex: '^  aggregate-address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) summary-only$'
             examples:
-            - '  no synchronization'
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            synchronization: False
-          - regex: '^\s+bgp router-id (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
-            examples:
-            - '  bgp router-id 10.4.0.5'
+            -  aggregate-address 10.57.0.0 255.255.0.0 summary-only
             captures:
-            - router_id
+            - aggregate_address
+            - aggregate_netmask
             path:
               router:
                 bgp:
                   "{{ parent_process_id }}":
                     address_families:
                       "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            router_id: "{{ router_id }}"
-          - regex: '^\s+redistribute (\w+)$'
+                        aggregate_addresses:
+                        - network: "{{ aggregate_address }}"
+                          netmask: "{{ aggregate_netmask }}"
+                          summary_only: True
+          - regex: '^\s+redistribute (\w+) route-map (\S+)$'
             examples:
-            - ' redistribute connected'
+            - '  redistribute connected route-map rt-foo-connected'
             captures:
             - protocol
+            - route_map_name
             path:
               router:
                 bgp:
                   "{{ parent_process_id }}":
                     address_families:
                       "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            redistribute:
-                              "{{ protocol }}":
-                                protocol: "{{ protocol }}"
-          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) remote-as (\d+)$'
-            examples:
-            - '  neighbor 10.0.0.233 remote-as 65139'
-            captures:
-            - ipv4_address
-            - remote_as
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                ipv4_address: "{{ ipv4_address }}"
-                                remote_as: "{{ remote_as }}"
-          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) local-as (\d+)$'
-            examples:
-            - '  neighbor 10.0.0.233 local-as 12345'
-            captures:
-            - ipv4_address
-            - local_as
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                local_as: "{{ local_as }}"
-          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) description (.*)$'
-            examples:
-            - '  neighbor 10.0.0.233 description ebgp peer to bt #cn21'
-            captures:
-            - ipv4_address
-            - description
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                description: "\"{{ description }}\""
-          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) password (\d) (\S+)$'
-            examples:
-            - '  neighbor 10.40.255.241 password 7 1111111111'
-            captures:
-            - ipv4_address
-            - encryption_type
-            - password
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                password:
-                                  encryption_type: "{{ encryption_type }}"
-                                  password: "{{ password }}"
+                        redistribute:
+                          "{{ protocol }}":
+                            protocol: "{{ protocol }}"
+                            route_map: "{{ route_map_name }}"
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) activate$'
             examples:
             - '  neighbor 10.40.249.238 activate'
@@ -348,46 +262,9 @@
                   "{{ parent_process_id }}":
                     address_families:
                       "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                activate: True
-          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) next-hop-self$'
-            examples:
-            - '  neighbor 10.0.0.233 next-hop-self'
-            captures:
-            - ipv4_address
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                next_hop_self: True
-          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) default-originate route-map (\S+)$'
-            examples:
-            - '  neighbor 63.233.40.181 default-originate route-map rt-default-route'
-            captures:
-            - ipv4_address
-            - default_originate_route_map
-            path:
-              router:
-                bgp:
-                  "{{ parent_process_id }}":
-                    address_families:
-                      "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                default_originate:
-                                  enabled: True
-                                  route_map: "{{ default_originate_route_map }}"
+                          neighbors:
+                            "{{ ipv4_address }}":
+                              activate: True
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) soft-reconfiguration inbound$'
             examples:
             - '  neighbor 10.0.0.233 soft-reconfiguration inbound'
@@ -399,11 +276,9 @@
                   "{{ parent_process_id }}":
                     address_families:
                       "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                soft_reconfiguration_inbound: True
+                          neighbors:
+                            "{{ ipv4_address }}":
+                              soft_reconfiguration_inbound: True
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) route-map (\S+) in$'
             examples:
             - '  neighbor 10.0.0.233 route-map rt-chddc1-bgp65139-bgp65003 in'
@@ -416,11 +291,9 @@
                   "{{ parent_process_id }}":
                     address_families:
                       "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                route_map_in: "{{ route_map_in }}"
+                          neighbors:
+                            "{{ ipv4_address }}":
+                              route_map_in: "{{ route_map_in }}"
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) route-map (\S+) out$'
             examples:
             - '  neighbor 10.0.0.233 route-map rt-chddc1-bgp65003-bgp65139 out'
@@ -433,8 +306,177 @@
                   "{{ parent_process_id }}":
                     address_families:
                       "\"{{ ip_version }}\"":
-                        vrfs:
-                          "{{ vrf_name }}":
-                            neighbors:
-                              "{{ ipv4_address }}":
-                                route_map_out: "{{ route_map_out }}"
+                          neighbors:
+                            "{{ ipv4_address }}":
+                              route_map_out: "{{ route_map_out }}"
+
+
+
+
+
+        #   - regex: '^\s+no synchronization'
+        #     examples:
+        #     - '  no synchronization'
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     synchronization: False
+        #   - regex: '^\s+bgp router-id (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        #     examples:
+        #     - '  bgp router-id 10.4.0.5'
+        #     captures:
+        #     - router_id
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     router_id: "{{ router_id }}"
+
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) remote-as (\d+)$'
+        #     examples:
+        #     - '  neighbor 10.0.0.233 remote-as 65139'
+        #     captures:
+        #     - ipv4_address
+        #     - remote_as
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         ipv4_address: "{{ ipv4_address }}"
+        #                         remote_as: "{{ remote_as }}"
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) local-as (\d+)$'
+        #     examples:
+        #     - '  neighbor 10.0.0.233 local-as 12345'
+        #     captures:
+        #     - ipv4_address
+        #     - local_as
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         local_as: "{{ local_as }}"
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) description (.*)$'
+        #     examples:
+        #     - '  neighbor 10.0.0.233 description ebgp peer to bt #cn21'
+        #     captures:
+        #     - ipv4_address
+        #     - description
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         description: "\"{{ description }}\""
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) password (\d) (\S+)$'
+        #     examples:
+        #     - '  neighbor 10.40.255.241 password 7 1111111111'
+        #     captures:
+        #     - ipv4_address
+        #     - encryption_type
+        #     - password
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         password:
+        #                           encryption_type: "{{ encryption_type }}"
+        #                           password: "{{ password }}"
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) activate$'
+        #     examples:
+        #     - '  neighbor 10.40.249.238 activate'
+        #     captures:
+        #     - ipv4_address
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         activate: True
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) next-hop-self$'
+        #     examples:
+        #     - '  neighbor 10.0.0.233 next-hop-self'
+        #     captures:
+        #     - ipv4_address
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         next_hop_self: True
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) default-originate route-map (\S+)$'
+        #     examples:
+        #     - '  neighbor 63.233.40.181 default-originate route-map rt-default-route'
+        #     captures:
+        #     - ipv4_address
+        #     - default_originate_route_map
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         default_originate:
+        #                           enabled: True
+        #                           route_map: "{{ default_originate_route_map }}"
+        #   - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) soft-reconfiguration inbound$'
+        #     examples:
+        #     - '  neighbor 10.0.0.233 soft-reconfiguration inbound'
+        #     captures:
+        #     - ipv4_address
+        #     path:
+        #       router:
+        #         bgp:
+        #           "{{ parent_process_id }}":
+        #             address_families:
+        #               "\"{{ ip_version }}\"":
+        #                 vrfs:
+        #                   "{{ vrf_name }}":
+        #                     neighbors:
+        #                       "{{ ipv4_address }}":
+        #                         soft_reconfiguration_inbound: True
