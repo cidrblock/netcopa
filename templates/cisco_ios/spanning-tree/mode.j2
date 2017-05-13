@@ -1,5 +1,5 @@
 - parents:
   lines:
-    {% if 'spanning-tree' in vars and 'mode' in vars['spanning-tree'] %}
+{% if 'spanning-tree' in vars and 'mode' in vars['spanning-tree'] %}
   - spanning-tree mode {{ vars['spanning-tree']['mode'] }}
-    {% endif %}
+{% endif %}

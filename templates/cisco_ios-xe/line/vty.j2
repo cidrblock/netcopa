@@ -2,21 +2,21 @@
 - parents:
   - line vty {{ vars['line']['vty'][num]['start'] }} {{ vars['line']['vty'][num]['finish'] }}
   lines:
-  {% if 'exec_timeout' in vars['line']['vty'][num] -%}
+{% if 'exec_timeout' in vars['line']['vty'][num] %}
   - " exec-timeout {{ vars['line']['vty'][num]['exec_timeout']['minutes'] }} {{ vars['line']['vty'][num]['exec_timeout']['seconds'] }}"
-  {% endif -%}
-  {% if 'privilege_level' in vars['line']['vty'][num] -%}
+{% endif %}
+{% if 'privilege_level' in vars['line']['vty'][num] %}
   - " privilege level {{ vars['line']['vty'][num]['privilege_level'] }}"
-  {% endif -%}
-  {% if 'password' in vars['line']['vty'][num] -%}
+{% endif %}
+{% if 'password' in vars['line']['vty'][num] %}
   - " password {{ vars['line']['vty'][num]['password']['encryption_type'] }} {{ vars['line']['vty'][num]['password']['password'] }}"
-  {% endif -%}
-  {% if 'transport' in vars['line']['vty'][num] -%}
-  {% for direction in vars['line']['vty'][num]['transport'] -%}
+{% endif %}
+{% if 'transport' in vars['line']['vty'][num] %}
+{% for direction in vars['line']['vty'][num]['transport'] %}
   - " transport {{ direction }} {{ vars['line']['vty'][num]['transport'][direction]['protocols']|join(' ') }}"
-  {% endfor -%}
-  {% endif -%}
-  {% if 'escape_character' in vars['line']['vty'][num] -%}
+{% endfor %}
+{% endif %}
+{% if 'escape_character' in vars['line']['vty'][num] %}
   - " escape-character {{ vars['line']['vty'][num]['escape_character'] }}"
-  {% endif -%}
-{% endfor -%}
+{% endif %}
+{% endfor %}

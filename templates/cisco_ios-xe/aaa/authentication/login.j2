@@ -1,14 +1,14 @@
-{% if 'aaa' in vars and 'authentication' in vars['aaa'] and 'login' in vars['aaa']['authentication'] -%}
-{% if 'activated' in vars['aaa']['authentication']['login'] -%}
-{% for method_group in vars['aaa']['authentication']['login']['activated']['methods'] -%}
+{% if 'aaa' in vars and 'authentication' in vars['aaa'] and 'login' in vars['aaa']['authentication'] %}
+{% if 'activated' in vars['aaa']['authentication']['login'] %}
+{% for method_group in vars['aaa']['authentication']['login']['activated']['methods'] %}
 - parents:
   lines:
   - aaa authentication login{% for group in vars['aaa']['authentication']['login']['activated']['groups'] %} group{{ group }}{% endfor %} {{ method_group|join(' ') }}
-{% endfor -%}
-{% endif -%}
-{% if 'default' in vars['aaa']['authentication']['login'] -%}
+{% endfor %}
+{% endif %}
+{% if 'default' in vars['aaa']['authentication']['login'] %}
 - parents:
   lines:
   - aaa authentication login default {{ vars['aaa']['authentication']['login']['default']['methods']|join(' ') }}
-{% endif -%}
+{% endif %}
 {% endif %}

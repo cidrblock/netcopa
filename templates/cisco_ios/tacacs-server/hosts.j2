@@ -2,10 +2,10 @@
 {% for host in vars['tacacs_server']['hosts'] %}
 - parents:
   lines:
-    {% if 'encryption_type' in host and 'password' in host %}
+{% if 'encryption_type' in host and 'password' in host %}
   - tacacs-server host {{ host['ip'] }} key {{ host['encryption_type'] }} {{ host['password'] }}
-    {% else %}
+{% else %}
   - tacacs-server host {{ host['ip'] }}
-    {% endif %}
+{% endif %}
 {% endfor %}
 {% endif %}

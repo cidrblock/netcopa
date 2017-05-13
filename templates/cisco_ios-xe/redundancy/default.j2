@@ -1,10 +1,10 @@
-{% if 'redundancy' in vars -%}
-{% if vars['redundancy']['enabled'] -%}
+{% if 'redundancy' in vars %}
+{% if vars['redundancy']['enabled'] %}
 - parents:
   - redundancy
   lines:
-  {% if 'mode' in vars['redundancy'] -%}
+{% if 'mode' in vars['redundancy'] %}
   - " mode {{ vars['redundancy']['mode'] }}"
-  {% endif -%}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endif %}

@@ -1,11 +1,11 @@
-{% if 'snmp' in vars -%}
-{% if 'ifmib' in vars['snmp'] -%}
-{% if 'ifindex' in vars['snmp']['ifmib'] -%}
-{% if 'persist' in vars['snmp']['ifmib']['ifindex'] and vars['snmp']['ifmib']['ifindex']['persist'] -%}
+{% if 'snmp' in vars %}
+{% if 'ifmib' in vars['snmp'] %}
+{% if 'ifindex' in vars['snmp']['ifmib'] %}
+{% if 'persist' in vars['snmp']['ifmib']['ifindex'] and vars['snmp']['ifmib']['ifindex']['persist'] %}
 - parents:
   - snmp ifmib ifindex persist
   lines:
-{% endif -%}
-{% endif -%}
-{% endif -%}#}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endif %}#}
+{% endif %}

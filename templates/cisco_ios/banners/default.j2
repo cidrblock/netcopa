@@ -2,8 +2,8 @@
 - parents:
   - 'banner {{ type }} {{ vars['banner'][type]['delimeter'] }}'
   lines:
-  {% for line in vars['banner'][type]['text'] -%}
+{% for line in vars['banner'][type]['text'] %}
   - '{{ line }}'
-  {% endfor -%}
+{% endfor %}
   - '{{ vars['banner'][type]['delimeter'] }}'
 {% endfor %}

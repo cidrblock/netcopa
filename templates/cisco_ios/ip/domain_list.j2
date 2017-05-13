@@ -1,5 +1,5 @@
 - parents:
   lines:
-  {% for domain in vars['ip']['domain_lists'] -%}
+{% for domain in vars['ip']['domain_lists'] %}
   - 'ip domain-list {{ domain['domain_name'] }}'
-  {% endfor -%}
+{% endfor %}

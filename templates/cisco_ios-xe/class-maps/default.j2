@@ -1,15 +1,15 @@
-{% if 'class_maps' in vars -%}
+{% if 'class_maps' in vars %}
 {% for class_map in vars['class_maps'] %}
 - parents:
   - class-map {{ vars['class_maps'][class_map]['match_type'] }} {{ vars['class_maps'][class_map]['name'] }}
   lines:
-  {% for entry in vars['class_maps'][class_map]['entries'] -%}
-  {% if entry['type'] == 'dscp' -%}
+{% for entry in vars['class_maps'][class_map]['entries'] %}
+{% if entry['type'] == 'dscp' %}
   - " match ip dscp {{ entry['dscp_values']|join('  ') }}"
-  {% endif -%}{# dscp -#}
-  {% if entry['type'] == 'access-group' -%}
+{% endif %}{# dscp #}
+{% if entry['type'] == 'access-group' %}
   - " match access-group name {{ entry['name'] }}"
-  {% endif -%}{# access-group -#}
-  {% endfor %}{# entries -#}
+{% endif %}{# access-group #}
+{% endfor %}{# entries #}
 {% endfor %}
 {% endif %}

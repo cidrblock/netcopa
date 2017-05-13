@@ -1,16 +1,16 @@
-{% if 'aaa' in vars and 'groups' in vars['aaa'] -%}
-{% for group in vars['aaa']['groups'] -%}
+{% if 'aaa' in vars and 'groups' in vars['aaa'] %}
+{% for group in vars['aaa']['groups'] %}
 - parents:
   - aaa group server {{ vars['aaa']['groups'][group]['type'] }} {{ vars['aaa']['groups'][group]['name'] }}
   lines:
-  {% if 'servers' in vars['aaa']['groups'][group] -%}
-  {% for server in vars['aaa']['groups'][group]['servers'] -%}
-  {% if server['private'] -%}
+{% if 'servers' in vars['aaa']['groups'][group] %}
+{% for server in vars['aaa']['groups'][group]['servers'] %}
+{% if server['private'] %}
   - " server-private {{ server['ip'] }} key {{ server['encryption_type'] }} {{ server['key'] }}"
-  {% else %}
+{% else %}
   - " server {{ server['ip'] }} key {{ server['encryption_type'] }} {{ server['key'] }}"
-  {% endif -%}
-  {% endfor -%}
-  {% endif -%}
-{% endfor -%}
-{% endif -%}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

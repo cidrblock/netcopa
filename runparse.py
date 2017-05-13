@@ -604,6 +604,7 @@ def render(tpl_path, context):
     try:
         path, filename = os.path.split(tpl_path)
         env = jinja2.Environment()
+        env.trim_blocks=True
         env.filters['sort_by_ip_as_int'] = sort_by_ip_as_int
         env.loader = jinja2.FileSystemLoader(path or './')
         return None, env.get_template(filename).render(context)
@@ -681,8 +682,8 @@ def fail_actual_match(device, matcher, raw_results):
     device['failed'] = True
     device['failed_reason'] = "Jinja result does not match actual (%s)." % matcher['name']
     print_log(device['failed_reason'], 'failed')
-    # print_log('######## EXTRACTIONS')
-    # print_log(device['extractions'])
+    print_log('######## EXTRACTIONS')
+    print_log(device['extractions'])
     print_log('######## JINJA RESULT RAW')
     print_log(raw_results.split('\n'))
     print_log('######## JINJA RESULT')
@@ -707,8 +708,10 @@ def fail_extract(device, match, raw_results):
     device['failed_reason'] = "Failed to extract jinja output from configuration."
     print_log(device['failed_reason'], 'failed')
     print_log(' ')
-    # print_log('######## JINJA RESULT RAW')
-    # print_log(raw_results.split('\n'))
+    print_log('######## EXTRACTIONS')
+    print_log(device['extractions'])
+    print_log('######## JINJA RESULT RAW')
+    print_log(raw_results.split('\n'))
     print_log('######## JINJA RESULT YAML')
     print_log(match)
     print_log('######## POSSIBLE MATCHES')

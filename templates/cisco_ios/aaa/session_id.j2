@@ -1,5 +1,5 @@
 - parents:
   lines:
-  {% if 'aaa' in vars and 'session_id' in vars['aaa'] %}
+{% if 'aaa' in vars and 'session_id' in vars['aaa'] %}
   - aaa session-id {{ vars['aaa']['session_id'] }}
-  {% endif %}
+{% endif %}

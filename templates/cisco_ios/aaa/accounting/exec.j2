@@ -1,10 +1,10 @@
 - parents:
   lines:
-  {% if 'aaa' in vars and 'accounting' in vars['aaa'] -%}
-  {% if 'default' in vars['aaa']['accounting']['exec'] -%}
+{% if 'aaa' in vars and 'accounting' in vars['aaa'] %}
+{% if 'default' in vars['aaa']['accounting']['exec'] %}
   - aaa accounting exec default {{ vars['aaa']['accounting']['exec']['default']['events'] }} {{ vars['aaa']['accounting']['exec']['default']['methods']|join(' ') }}
-  {% endif -%}
-  {% if 'activated' in vars['aaa']['accounting']['exec'] -%}
+{% endif %}
+{% if 'activated' in vars['aaa']['accounting']['exec'] %}
   - aaa accounting exec {{ vars['aaa']['accounting']['exec']['events'] }} {{ vars['aaa']['accounting']['exec']['activated']['methods']|join(' ') }}
-  {% endif -%}
-  {% endif %}
+{% endif %}
+{% endif %}

@@ -1,18 +1,18 @@
 - parents:
   lines:
-  {% for key, value in vars['access_lists']|dictsort(false, 'key') -%}
-  {%   if value['type'] == 'extended' -%}
-  {%     for entry in value['entries'] -%}
-  {%       if 'action' in entry -%}
-  {%         if entry['destination_wildcard'] == '0.0.0.0' -%}
-  {%           if entry['source_network'] == 'any' -%}
+{% for key, value in vars['access_lists']|dictsort(false, 'key') %}
+{%   if value['type'] == 'extended' %}
+{%     for entry in value['entries'] %}
+{%       if 'action' in entry %}
+{%         if entry['destination_wildcard'] == '0.0.0.0' %}
+{%           if entry['source_network'] == 'any' %}
   - access-list {{ value['number'] }} {{ entry['action'] }}{{ entry['whitespace'] }}{{ entry['protocol'] }} any host {{ entry['destination_network'] }}
-  {%           endif -%}
-  {%         endif -%}
-  {%       endif -%}
-  {%       if 'remark' in entry -%}
+{%           endif %}
+{%         endif %}
+{%       endif %}
+{%       if 'remark' in entry %}
   - access-list {{ value['number'] }} remark {{ entry['remark'] }}
-  {%       endif -%}
-  {%     endfor -%}
-  {%   endif -%}
-  {% endfor -%}
+{%       endif %}
+{%     endfor %}
+{%   endif %}
+{% endfor %}

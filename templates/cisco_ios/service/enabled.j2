@@ -1,7 +1,7 @@
 - parents:
   lines:
-  {% if 'enabled' in vars['services'] -%}
-  {%   for entry in vars['services']['enabled'] -%}
+{% if 'enabled' in vars['services'] %}
+{%   for entry in vars['services']['enabled'] %}
   - service {{ entry['service_name'] }}
-  {%   endfor -%}
-  {% endif %}
+{%   endfor %}
+{% endif %}

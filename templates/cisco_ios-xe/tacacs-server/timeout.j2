@@ -1,5 +1,5 @@
 - parents:
   lines:
-    {% if 'tacacs_server' in vars and 'timeout' in vars['tacacs_server'] %}
+{% if 'tacacs_server' in vars and 'timeout' in vars['tacacs_server'] %}
   - tacacs-server timeout {{ vars['tacacs_server']['timeout'] }}
-    {% endif %}
+{% endif %}

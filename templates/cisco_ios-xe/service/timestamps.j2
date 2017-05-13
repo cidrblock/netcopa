@@ -1,7 +1,7 @@
-{% if 'timestamps' in vars['services'] -%}
-{% for entry in vars['services']['timestamps'] -%}
+{% if 'timestamps' in vars['services'] %}
+{% for entry in vars['services']['timestamps'] %}
 - parents:
   lines:
   - service timestamps {{ entry['type'] }} {{ entry['modifiers']|join(' ') }}
-{% endfor -%}
+{% endfor %}
 {% endif %}

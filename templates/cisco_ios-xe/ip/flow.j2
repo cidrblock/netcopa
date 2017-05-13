@@ -1,28 +1,28 @@
 {% if 'flow_export' in vars['ip'] %}
-{% if 'destinations' in vars['ip']['flow_export'] -%}
-{% for destination in vars['ip']['flow_export']['destinations'] -%}
+{% if 'destinations' in vars['ip']['flow_export'] %}
+{% for destination in vars['ip']['flow_export']['destinations'] %}
 - parents:
   lines:
   - ip flow-export destination {{ destination['ipv4_address'] }} {{ destination['port'] }}
-{% endfor -%}
-{% endif -%}
-{% if 'source' in vars['ip']['flow_export'] -%}
+{% endfor %}
+{% endif %}
+{% if 'source' in vars['ip']['flow_export'] %}
 - parents:
   lines:
   - ip flow-export source {{ vars['ip']['flow_export']['source'] }}
-{% endif -%}
-{% if 'version' in vars['ip']['flow_export'] -%}
+{% endif %}
+{% if 'version' in vars['ip']['flow_export'] %}
 - parents:
   lines:
   - ip flow-export version {{ vars['ip']['flow_export']['version'] }}
-{% endif -%}
-{% endif -%}
-{% if 'flow_cache' in vars['ip'] -%}
-{% if 'timeout' in vars['ip']['flow_cache'] -%}
-{% if 'active' in vars['ip']['flow_cache']['timeout'] -%}
+{% endif %}
+{% endif %}
+{% if 'flow_cache' in vars['ip'] %}
+{% if 'timeout' in vars['ip']['flow_cache'] %}
+{% if 'active' in vars['ip']['flow_cache']['timeout'] %}
 - parents:
   lines:
   - ip flow-cache timeout active {{ vars['ip']['flow_cache']['timeout']['active']['minutes'] }}
-{% endif -%}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endif %}

@@ -1,5 +1,5 @@
 - parents:
   lines:
-    {% if 'tacacs_server' in vars and 'key' in vars['tacacs_server'] %}
+{% if 'tacacs_server' in vars and 'key' in vars['tacacs_server'] %}
   - tacacs-server key {{ vars['tacacs_server']['key']['encryption_type'] }} {{ vars['tacacs_server']['key']['password'] }}
-    {% endif %}
+{% endif %}

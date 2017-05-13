@@ -1,5 +1,5 @@
 - parents:
   lines:
-  {% if 'source' in vars['ntp'] %}
+{% if 'source' in vars['ntp'] %}
   - 'ntp source {{ vars['ntp']['source']['interface'] }}'
-  {% endif -%}
+{% endif %}

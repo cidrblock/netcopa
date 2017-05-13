@@ -1,20 +1,20 @@
-{% if 'vrfs' in vars -%}
+{% if 'vrfs' in vars %}
 {% for vrf in vars['vrfs'] %}
 - parents:
   - vrf definition {{ vars['vrfs'][vrf]['name'] }}
   lines:
-  {% if 'description' in vars['vrfs'][vrf] -%}
+{% if 'description' in vars['vrfs'][vrf] %}
   - " description {{ vars['vrfs'][vrf]['description'] }}"
-  {% endif -%}
-  {% if 'route_distinguisher' in vars['vrfs'][vrf] -%}
+{% endif %}
+{% if 'route_distinguisher' in vars['vrfs'][vrf] %}
   - " rd {{ vars['vrfs'][vrf]['route_distinguisher']['as'] }}:{{ vars['vrfs'][vrf]['route_distinguisher']['arbitrary_number'] }}"
-  {% endif -%}
-  {% if 'address_families' in vars['vrfs'][vrf] -%}
-  {% for address_family in vars['vrfs'][vrf]['address_families'] -%}
+{% endif %}
+{% if 'address_families' in vars['vrfs'][vrf] %}
+{% for address_family in vars['vrfs'][vrf]['address_families'] %}
   - " !"
   - " address-family {{ vars['vrfs'][vrf]['address_families'][address_family]['address_family'] }}"
   - " exit-address-family"
-  {% endfor -%}
-  {% endif -%}
-{% endfor -%}
+{% endfor %}
+{% endif %}
+{% endfor %}
 {% endif %}

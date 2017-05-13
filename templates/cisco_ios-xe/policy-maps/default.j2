@@ -1,39 +1,39 @@
-{% if 'policy_maps' in vars -%}
+{% if 'policy_maps' in vars %}
 {% for policy_map in vars['policy_maps'] %}
 - parents:
   - policy-map {{ vars['policy_maps'][policy_map]['name'] }}
   lines:
-  {% if 'description' in vars['policy_maps'][policy_map] -%}
+{% if 'description' in vars['policy_maps'][policy_map] %}
   - " description {{ vars['policy_maps'][policy_map]['description'] }}"
-  {% endif -%}{# description -#}
-  {% if 'classes' in vars['policy_maps'][policy_map] -%}
-  {% for class in vars['policy_maps'][policy_map]['sequence'] -%}
+{% endif %}{# description #}
+{% if 'classes' in vars['policy_maps'][policy_map] %}
+{% for class in vars['policy_maps'][policy_map]['sequence'] %}
   - " class {{ vars['policy_maps'][policy_map]['classes'][class]['name'] }}"
-  {% if 'priority' in vars['policy_maps'][policy_map]['classes'][class] -%}
-  {% if 'percent' in vars['policy_maps'][policy_map]['classes'][class]['priority'] -%}
+{% if 'priority' in vars['policy_maps'][policy_map]['classes'][class] %}
+{% if 'percent' in vars['policy_maps'][policy_map]['classes'][class]['priority'] %}
   - "  priority percent {{ vars['policy_maps'][policy_map]['classes'][class]['priority']['percent'] }}"
-  {% endif -%}{# percent -#}
-  {% endif -%}{# priority -#}
-  {% if 'bandwidth' in vars['policy_maps'][policy_map]['classes'][class] -%}
-  {% if 'percent' in vars['policy_maps'][policy_map]['classes'][class]['bandwidth'] -%}
+{% endif %}{# percent #}
+{% endif %}{# priority #}
+{% if 'bandwidth' in vars['policy_maps'][policy_map]['classes'][class] %}
+{% if 'percent' in vars['policy_maps'][policy_map]['classes'][class]['bandwidth'] %}
   - "  bandwidth percent {{ vars['policy_maps'][policy_map]['classes'][class]['bandwidth']['percent'] }}"
-  {% endif -%}{# percent -#}
-  {% endif -%}{# bandwidth -#}
-  {% if 'set_ipv4_dscp' in vars['policy_maps'][policy_map]['classes'][class] -%}
+{% endif %}{# percent #}
+{% endif %}{# bandwidth #}
+{% if 'set_ipv4_dscp' in vars['policy_maps'][policy_map]['classes'][class] %}
   - "  set ip dscp {{ vars['policy_maps'][policy_map]['classes'][class]['set_ipv4_dscp'] }}"
-  {% endif -%}
-  {% if 'set_ipv4_ipv6_dscp' in vars['policy_maps'][policy_map]['classes'][class] -%}
+{% endif %}
+{% if 'set_ipv4_ipv6_dscp' in vars['policy_maps'][policy_map]['classes'][class] %}
   - "  set dscp {{ vars['policy_maps'][policy_map]['classes'][class]['set_ipv4_ipv6_dscp'] }}"
-  {% endif -%}{# set_ipv4_ipv6_dscp -#}
-  {% if 'shape' in vars['policy_maps'][policy_map]['classes'][class] -%}
-  {% if 'threshold' in vars['policy_maps'][policy_map]['classes'][class]['shape'] -%}
+{% endif %}{# set_ipv4_ipv6_dscp #}
+{% if 'shape' in vars['policy_maps'][policy_map]['classes'][class] %}
+{% if 'threshold' in vars['policy_maps'][policy_map]['classes'][class]['shape'] %}
   - "  shape {{ vars['policy_maps'][policy_map]['classes'][class]['shape']['threshold'] }} {{ vars['policy_maps'][policy_map]['classes'][class]['shape']['mean_rate'] }}"
-  {% endif -%}{# threshold -#}
-  {% endif -%}{# shape -#}
-  {% if 'service_policy' in vars['policy_maps'][policy_map]['classes'][class]['shape'] -%}
+{% endif %}{# threshold #}
+{% endif %}{# shape #}
+{% if 'service_policy' in vars['policy_maps'][policy_map]['classes'][class]['shape'] %}
   - "  service-policy {{ vars['policy_maps'][policy_map]['classes'][class]['shape']['service_policy'] }}"
-  {% endif -%}{# service_policy -#}
-  {% endfor -%}{# class -#}
-  {% endif -%}{# classes -#}
+{% endif %}{# service_policy #}
+{% endfor %}{# class #}
+{% endif %}{# classes #}
 {% endfor %}
 {% endif %}

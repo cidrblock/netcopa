@@ -1,7 +1,7 @@
-{% if 'server' in vars['snmp'] -%}
-{% if 'location' in vars['snmp']['server'] -%}
+{% if 'server' in vars['snmp'] %}
+{% if 'location' in vars['snmp']['server'] %}
 - parents:
   - snmp-server location {{ vars['snmp']['server']['location'] }}
   lines:
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}

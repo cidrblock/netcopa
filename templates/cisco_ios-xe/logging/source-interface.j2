@@ -1,7 +1,7 @@
-{% if 'logging' in vars -%}
-{% if 'source_interface' in vars['logging'] -%}
+{% if 'logging' in vars %}
+{% if 'source_interface' in vars['logging'] %}
 - parents:
   lines:
   - logging source-interface {{ vars['logging']['source_interface'] }}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
