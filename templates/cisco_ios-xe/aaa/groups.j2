@@ -1,19 +1,19 @@
-{% if 'aaa' in vars and 'groups' in vars['aaa'] -%}
-{% for group in vars['aaa']['groups'] -%}
+{% if 'aaa' in vars and 'groups' in vars['aaa'] %}
+{% for group in vars['aaa']['groups'] %}
 - parents:
   - aaa group server {{ vars['aaa']['groups'][group]['type'] }} {{ vars['aaa']['groups'][group]['name'] }}
   lines:
-  {% if 'servers' in vars['aaa']['groups'][group] -%}
-  {% for server in vars['aaa']['groups'][group]['servers'] -%}
-  {% if server['private'] -%}
+{% if 'servers' in vars['aaa']['groups'][group] %}
+{% for server in vars['aaa']['groups'][group]['servers'] %}
+{% if server['private'] %}
   - " server-private {{ server['ip'] }} key {{ server['encryption_type'] }} {{ server['key'] }}"
-  {% else %}
+{% else %}
   - " server {{ server['ip'] }} key {{ server['encryption_type'] }} {{ server['key'] }}"
-  {% endif -%}
-  {% endfor -%}
-  {% if 'tacacs_source_interface' in vars['aaa']['groups'][group] -%}
+{% endif %}
+{% endfor %}
+{% if 'tacacs_source_interface' in vars['aaa']['groups'][group] %}
   - " ip tacacs source-interface {{ vars['aaa']['groups'][group]['tacacs_source_interface'] }}"
-  {% endif -%}
-  {% endif -%}
-{% endfor -%}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}

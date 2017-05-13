@@ -1,9 +1,9 @@
 - parents:
   lines:
-    {% if 'http' in vars['ip'] and 'server' in vars['ip']['http'] %}
-    {% if vars['ip']['http']['server'] %}
+{% if 'http' in vars['ip'] and 'server' in vars['ip']['http'] %}
+{% if vars['ip']['http']['server'] %}
     - ip http server
-    {% elif not vars['ip']['http']['server'] %}
+{% elif not vars['ip']['http']['server'] %}
     - no ip http server
-    {% endif %}
-    {% endif %}
+{% endif %}
+{% endif %}

@@ -1,99 +1,99 @@
-{% if 'router' in vars and 'ospf' in vars['router'] -%}
+{% if 'router' in vars and 'ospf' in vars['router'] %}
 {% for process in vars['router']['ospf'] %}
 - parents:
-  {%- if 'vrf' in vars['router']['ospf'][process] %}
+{% if 'vrf' in vars['router']['ospf'][process] %}
   - router ospf {{ vars['router']['ospf'][process]['process_id'] }} vrf {{ vars['router']['ospf'][process]['vrf'] }}
-  {%- else %}
+{% else %}
   - router ospf {{ vars['router']['ospf'][process]['process_id'] }}
-  {%- endif %}
+{% endif %}
   lines:
-  {%- if 'router_id' in vars['router']['ospf'][process] %}
+{% if 'router_id' in vars['router']['ospf'][process] %}
   - " router-id {{ vars['router']['ospf'][process]['router_id'] }}"
-  {%- endif -%}{# router_id -#}
-  {%- if 'log_adjacency_changes' in vars['router']['ospf'][process] and vars['router']['ospf'][process]['log_adjacency_changes']  %}
+{% endif %}{# router_id #}
+{% if 'log_adjacency_changes' in vars['router']['ospf'][process] and vars['router']['ospf'][process]['log_adjacency_changes']  %}
   - " log-adjacency-changes"
-  {%- endif -%}{# log_adjacency_changes -#}
-  {%- if 'auto_cost_reference_bandwidth' in vars['router']['ospf'][process] %}
+{% endif %}{# log_adjacency_changes #}
+{% if 'auto_cost_reference_bandwidth' in vars['router']['ospf'][process] %}
   - " auto-cost reference-bandwidth {{ vars['router']['ospf'][process]['auto_cost_reference_bandwidth'] }}"
-  {%- endif -%}{# auto_cost_reference_bandwidth -#}
-  {%- if 'summary_addresses' in vars['router']['ospf'][process] -%}
-  {%- for summary_address in vars['router']['ospf'][process]['summary_addresses'] -%}
+{% endif %}{# auto_cost_reference_bandwidth #}
+{% if 'summary_addresses' in vars['router']['ospf'][process] %}
+{% for summary_address in vars['router']['ospf'][process]['summary_addresses'] %}
   - " summary-address {{ summary_address['network'] }} {{ summary_address['netmask'] }}"
-  {% endfor -%}{# summary_address -#}
-  {% endif -%}{# summary_addresses -#}
-  {% if 'redistribute' in vars['router']['ospf'][process] %}
-  {% for protocol in ['connected', 'static', 'eigrp', 'bgp'] -%}
-  {% if protocol in vars['router']['ospf'][process]['redistribute'] -%}
-  {% set line = [] -%}
-  {% set _ = line.append('redistribute') -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['protocol']) -%}
-  {% if 'process_id' in vars['router']['ospf'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['process_id']) -%}
-  {% endif -%}{# process_id -#}
-  {% if 'metric' in vars['router']['ospf'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append('metric') -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['metric']) -%}
-  {% endif -%}{# metric -#}
-  {% if 'metric_types' in vars['router']['ospf'][process]['redistribute'][protocol] -%}
-  {% for metric_type in vars['router']['ospf'][process]['redistribute'][protocol]['metric_types'] -%}
-  {% set _ = line.append('metric-type') -%}
-  {% set _ = line.append(metric_type) -%}
-  {% endfor -%}{# metric_type -#}
-  {% endif -%}{# metric_types -#}
-  {% if 'subnets' in vars['router']['ospf'][process]['redistribute'][protocol] and vars['router']['ospf'][process]['redistribute'][protocol]['subnets'] -%}
-  {% set _ = line.append('subnets') -%}
-  {% endif -%}{# subnets -#}
-  {% if 'tag' in vars['router']['ospf'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append('tag') -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['tag']) -%}
-  {% endif -%}{# tag -#}
-  {% if 'route_map' in vars['router']['ospf'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append('route-map') -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['route_map']) -%}
-  {% endif -%}
+{% endfor %}{# summary_address #}
+{% endif %}{# summary_addresses #}
+{% if 'redistribute' in vars['router']['ospf'][process] %}
+{% for protocol in ['connected', 'static', 'eigrp', 'bgp'] %}
+{% if protocol in vars['router']['ospf'][process]['redistribute'] %}
+{% set line = [] %}
+{% set _ = line.append('redistribute') %}
+{% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['protocol']) %}
+{% if 'process_id' in vars['router']['ospf'][process]['redistribute'][protocol] %}
+{% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['process_id']) %}
+{% endif %}{# process_id #}
+{% if 'metric' in vars['router']['ospf'][process]['redistribute'][protocol] %}
+{% set _ = line.append('metric') %}
+{% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['metric']) %}
+{% endif %}{# metric #}
+{% if 'metric_types' in vars['router']['ospf'][process]['redistribute'][protocol] %}
+{% for metric_type in vars['router']['ospf'][process]['redistribute'][protocol]['metric_types'] %}
+{% set _ = line.append('metric-type') %}
+{% set _ = line.append(metric_type) %}
+{% endfor %}{# metric_type #}
+{% endif %}{# metric_types #}
+{% if 'subnets' in vars['router']['ospf'][process]['redistribute'][protocol] and vars['router']['ospf'][process]['redistribute'][protocol]['subnets'] %}
+{% set _ = line.append('subnets') %}
+{% endif %}{# subnets #}
+{% if 'tag' in vars['router']['ospf'][process]['redistribute'][protocol] %}
+{% set _ = line.append('tag') %}
+{% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['tag']) %}
+{% endif %}{# tag #}
+{% if 'route_map' in vars['router']['ospf'][process]['redistribute'][protocol] %}
+{% set _ = line.append('route-map') %}
+{% set _ = line.append(vars['router']['ospf'][process]['redistribute'][protocol]['route_map']) %}
+{% endif %}
   - " {{ line|join(' ') }}"
-  {% endif -%}{# protocol -#}
-  {% endfor -%}{# protocols -#}
-  {%- endif -%}{# redistribute -#}
-  {% if 'passive_interface_default' in vars['router']['ospf'][process] and vars['router']['ospf'][process]['passive_interface_default']  %}
+{% endif %}{# protocol #}
+{% endfor %}{# protocols #}
+{% endif %}{# redistribute #}
+{% if 'passive_interface_default' in vars['router']['ospf'][process] and vars['router']['ospf'][process]['passive_interface_default']  %}
   - " passive-interface default"
-  {%- endif -%}{# passive_interface_default -#}
-  {% if 'passive_interfaces' in vars['router']['ospf'][process] %}
-  {% for passive_interface in vars['router']['ospf'][process]['passive_interfaces'] -%}
-  {% if passive_interface['negate'] -%}
+{% endif %}{# passive_interface_default #}
+{% if 'passive_interfaces' in vars['router']['ospf'][process] %}
+{% for passive_interface in vars['router']['ospf'][process]['passive_interfaces'] %}
+{% if passive_interface['negate'] %}
   - " no passive-interface {{ passive_interface['interface'] }}"
-  {% else -%}
+{% else %}
   - " passive-interface {{ passive_interface['interface'] }}"
-  {% endif -%}{# negate passive-interface -#}
-  {% endfor -%}{# passive-interface -#}
-  {% endif -%}{# passive_interfaces -#}
-  {% if 'network_statements' in vars['router']['ospf'][process] -%}
-  {% for network_statement in vars['router']['ospf'][process]['network_statements'] -%}
+{% endif %}{# negate passive-interface #}
+{% endfor %}{# passive-interface #}
+{% endif %}{# passive_interfaces #}
+{% if 'network_statements' in vars['router']['ospf'][process] %}
+{% for network_statement in vars['router']['ospf'][process]['network_statements'] %}
   - " network {{ network_statement['network'] }} {{ network_statement['netmask'] }} area {{ network_statement['area'] }}"
-  {% endfor -%}{# network_statement -#}
-  {% endif -%}{# network_statements -#}
-  {% if 'default_information' in vars['router']['ospf'][process] and vars['router']['ospf'][process]['default_information']['originate']-%}
-  {% set line = [] -%}
-  {% set _ = line.append('default-information originate') -%}
-  {% if 'metric' in vars['router']['ospf'][process]['default_information'] -%}
-  {% set _ = line.append('metric') -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['default_information']['metric']) -%}
-  {% endif -%}{# metric -#}
-  {% if 'metric_type' in vars['router']['ospf'][process]['default_information'] -%}
-  {% set _ = line.append('metric-type') -%}
-  {% set _ = line.append(vars['router']['ospf'][process]['default_information']['metric_type']) -%}
-  {% endif -%}{# metric_type -#}
+{% endfor %}{# network_statement #}
+{% endif %}{# network_statements #}
+{% if 'default_information' in vars['router']['ospf'][process] and vars['router']['ospf'][process]['default_information']['originate']%}
+{% set line = [] %}
+{% set _ = line.append('default-information originate') %}
+{% if 'metric' in vars['router']['ospf'][process]['default_information'] %}
+{% set _ = line.append('metric') %}
+{% set _ = line.append(vars['router']['ospf'][process]['default_information']['metric']) %}
+{% endif %}{# metric #}
+{% if 'metric_type' in vars['router']['ospf'][process]['default_information'] %}
+{% set _ = line.append('metric-type') %}
+{% set _ = line.append(vars['router']['ospf'][process]['default_information']['metric_type']) %}
+{% endif %}{# metric_type #}
   - " {{ line|join(' ') }}"
-  {% endif -%}{# default_information -#}
-  {% if 'distribute_lists' in vars['router']['ospf'][process] -%}
-  {% for distribute_list in vars['router']['ospf'][process]['distribute_lists'] -%}
-  {% if 'route_map' in distribute_list -%}
+{% endif %}{# default_information #}
+{% if 'distribute_lists' in vars['router']['ospf'][process] %}
+{% for distribute_list in vars['router']['ospf'][process]['distribute_lists'] %}
+{% if 'route_map' in distribute_list %}
   - " distribute-list route-map {{ distribute_list['route_map'] }} {{ distribute_list['direction'] }}"
-  {% endif -%}{# route-map -#}
-  {% endfor -%}{# distribute-list -#}
-  {% endif -%}{# distribute_lists -#}
-  {% if 'distance' in vars['router']['ospf'][process] -%}
+{% endif %}{# route-map #}
+{% endfor %}{# distribute-list #}
+{% endif %}{# distribute_lists #}
+{% if 'distance' in vars['router']['ospf'][process] %}
   - " distance {{ vars['router']['ospf'][process]['distance'] }}"
-  {% endif -%}{# distance -#}
+{% endif %}{# distance #}
 {% endfor %}{# process #}
-{% endif -%}{# router #}
+{% endif %}{# router #}

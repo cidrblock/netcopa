@@ -1,65 +1,65 @@
-{% for key, value in vars['ip']['access_lists']|dictsort(false, 'key') -%}
+{% for key, value in vars['ip']['access_lists']|dictsort(false, 'key') %}
 {% if value['type'] == 'extended' %}
 - parents:
   - ip access-list extended {{ value['name'] }}
   lines:
-{% for entry in value['entries'] -%}
-  {% set line = [] -%}
-  {% if 'action' in entry -%}
-  {% set _ = line.append(entry['action']) -%}
-  {% endif -%}{# action -#}
-  {% if 'protocol' in entry -%}
-  {% set _ = line.append(entry['protocol']) -%}
-  {% endif -%}{# protocol -#}
-  {% if entry['source_wildcard'] == '0.0.0.0' -%}
-  {% set _ = line.append('host') -%}
-  {% set _ = line.append(entry['source_network']) -%}
-  {% elif entry['source_wildcard'] == '255.255.255.255' -%}
-  {% set _ = line.append('any') -%}
-  {% elif not 'remark' in entry -%}
-  {% set _ = line.append(entry['source_network']) -%}
-  {% set _ = line.append(entry['source_wildcard']) -%}
-  {% endif -%}{# src IP -#}
-  {% if 'source_port' in entry -%}
-  {% set _ = line.append('eq') -%}
-  {% set _ = line.append(entry['source_port']) -%}
-  {% endif -%}{# src port -#}
-  {% if 'source_start_port' in entry and 'source_end_port' in entry-%}
-  {% set _ = line.append('range') -%}
-  {% set _ = line.append(entry['source_start_port']) -%}
-  {% set _ = line.append(entry['source_end_port']) -%}
-  {% endif -%}{# src start/end port -#}
-  {% if entry['destination_wildcard'] == '0.0.0.0' -%}
-  {% set _ = line.append('host') -%}
-  {% set _ = line.append(entry['destination_network']) -%}
-  {% elif entry['destination_wildcard'] == '255.255.255.255' -%}
-  {% set _ = line.append('any') -%}
-  {% elif not 'remark' in entry -%}
-  {% set _ = line.append(entry['destination_network']) -%}
-  {% set _ = line.append(entry['destination_wildcard']) -%}
-  {% endif -%}{# dst IP -#}
-  {% if 'destination_port' in entry -%}
-  {% set _ = line.append('eq') -%}
-  {% set _ = line.append(entry['destination_port']) -%}
-  {% endif -%}{# dst port #}
-  {% if 'destination_dscp' in entry -%}
-  {% set _ = line.append('dscp') -%}
-  {% set _ = line.append(entry['destination_dscp']) -%}
-  {% endif -%}{# dst port #}
-  {% if 'destination_start_port' in entry and 'destination_end_port' in entry -%}
-  {% set _ = line.append('range') -%}
-  {% set _ = line.append(entry['destination_start_port']) -%}
-  {% set _ = line.append(entry['destination_end_port']) -%}
-  {% endif -%}{# dst start/end port -#}
-  {% if line %}
+{% for entry in value['entries'] %}
+{% set line = [] %}
+{% if 'action' in entry %}
+{% set _ = line.append(entry['action']) %}
+{% endif %}{# action #}
+{% if 'protocol' in entry %}
+{% set _ = line.append(entry['protocol']) %}
+{% endif %}{# protocol #}
+{% if entry['source_wildcard'] == '0.0.0.0' %}
+{% set _ = line.append('host') %}
+{% set _ = line.append(entry['source_network']) %}
+{% elif entry['source_wildcard'] == '255.255.255.255' %}
+{% set _ = line.append('any') %}
+{% elif not 'remark' in entry %}
+{% set _ = line.append(entry['source_network']) %}
+{% set _ = line.append(entry['source_wildcard']) %}
+{% endif %}{# src IP #}
+{% if 'source_port' in entry %}
+{% set _ = line.append('eq') %}
+{% set _ = line.append(entry['source_port']) %}
+{% endif %}{# src port #}
+{% if 'source_start_port' in entry and 'source_end_port' in entry%}
+{% set _ = line.append('range') %}
+{% set _ = line.append(entry['source_start_port']) %}
+{% set _ = line.append(entry['source_end_port']) %}
+{% endif %}{# src start/end port #}
+{% if entry['destination_wildcard'] == '0.0.0.0' %}
+{% set _ = line.append('host') %}
+{% set _ = line.append(entry['destination_network']) %}
+{% elif entry['destination_wildcard'] == '255.255.255.255' %}
+{% set _ = line.append('any') %}
+{% elif not 'remark' in entry %}
+{% set _ = line.append(entry['destination_network']) %}
+{% set _ = line.append(entry['destination_wildcard']) %}
+{% endif %}{# dst IP #}
+{% if 'destination_port' in entry %}
+{% set _ = line.append('eq') %}
+{% set _ = line.append(entry['destination_port']) %}
+{% endif %}{# dst port #}
+{% if 'destination_dscp' in entry %}
+{% set _ = line.append('dscp') %}
+{% set _ = line.append(entry['destination_dscp']) %}
+{% endif %}{# dst port #}
+{% if 'destination_start_port' in entry and 'destination_end_port' in entry %}
+{% set _ = line.append('range') %}
+{% set _ = line.append(entry['destination_start_port']) %}
+{% set _ = line.append(entry['destination_end_port']) %}
+{% endif %}{# dst start/end port #}
+{% if line %}
   - " {{ line|join(' ') }}"
-  {%- endif -%}{# line -#}
+{% endif %}{# line #}
 {% if 'remark' in entry and entry['remark'] %}
   - " remark {{ entry['remark'] }}"
-{% endif -%}
+{% endif %}
 {% if 'remark' in entry and not entry['remark'] %}
   - " remark"
-  {%- endif -%}{# remark -#}
-{% endfor -%}{# entry in entries -#}
-{% endif -%}
-{% endfor -%}
+{% endif %}{# remark #}
+{% endfor %}{# entry in entries #}
+{% endif %}
+{% endfor %}

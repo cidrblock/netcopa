@@ -1,24 +1,24 @@
-{% for key, value in vars['ip']['access_lists']|dictsort(false, 'key') -%}
+{% for key, value in vars['ip']['access_lists']|dictsort(false, 'key') %}
 {% if value['type'] == 'standard' %}
 - parents:
   - ip access-list standard {{ value['name'] }}
   lines:
-  {% for entry in value['entries'] -%}
-  {% if 'action' in entry -%}
-  {% if entry['source_wildcard'] == '0.0.0.0' -%}
+{% for entry in value['entries'] %}
+{% if 'action' in entry %}
+{% if entry['source_wildcard'] == '0.0.0.0' %}
    - " {{ entry['action'] }} {{ entry['source_network'] }}"
-  {% elif entry['source_network'] == 'any' -%}
+{% elif entry['source_network'] == 'any' %}
    - " {{ entry['action'] }} {{ entry['source_network'] }}"
-  {% else -%}
+{% else %}
    - " {{ entry['action'] }} {{ entry['source_network'] }} {{ entry['source_wildcard'] }}"
-  {% endif -%}
-  {% endif -%}
-  {% if 'remark' in entry and entry['remark'] -%}
+{% endif %}
+{% endif %}
+{% if 'remark' in entry and entry['remark'] %}
    - " remark {{ entry['remark'] }}"
-  {% endif -%}
-  {% if 'remark' in entry and not entry['remark'] -%}
+{% endif %}
+{% if 'remark' in entry and not entry['remark'] %}
    - " remark"
-  {% endif -%}
-  {%- endfor -%}
-{%- endif -%}
-{%- endfor -%}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

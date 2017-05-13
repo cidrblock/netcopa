@@ -1,29 +1,29 @@
-{% for entry in vars['line'] -%}
-{%- if vars['line'][entry]['type'] in ['con', 'aux'] -%}
-{% for number in vars['line'][entry]['numbers'] -%}
+{% for entry in vars['line'] %}
+{% if vars['line'][entry]['type'] in ['con', 'aux'] %}
+{% for number in vars['line'][entry]['numbers'] %}
 - parents:
   - line {{ vars['line'][entry]['type'] }} {{ vars['line'][entry]['numbers'][number]['number'] }}
   lines:
-  {% if 'exec_timeout' in vars['line'][entry]['numbers'][number] -%}
+{% if 'exec_timeout' in vars['line'][entry]['numbers'][number] %}
   - " exec-timeout {{ vars['line'][entry]['numbers'][number]['exec_timeout']['minutes'] }} {{ vars['line'][entry]['numbers'][number]['exec_timeout']['seconds'] }}"
-  {% endif -%}
-  {% if 'password' in vars['line'][entry]['numbers'][number] -%}
+{% endif %}
+{% if 'password' in vars['line'][entry]['numbers'][number] %}
   - " password {{ vars['line'][entry]['numbers'][number]['password']['encryption_type'] }} {{ vars['line'][entry]['numbers'][number]['password']['password'] }}"
-  {% endif -%}
-  {% if 'login' in vars['line'][entry]['numbers'][number] and 'authentication' in vars['line'][entry]['numbers'][number]['login'] -%}
+{% endif %}
+{% if 'login' in vars['line'][entry]['numbers'][number] and 'authentication' in vars['line'][entry]['numbers'][number]['login'] %}
   - " login authentication {{ vars['line'][entry]['numbers'][number]['login']['authentication'] }}"
-  {% endif -%}
-  {% if 'transport' in vars['line'][entry]['numbers'][number] -%}
-  {% for direction in vars['line'][entry]['numbers'][number]['transport'] -%}
+{% endif %}
+{% if 'transport' in vars['line'][entry]['numbers'][number] %}
+{% for direction in vars['line'][entry]['numbers'][number]['transport'] %}
   - " transport {{ direction }} {{ vars['line'][entry]['numbers'][number]['transport'][direction]['protocols']|join(' ') }}"
-  {% endfor -%}
-  {% endif -%}
-  {% if 'escape_character' in vars['line'][entry]['numbers'][number] -%}
-  - " escape-character {{ vars['line'][entry]['numbers'][number]['escape_character'] }}"
-  {% endif -%}
-  {% if 'stopbits' in vars['line'][entry]['numbers'][number] -%}
-  - " stopbits {{ vars['line'][entry]['numbers'][number]['stopbits'] }}"
-  {% endif -%}
 {% endfor %}
-{% endif -%}
-{% endfor -%}
+{% endif %}
+{% if 'escape_character' in vars['line'][entry]['numbers'][number] %}
+  - " escape-character {{ vars['line'][entry]['numbers'][number]['escape_character'] }}"
+{% endif %}
+{% if 'stopbits' in vars['line'][entry]['numbers'][number] %}
+  - " stopbits {{ vars['line'][entry]['numbers'][number]['stopbits'] }}"
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

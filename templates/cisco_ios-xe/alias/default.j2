@@ -1,7 +1,7 @@
-{% if 'aliases' in vars -%}
-{% for entry in vars['aliases'] -%}
+{% if 'aliases' in vars %}
+{% for entry in vars['aliases'] %}
 - parents:
   - alias {{ entry['mode'] }} {{ entry['alias'] }} {{ entry['command'] }}
   lines:
 {% endfor %}
-{% endif -%}
+{% endif %}

@@ -1,5 +1,5 @@
 - parents:
   lines:
-  {% for entry in vars['logging']['hosts'] -%}
+{% for entry in vars['logging']['hosts'] %}
   - 'logging {{ entry['host'] }}'
-  {% endfor -%}
+{% endfor %}

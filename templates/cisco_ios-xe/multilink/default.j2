@@ -1,9 +1,9 @@
-{% if 'multilink' in vars -%}
-{% if 'bundle_name' in vars['multilink'] -%}
-{% if 'method' in vars['multilink']['bundle_name'] -%}
+{% if 'multilink' in vars %}
+{% if 'bundle_name' in vars['multilink'] %}
+{% if 'method' in vars['multilink']['bundle_name'] %}
 - parents:
   lines:
   - 'multilink bundle-name {{ vars['multilink']['bundle_name']['method'] }}'
-{% endif -%}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endif %}

@@ -2,104 +2,104 @@
 - parents:
   - interface {{ vars['interfaces'][interface]['name'] }}
   lines:
-  {% if 'description' in vars['interfaces'][interface] -%}
+{% if 'description' in vars['interfaces'][interface] %}
   - " description {{ vars['interfaces'][interface]['description'] }}"
-  {% endif -%}
-  {% if 'vrf' in vars['interfaces'][interface] -%}
+{% endif %}
+{% if 'vrf' in vars['interfaces'][interface] %}
   - " vrf forwarding {{ vars['interfaces'][interface]['vrf'] }}"
-  {% endif -%}
-  {% if 'encapsulation' in vars['interfaces'][interface] -%}
+{% endif %}
+{% if 'encapsulation' in vars['interfaces'][interface] %}
   - " encapsulation {{ vars['interfaces'][interface]['encapsulation']['protocol'] }} {{ vars['interfaces'][interface]['encapsulation']['tag'] }}"
-  {% endif -%}
-  {% if 'switchport' in vars['interfaces'][interface] -%}
-  {% if 'present' in vars['interfaces'][interface]['switchport'] and vars['interfaces'][interface]['switchport']['present'] -%}
+{% endif %}
+{% if 'switchport' in vars['interfaces'][interface] %}
+{% if 'present' in vars['interfaces'][interface]['switchport'] and vars['interfaces'][interface]['switchport']['present'] %}
   - " switchport"
-  {% endif -%}{# switch present -#}
-  {% if 'access' in vars['interfaces'][interface]['switchport'] -%}
-  {% if 'vlan' in vars['interfaces'][interface]['switchport']['access'] -%}
+{% endif %}{# switch present #}
+{% if 'access' in vars['interfaces'][interface]['switchport'] %}
+{% if 'vlan' in vars['interfaces'][interface]['switchport']['access'] %}
   - " switchport access vlan {{ vars['interfaces'][interface]['switchport']['access']['vlan'] }}"
-  {% endif -%} #vlan
-  {% endif -%} #access
-  {% if 'trunk' in vars['interfaces'][interface]['switchport'] -%}
-  {% if 'encapsulation' in vars['interfaces'][interface]['switchport']['trunk'] -%}
+{% endif %} #vlan
+{% endif %} #access
+{% if 'trunk' in vars['interfaces'][interface]['switchport'] %}
+{% if 'encapsulation' in vars['interfaces'][interface]['switchport']['trunk'] %}
   - " switchport trunk encapsulation {{ vars['interfaces'][interface]['switchport']['trunk']['encapsulation'] }}"
-  {% endif -%} #encapsulation
-  {% if 'native_vlan' in vars['interfaces'][interface]['switchport']['trunk'] -%}
+{% endif %} #encapsulation
+{% if 'native_vlan' in vars['interfaces'][interface]['switchport']['trunk'] %}
   - " switchport trunk native vlan {{ vars['interfaces'][interface]['switchport']['trunk']['native_vlan'] }}"
-  {% endif -%} #native-vlan
-  {% if 'allowed_vlans' in vars['interfaces'][interface]['switchport']['trunk'] -%}
-  {% if 'vlans' in vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans'] -%}
+{% endif %} #native-vlan
+{% if 'allowed_vlans' in vars['interfaces'][interface]['switchport']['trunk'] %}
+{% if 'vlans' in vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans'] %}
   - " switchport trunk allowed vlan {{ vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans']['vlans'] }}"
-  {% endif -%} #vlans
-  {% if 'add' in vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans'] -%}
+{% endif %} #vlans
+{% if 'add' in vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans'] %}
   - " switchport trunk allowed vlan add {{ vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans']['add'] }}"
-  {% endif -%} #add
-  {% endif -%} #allowed-vlans
-  {% endif -%} #trunk
-  {% if 'mode' in vars['interfaces'][interface]['switchport'] -%}
+{% endif %} #add
+{% endif %} #allowed-vlans
+{% endif %} #trunk
+{% if 'mode' in vars['interfaces'][interface]['switchport'] %}
   - " switchport mode {{ vars['interfaces'][interface]['switchport']['mode']|join(' ') }}"
-  {% endif -%} #mode
-  {% if 'negate' in vars['interfaces'][interface]['switchport'] and vars['interfaces'][interface]['switchport']['negate'] -%}
+{% endif %} #mode
+{% if 'negate' in vars['interfaces'][interface]['switchport'] and vars['interfaces'][interface]['switchport']['negate'] %}
   - " no switchport"
-  {% endif -%} #negate
-  {% endif -%} #switchport
-  {% if 'channel_group' in vars['interfaces'][interface] -%}
+{% endif %} #negate
+{% endif %} #switchport
+{% if 'channel_group' in vars['interfaces'][interface] %}
   - " channel-group {{ vars['interfaces'][interface]['channel_group'] }} mode {{ vars['interfaces'][interface]['channel_group_mode']|join(' ') }}"
-  {% endif -%} #channel_group
-  {% if 'bandwidth' in vars['interfaces'][interface] -%}
+{% endif %} #channel_group
+{% if 'bandwidth' in vars['interfaces'][interface] %}
   - " bandwidth {{ vars['interfaces'][interface]['bandwidth'] }}"
-  {% endif -%} #bandwidth
-  {% if 'ip' in vars['interfaces'][interface] -%}
-  {% if 'address' in vars['interfaces'][interface]['ip'] -%}
-  {% if 'ipv4_address' in vars['interfaces'][interface]['ip']['address'] and 'ipv4_netmask' in vars['interfaces'][interface]['ip']['address'] -%}
+{% endif %} #bandwidth
+{% if 'ip' in vars['interfaces'][interface] %}
+{% if 'address' in vars['interfaces'][interface]['ip'] %}
+{% if 'ipv4_address' in vars['interfaces'][interface]['ip']['address'] and 'ipv4_netmask' in vars['interfaces'][interface]['ip']['address'] %}
   - " ip address {{ vars['interfaces'][interface]['ip']['address']['ipv4_address'] }} {{ vars['interfaces'][interface]['ip']['address']['ipv4_netmask'] }}"
-  {% endif -%} #ipv4_address
-  {% if 'negate' in vars['interfaces'][interface]['ip']['address'] and vars['interfaces'][interface]['ip']['address']['negate'] -%}
+{% endif %} #ipv4_address
+{% if 'negate' in vars['interfaces'][interface]['ip']['address'] and vars['interfaces'][interface]['ip']['address']['negate'] %}
   - " no ip address"
-  {% endif -%} #negate
-  {% endif -%} #address
-  {% if 'flow' in vars['interfaces'][interface]['ip'] -%}
-  {% for direction in vars['interfaces'][interface]['ip']['flow']['directions'] -%}
+{% endif %} #negate
+{% endif %} #address
+{% if 'flow' in vars['interfaces'][interface]['ip'] %}
+{% for direction in vars['interfaces'][interface]['ip']['flow']['directions'] %}
   - " ip flow {{ direction }}"
-  {% endfor -%} # #flow directions
-  {% endif -%} #flow
-  {% if 'helper_addresses' in vars['interfaces'][interface]['ip'] -%}
-  {% for address in vars['interfaces'][interface]['ip']['helper_addresses'] -%}
+{% endfor %} # #flow directions
+{% endif %} #flow
+{% if 'helper_addresses' in vars['interfaces'][interface]['ip'] %}
+{% for address in vars['interfaces'][interface]['ip']['helper_addresses'] %}
   - " ip helper-address {{ address['ipv4_helper_address'] }}"
-  {% endfor -%} # helpers
-  {% endif -%} #helper_addresses
-  {% if 'route_cache' in vars['interfaces'][interface]['ip'] -%}
+{% endfor %} # helpers
+{% endif %} #helper_addresses
+{% if 'route_cache' in vars['interfaces'][interface]['ip'] %}
   - " ip route-cache {{ vars['interfaces'][interface]['ip']['route_cache'] }}"
-  {% endif -%} #route-cache
-  {% if 'policy_route_map' in vars['interfaces'][interface]['ip'] -%}
+{% endif %} #route-cache
+{% if 'policy_route_map' in vars['interfaces'][interface]['ip'] %}
   - " ip policy route-map {{ vars['interfaces'][interface]['ip']['policy_route_map'] }}"
-  {% endif -%} #policy_route_map
-  {% endif -%} #ip
-  {% if 'shutdown' in vars['interfaces'][interface] and vars['interfaces'][interface]['shutdown'] -%}
+{% endif %} #policy_route_map
+{% endif %} #ip
+{% if 'shutdown' in vars['interfaces'][interface] and vars['interfaces'][interface]['shutdown'] %}
   - " shutdown"
-  {% endif -%} #shutdown
-  {% if 'negotiation' in vars['interfaces'][interface] and vars['interfaces'][interface]['negotiation']['negate'] -%}
+{% endif %} #shutdown
+{% if 'negotiation' in vars['interfaces'][interface] and vars['interfaces'][interface]['negotiation']['negate'] %}
   - " no negotiation {{ vars['interfaces'][interface]['negotiation']['type'] }}"
-  {% endif -%} #no negotiation
-  {% if 'negotiation' in vars['interfaces'][interface] and not vars['interfaces'][interface]['negotiation']['negate'] -%}
+{% endif %} #no negotiation
+{% if 'negotiation' in vars['interfaces'][interface] and not vars['interfaces'][interface]['negotiation']['negate'] %}
   - " negotiation {{ vars['interfaces'][interface]['negotiation']['type'] }}"
-  {% endif -%} # negotiation
-  {% if 'ip' in vars['interfaces'][interface] and 'pim' in vars['interfaces'][interface]['ip'] -%}
+{% endif %} # negotiation
+{% if 'ip' in vars['interfaces'][interface] and 'pim' in vars['interfaces'][interface]['ip'] %}
   - " ip pim {{ vars['interfaces'][interface]['ip']['pim']['mode'] }}"
-  {% endif %} #pim mode
-  {% if 'switchport' in vars['interfaces'][interface] and 'voice' in vars['interfaces'][interface]['switchport'] and 'vlan' in vars['interfaces'][interface]['switchport']['voice'] -%}
+{% endif %} #pim mode
+{% if 'switchport' in vars['interfaces'][interface] and 'voice' in vars['interfaces'][interface]['switchport'] and 'vlan' in vars['interfaces'][interface]['switchport']['voice'] %}
   - " switchport voice vlan {{ vars['interfaces'][interface]['switchport']['voice']['vlan'] }}"
-  {% endif -%}{# voice_vlan -#}
-  {% if 'spanning-tree' in vars['interfaces'][interface] and 'portfast' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['portfast'] -%}
+{% endif %}{# voice_vlan #}
+{% if 'spanning-tree' in vars['interfaces'][interface] and 'portfast' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['portfast'] %}
   - " spanning-tree portfast"
-  {% endif -%}{# portfast -#}
-  {% if 'spanning-tree' in vars['interfaces'][interface] and 'bpduguard' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['bpduguard'] -%}
+{% endif %}{# portfast #}
+{% if 'spanning-tree' in vars['interfaces'][interface] and 'bpduguard' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['bpduguard'] %}
   - " spanning-tree bpduguard enable"
-  {% endif -%}{# bpduguard -#}
-  {% if 'service_policies' in vars['interfaces'][interface] -%}
-  {% for service_policy in vars['interfaces'][interface]['service_policies'] -%}
+{% endif %}{# bpduguard #}
+{% if 'service_policies' in vars['interfaces'][interface] %}
+{% for service_policy in vars['interfaces'][interface]['service_policies'] %}
   - " service-policy {{ service_policy['direction'] }} {{ service_policy['name'] }}"
-  {% endfor -%} # service-policy
-  {% endif -%} #service_policies
+{% endfor %} # service-policy
+{% endif %} #service_policies
 
-{%- endfor -%}
+{% endfor %}

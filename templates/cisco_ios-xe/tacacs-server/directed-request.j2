@@ -1,7 +1,7 @@
 - parents:
   lines:
-    {% if 'tacacs_server' in vars and 'directed_request' in vars['tacacs_server'] %}
-    {% if vars['tacacs_server']['directed_request'] %}
+{% if 'tacacs_server' in vars and 'directed_request' in vars['tacacs_server'] %}
+{% if vars['tacacs_server']['directed_request'] %}
   - tacacs-server directed-request
-    {% endif %}
-    {% endif %}
+{% endif %}
+{% endif %}

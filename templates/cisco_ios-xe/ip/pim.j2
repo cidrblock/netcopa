@@ -1,9 +1,9 @@
-{% if 'ip' in vars -%}
-{% if 'pim' in vars['ip'] -%}
-{% if 'rp_address' in vars['ip']['pim'] -%}
+{% if 'ip' in vars %}
+{% if 'pim' in vars['ip'] %}
+{% if 'rp_address' in vars['ip']['pim'] %}
 - parents:
   lines:
   - ip pim rp-address {{ vars['ip']['pim']['rp_address'] }}
-{% endif -%}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endif %}

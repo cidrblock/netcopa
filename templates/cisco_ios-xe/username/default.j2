@@ -1,14 +1,14 @@
-{% if 'usernames' in vars -%}
+{% if 'usernames' in vars %}
 {% for entry in vars['usernames'] %}
-{% if 'password' in entry -%}
+{% if 'password' in entry %}
 - parents:
   - username {{ entry['username'] }} password {{ entry['encryption_type'] }} {{ entry['password'] }}
   lines:
 {% endif %}
-{% if 'secret' in entry -%}
+{% if 'secret' in entry %}
 - parents:
   - username {{ entry['username'] }} secret {{ entry['encryption_type'] }} {{ entry['secret'] }}
   lines:
-{% endif -%}
-{% endfor -%}
+{% endif %}
+{% endfor %}
 {% endif %}

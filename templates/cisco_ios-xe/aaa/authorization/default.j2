@@ -1,24 +1,24 @@
-{% if 'aaa' in vars and 'authorization' in vars['aaa'] and 'exec' in vars['aaa']['authorization'] -%}
-{% if 'default' in vars['aaa']['authorization']['exec'] -%}
+{% if 'aaa' in vars and 'authorization' in vars['aaa'] and 'exec' in vars['aaa']['authorization'] %}
+{% if 'default' in vars['aaa']['authorization']['exec'] %}
 - parents:
   lines:
   - aaa authorization exec default {{ vars['aaa']['authorization']['exec']['default']['methods']|join(' ') }}
-{% endif -%}
-{% if 'activated' in vars['aaa']['authorization']['exec'] -%}
+{% endif %}
+{% if 'activated' in vars['aaa']['authorization']['exec'] %}
 - parents:
   lines:
   - aaa authorization exec {{ vars['aaa']['authorization']['exec']['activated']['methods']|join(' ') }}
-{% endif -%}
 {% endif %}
-{% if 'aaa' in vars and 'authorization' in vars['aaa'] and 'reverse-access' in vars['aaa']['authorization'] -%}
-{% if 'default' in vars['aaa']['authorization']['reverse-access'] -%}
+{% endif %}
+{% if 'aaa' in vars and 'authorization' in vars['aaa'] and 'reverse-access' in vars['aaa']['authorization'] %}
+{% if 'default' in vars['aaa']['authorization']['reverse-access'] %}
 - parents:
   lines:
   - aaa authorization reverse-access default {{ vars['aaa']['authorization']['reverse-access']['default']['methods']|join(' ') }}
-{% endif -%}
-{% if 'activated' in vars['aaa']['authorization']['reverse-access'] -%}
+{% endif %}
+{% if 'activated' in vars['aaa']['authorization']['reverse-access'] %}
 - parents:
   lines:
   - aaa authorization reverse-access {{ vars['aaa']['authorization']['reverse-access']['activated']['methods']|join(' ') }}
-{% endif -%}
+{% endif %}
 {% endif %}

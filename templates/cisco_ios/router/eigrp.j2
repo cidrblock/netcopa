@@ -1,44 +1,44 @@
-{% if 'router' in vars and 'eigrp' in vars['router'] -%}
-{% for process in vars['router']['eigrp'] -%}
+{% if 'router' in vars and 'eigrp' in vars['router'] %}
+{% for process in vars['router']['eigrp'] %}
 - parents:
   - router eigrp {{ vars['router']['eigrp'][process]['process_id'] }}
   lines:
-  {% if 'redistribute' in vars['router']['eigrp'][process] %}
-  {% for protocol in ['static', 'ospf'] -%}
-  {% if protocol in vars['router']['eigrp'][process]['redistribute'] -%}
-  {% set line = [] -%}
-  {% set _ = line.append('redistribute') -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['protocol']) -%}
-  {% if 'process_id' in vars['router']['eigrp'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['process_id']) -%}
-  {% endif -%}
-  {% if 'metric' in vars['router']['eigrp'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append('metric') -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['bandwidth']) -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['delay']) -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['reliability']) -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['load']) -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['mtu']) -%}
-  {% endif -%}
-  {% if 'route_map' in vars['router']['eigrp'][process]['redistribute'][protocol] -%}
-  {% set _ = line.append('route-map') -%}
-  {% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['route_map']) -%}
-  {% endif -%}
+{% if 'redistribute' in vars['router']['eigrp'][process] %}
+{% for protocol in ['static', 'ospf'] %}
+{% if protocol in vars['router']['eigrp'][process]['redistribute'] %}
+{% set line = [] %}
+{% set _ = line.append('redistribute') %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['protocol']) %}
+{% if 'process_id' in vars['router']['eigrp'][process]['redistribute'][protocol] %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['process_id']) %}
+{% endif %}
+{% if 'metric' in vars['router']['eigrp'][process]['redistribute'][protocol] %}
+{% set _ = line.append('metric') %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['bandwidth']) %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['delay']) %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['reliability']) %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['load']) %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['metric']['mtu']) %}
+{% endif %}
+{% if 'route_map' in vars['router']['eigrp'][process]['redistribute'][protocol] %}
+{% set _ = line.append('route-map') %}
+{% set _ = line.append(vars['router']['eigrp'][process]['redistribute'][protocol]['route_map']) %}
+{% endif %}
   - " {{ line|join(' ') }}"
-  {% endif -%} #protocol_in
-  {% endfor -%} #protocol
-  {% endif -%} #redistribute
-  {% if 'distribute_lists' in vars['router']['eigrp'][process] -%}
-  {% for distribute_list in vars['router']['eigrp'][process]['distribute_lists'] -%}
-  {% if 'route_map' in distribute_list -%}
+{% endif %} #protocol_in
+{% endfor %} #protocol
+{% endif %} #redistribute
+{% if 'distribute_lists' in vars['router']['eigrp'][process] %}
+{% for distribute_list in vars['router']['eigrp'][process]['distribute_lists'] %}
+{% if 'route_map' in distribute_list %}
   - " distribute-list route-map {{ distribute_list['route_map'] }} {{ distribute_list['direction'] }}"
-  {% endif -%} #route-map
-  {% endfor -%} #distribute-list
-  {% endif -%} #distribute_lists
-  {% if 'network_statements' in vars['router']['eigrp'][process] -%}
-  {% for network_statement in vars['router']['eigrp'][process]['network_statements'] -%}
+{% endif %} #route-map
+{% endfor %} #distribute-list
+{% endif %} #distribute_lists
+{% if 'network_statements' in vars['router']['eigrp'][process] %}
+{% for network_statement in vars['router']['eigrp'][process]['network_statements'] %}
   - " network {{ network_statement['network'] }} {{ network_statement['netmask'] }}"
-  {% endfor -%} #network_statement
-  {% endif -%} #network_statements
-{%- endfor -%} #process
-{%- endif -%} #router
+{% endfor %} #network_statement
+{% endif %} #network_statements
+{% endfor %} #process
+{% endif %} #router

@@ -1,10 +1,10 @@
 - parents:
   lines:
-  {% if 'aaa' in vars and 'authorization' in vars['aaa'] and 'exec' in vars['aaa']['authorization'] -%}
-  {% if 'default' in vars['aaa']['authorization']['exec'] -%}
+{% if 'aaa' in vars and 'authorization' in vars['aaa'] and 'exec' in vars['aaa']['authorization'] %}
+{% if 'default' in vars['aaa']['authorization']['exec'] %}
   - aaa authorization exec default {{ vars['aaa']['authorization']['exec']['default']['methods']|join(' ') }}
-  {% endif -%}
-  {% if 'activated' in vars['aaa']['authorization']['exec'] -%}
+{% endif %}
+{% if 'activated' in vars['aaa']['authorization']['exec'] %}
   - aaa authorization exec {{ vars['aaa']['authorization']['exec']['activated']['methods']|join(' ') }}
-  {% endif -%}
-  {% endif %}
+{% endif %}
+{% endif %}

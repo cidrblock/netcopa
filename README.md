@@ -264,11 +264,11 @@ After each extraction, the device's data is passed to the `template` referenced 
 
 
 ```jinja
-{% for entry in vars['logging']['levels'] -%}
+{% for entry in vars['logging']['levels'] %}
 - parents:
   lines:
   - 'logging {{ entry['type'] }} {{ entry['level'] }}'
-{% endfor -%}
+{% endfor %}
 ```
 
 The template produces yaml.  Both parents and lines can be generated.  Parents and lines are convenience keys to aid in the use of the template for later automation.
@@ -343,9 +343,9 @@ The corresponding temple needs to be modified as well. Open `./templates/cisco_i
 **Note: Sequence matters.** The jinja template has to produce the exact syntax and sequence of lines found and extracted from the configuration.  This validates the completeness and intergrity of the data.
 
 ```jinja
-{% if 'spanning-tree' in vars['interfaces'][interface] and 'bpduguard' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['bpduguard'] -%}
+{% if 'spanning-tree' in vars['interfaces'][interface] and 'bpduguard' in vars['interfaces'][interface]['spanning-tree'] and vars['interfaces'][interface]['spanning-tree']['bpduguard'] %}
 - " spanning-tree bpduguard enable"
-{% endif -%}{# bpduguard -#}
+{% endif %}{# bpduguard #}
 ```
 
 The process would be repeated until the errors are removed.

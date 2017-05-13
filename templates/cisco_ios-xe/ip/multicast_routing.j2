@@ -1,11 +1,11 @@
-{% if 'ip' in vars -%}
-{% if 'multicast_routing' in vars['ip'] -%}
-{% if vars['ip']['multicast_routing']['enabled'] -%}
-{% if vars['ip']['multicast_routing']['distributed'] -%}
+{% if 'ip' in vars %}
+{% if 'multicast_routing' in vars['ip'] %}
+{% if vars['ip']['multicast_routing']['enabled'] %}
+{% if vars['ip']['multicast_routing']['distributed'] %}
 - parents:
   lines:
   -  ip multicast-routing distributed
-{% endif -%}
-{% endif -%}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}

@@ -1,10 +1,10 @@
-{% for route_map in vars['route_maps'] -%}
+{% for route_map in vars['route_maps'] %}
 {% for statement in vars['route_maps'][route_map]['statements'] %}
 - parents:
   - route-map {{ vars['route_maps'][route_map]['name'] }} {{ vars['route_maps'][route_map]['statements'][statement]['action'] }} {{ vars['route_maps'][route_map]['statements'][statement]['sequence'] }}
   lines:
-  {% for entry in vars['route_maps'][route_map]['statements'][statement]['clauses'] -%}
+{% for entry in vars['route_maps'][route_map]['statements'][statement]['clauses'] %}
    - " {{ entry['clause'] }} {{ entry['value'] }}"
-  {% endfor -%}
-{%- endfor -%}
-{%- endfor -%}
+{% endfor %}
+{% endfor %}
+{% endfor %}

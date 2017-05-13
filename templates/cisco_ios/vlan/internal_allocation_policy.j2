@@ -1,5 +1,5 @@
 - parents:
   lines:
-    {% if 'vlan' in vars and 'internal_allocation_policy' in vars['vlan'] %}
+{% if 'vlan' in vars and 'internal_allocation_policy' in vars['vlan'] %}
   - vlan internal allocation policy {{ vars['vlan']['internal_allocation_policy'] }}
-    {% endif %}
+{% endif %}

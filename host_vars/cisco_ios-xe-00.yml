@@ -853,6 +853,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -909,6 +910,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: smtp
@@ -916,6 +918,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1038,6 +1041,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 10.0.0.249
           destination_wildcard: 0.0.0.0
@@ -1144,6 +1148,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1158,6 +1163,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 7849
@@ -1165,6 +1171,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1186,6 +1193,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 15023
@@ -1193,6 +1201,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1214,6 +1223,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1228,6 +1238,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1242,6 +1253,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1256,6 +1268,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1286,6 +1299,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 16972
@@ -1293,6 +1307,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 31850
@@ -1300,6 +1315,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 16985
@@ -1307,6 +1323,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 16994
@@ -1314,6 +1331,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1356,6 +1374,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1370,6 +1389,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1574,6 +1594,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -1588,6 +1609,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 3306
@@ -1595,6 +1617,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 2321
@@ -1602,6 +1625,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 118
@@ -1609,6 +1633,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 156
@@ -1616,6 +1641,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_port: 150
@@ -1623,6 +1649,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 10.0.0.290
           destination_port: 4410
@@ -1686,6 +1713,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 10.0.0.292
           destination_port: www
@@ -2032,6 +2060,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -2114,6 +2143,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -2128,6 +2158,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -2142,6 +2173,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -2156,6 +2188,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_network: 0.0.0.0
           destination_wildcard: 255.255.255.255
@@ -2176,6 +2209,7 @@ vars:
           protocol: tcp
           source_network: 0.0.0.0
           source_wildcard: 255.255.255.255
+          whitespace: ' '
         - action: permit
           destination_dscp: cs6
           destination_network: 0.0.0.0

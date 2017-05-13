@@ -1,9 +1,9 @@
-{% if 'server' in vars['snmp'] -%}
-{% if 'communities' in vars['snmp']['server'] -%}
-{% for community in vars['snmp']['server']['communities'] -%}
+{% if 'server' in vars['snmp'] %}
+{% if 'communities' in vars['snmp']['server'] %}
+{% for community in vars['snmp']['server']['communities'] %}
 - parents:
   - snmp-server community {{ community['community'] }} {{ community['type'] }} {{ community['acl'] }}
   lines:
 {% endfor %}
-{% endif -%}
-{% endif -%}
+{% endif %}
+{% endif %}
