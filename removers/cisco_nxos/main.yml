@@ -1,0 +1,6 @@
+- '^!.*'
+- 'Current configuration.*'
+- 'end'
+- 'Building configuration...'
+- '^(?![\s\S])'
+- 'ntp clock-period \d+'

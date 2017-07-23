@@ -1,0 +1,25 @@
+{#  ############################################## REDISTRIBUTE MACRO #}
+{% macro render_redistribute(parent, indent) %}
+{% if 'redistribute' in parent %}
+{% for protocol_name in ['connected', 'ospf'] %}
+{% if protocol_name in parent['redistribute'] %}
+{% set protocol = parent['redistribute'][protocol_name] %}
+{% set line = [] %}
+{% set _ = line.append('redistribute') %}
+{% set _ = line.append(protocol['protocol']) %}
+{% if 'process_id' in protocol %}
+{% set _ = line.append(protocol['process_id']) %}
+{% endif %}{# process_id #}
+{% if 'match' in protocol %}
+{% set _ = line.append('match') %}
+{% set _ = line.append(protocol['match']|join(' ')) %}
+{% endif %}{# match #}
+{% if 'route_map' in protocol %}
+{% set _ = line.append('route-map') %}
+{% set _ = line.append(protocol['route_map']) %}
+{% endif %}{# route-map #}
+  - "{{ indent }}{{ line|join(' ') }}"
+{% endif %}{# protocol #}
+{% endfor %}{# protocols #}
+{% endif %}{# redistribute #}
+{% endmacro %}

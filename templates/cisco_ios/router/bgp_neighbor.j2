@@ -1,0 +1,50 @@
+{#  ############################################## NEIGHBOR MACRO #}
+{% macro render_neighbors(parent, indent) %}
+{% if 'neighbors' in parent %}
+{% for neighbor_id, neighbor in parent['neighbors']|sort_by_ip_as_int() %}
+{#  ############################################## activate #}
+{% if 'activate' in neighbor and neighbor['activate'] %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} activate"
+{% endif %}
+{#  ############################################## remote_as #}
+{% if 'remote_as' in neighbor %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} remote-as {{ neighbor['remote_as'] }}"
+{% endif %}{# remote_as #}
+{#  ############################################## description #}
+{% if 'description' in neighbor %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} description {{ neighbor['description'] }}"
+{% endif %}{# description #}
+{#  ############################################## fall-over bfd #}
+{% if 'fall_over_bfd' in neighbor and neighbor['fall_over_bfd']%}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} fall-over bfd"
+{% endif %}{# fall-over bfd #}
+{#  ############################################## update_source #}
+{% if 'update_source' in neighbor %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} update-source {{ neighbor['update_source'] }}"
+{% endif %}{# update_source #}
+{#  ############################################## next_hop_self #}
+{% if 'next_hop_self' in neighbor and neighbor['next_hop_self']%}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} next-hop-self"
+{% endif %}{# next-hop-self #}
+{#  ############################################## default_originate #}
+{% if 'default_originate' in neighbor and 'enabled' in neighbor['default_originate'] and neighbor['default_originate']['enabled'] %}
+{% if 'route_map' in neighbor['default_originate'] %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} default-originate route-map {{ neighbor['default_originate']['route_map'] }}"
+{% else %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} default-originate"
+{% endif %}{# route_map #}
+{% endif %}{# default_originate #}
+{#  ############################################## soft-reconfiguration #}
+{% if 'soft_reconfiguration_inbound' in neighbor and neighbor['soft_reconfiguration_inbound']%}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} soft-reconfiguration inbound"
+{% endif %}{# soft_reconfiguration_inbound #}
+{#  ############################################## route-map #}
+{% if 'route_map_in' in neighbor %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} route-map {{ neighbor['route_map_in']}} in"
+{% endif %}{# route_map_in #}
+{% if 'route_map_out' in neighbor %}
+  - "{{indent}}neighbor {{ neighbor['ipv4_address'] }} route-map {{ neighbor['route_map_out']}} out"
+{% endif %}{# route_map_out #}
+{% endfor %}
+{% endif %}
+{% endmacro %}

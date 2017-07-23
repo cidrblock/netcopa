@@ -1,0 +1,23 @@
+{% for key, value in vars['interfaces'].iteritems() %}
+{% if value['name'].startswith('loopback') %}
+- parents:
+  - interface {{ value['name'] }}
+  lines:
+{% if 'description' in value %}
+  - "  description {{ value['description'] }}"
+{% endif %}{# description #}
+{% if 'vrf' in value %}
+  - "  vrf member {{ value['vrf'] }}"
+{% endif %}{# vrf #}
+{% if 'ip' in value %}
+{% if 'address' in value['ip'] %}
+{% if 'ipv4_address' in value['ip']['address'] and 'ipv4_netmask_bits' in value['ip']['address'] %}
+  - "  ip address {{ value['ip']['address']['ipv4_address'] }}/{{ value['ip']['address']['ipv4_netmask_bits'] }}"
+{% endif %}{# ipv4_address #}
+{% endif %}{# address #}
+{% if 'router' in value['ip'] and 'ospf' in value['ip']['router'] %}
+  - "  ip router ospf {{ value['ip']['router']['ospf']['process_id'] }} area {{ value['ip']['router']['ospf']['area'] }}"
+{% endif %}{# router/ospf #}
+{% endif %}{# ip #}
+{% endif %}{# loopback #}
+{% endfor %}

@@ -1,3 +1,7 @@
+{% from 'bgp_neighbor.j2' import render_neighbors with context %}
+{% from 'bgp_redistribute.j2' import render_redistribute with context %}
+{% from 'bgp_aggregate_addresses.j2' import render_aggregate_addresses with context %}
+{#  ############################################## begin template #}
 {% if 'router' in vars and 'bgp' in vars['router'] %}
 {% for process_id, process in vars['router']['bgp'].iteritems() %}
 - parents:
@@ -18,66 +22,13 @@
   - " bgp log-neighbor-changes"
 {% endif %}
 {#  ############################################## aggregate_addresses #}
-{% if 'aggregate_addresses' in process %}
-{% for aggregate_address in process['aggregate_addresses'] %}
-{% if 'summary_only' in aggregate_address and aggregate_address['summary_only'] %}
-  - " aggregate-address {{ aggregate_address['network'] }} {{ aggregate_address['netmask'] }} summary-only"
-{% endif %}
-{% endfor %}
-{% endif %}
+{{ render_aggregate_addresses(process, " ") }}
 {#  ############################################## redistribute #}
 {% if 'redistribute' in process %}
-{% for protocol_name in ['connected', 'ospf'] %}
-{% if protocol_name in process['redistribute'] %}
-{% set protocol = process['redistribute'][protocol_name] %}
-{% set line = [] %}
-{% set _ = line.append('redistribute') %}
-{% set _ = line.append(protocol['protocol']) %}
-{% if 'process_id' in protocol %}
-{% set _ = line.append(protocol['process_id']) %}
-{% endif %}{# process_id #}
-{% if 'match' in protocol %}
-{% set _ = line.append('match') %}
-{% set _ = line.append(protocol['match']|join(' ')) %}
-{% endif %}{# match #}
-{% if 'route_map' in protocol %}
-{% set _ = line.append('route-map') %}
-{% set _ = line.append(protocol['route_map']) %}
-{% endif %}{# route-map #}
-  - " {{ line|join(' ') }}"
-{% endif %}{# protocol #}
-{% endfor %}{# protocols #}
-{% endif %}{# redistribute #}
+{# {{ render_redistribute(process, " ") }} #}
+{% endif %}
 {#  ############################################## neighbors #}
-{% if 'neighbors' in process %}
-{% for neighbor_id, neighbor in process['neighbors']|sort_by_ip_as_int() %}
-{% if 'remote_as' in neighbor %}
-  - " neighbor {{ neighbor['ipv4_address'] }} remote-as {{ neighbor['remote_as'] }}"
-{% endif %}{# remote_as #}
-{% if 'description' in neighbor %}
-  - " neighbor {{ neighbor['ipv4_address'] }} description {{ neighbor['description'] }}"
-{% endif %}{# description #}
-{% if 'next_hop_self' in neighbor and neighbor['next_hop_self']%}
-  - " neighbor {{ neighbor['ipv4_address'] }} next-hop-self"
-{% endif %}{# next-hop-self #}
-{% if 'default_originate' in neighbor and 'enabled' in neighbor['default_originate'] and neighbor['default_originate']['enabled'] %}
-{% if 'route_map' in neighbor['default_originate'] %}
-  - " neighbor {{ neighbor['ipv4_address'] }} default-originate route-map {{ neighbor['default_originate']['route_map'] }}"
-{% else %}
-  - " neighbor {{ neighbor['ipv4_address'] }} default-originate"
-{% endif %}{# route_map #}
-{% endif %}{# default_originate #}
-{% if 'soft_reconfiguration_inbound' in neighbor and neighbor['soft_reconfiguration_inbound']%}
-  - " neighbor {{ value['ipv4_address'] }} soft-reconfiguration inbound"
-{% endif %}{# soft_reconfiguration_inbound #}
-{% if 'route_map_in' in neighbor %}
-  - " neighbor {{ neighbor['ipv4_address'] }} route-map {{ neighbor['route_map_in']}} in"
-{% endif %}{# route_map_in #}
-{% if 'route_map_out' in neighbor %}
-  - " neighbor {{ neighbor['ipv4_address'] }} route-map {{ neighbor['route_map_out']}} out"
-{% endif %}{# route_map_out #}
-{% endfor %}{# neighbors #}
-{% endif %}{# neighbors #}
+{{ render_neighbors(process, " ") }}
 {#  ############################################## auto_summary #}
 {% if 'auto_summary' in process and not process['auto_summary'] %}
   - " no auto-summary"
@@ -92,54 +43,33 @@
 {% for ip_version, address_family in process['address_families'].iteritems() %}
   - " address-family {{ address_family['ip_version'] }}"
 {#  ############################################## aggregate_addresses #}
-{% if 'aggregate_addresses' in address_family %}
-{% for aggregate_address in address_family['aggregate_addresses'] %}
-{% if 'summary_only' in aggregate_address and aggregate_address['summary_only'] %}
-  - "  aggregate-address {{ aggregate_address['network'] }} {{ aggregate_address['netmask'] }} summary-only"
-{% endif %}{# summary-only #}
-{% endfor %}{# aggregate-address #}
-{% endif %}{# aggregate_addresses #}
+{{ render_aggregate_addresses(address_family, "  ") }}
 {#  ############################################## redistribute #}
 {% if 'redistribute' in address_family %}
-{% for protocol_name in ['connected', 'ospf'] %}
-{% if protocol_name in address_family['redistribute'] %}
-{% set protocol = address_family['redistribute'][protocol_name] %}
-{% set line = [] %}
-{% set _ = line.append('redistribute') %}
-{% set _ = line.append(protocol['protocol']) %}
-{% if 'process_id' in protocol[protocol] %}
-{% set _ = line.append(protocol['process_id']) %}
-{% endif %}{# process_id #}
-{% if 'match' in protocol %}
-{% set _ = line.append('match') %}
-{% set _ = line.append(protocol['match']|join(' ')) %}
-{% endif %}{# match #}
-{% if 'route_map' in protocol %}
-{% set _ = line.append('route-map') %}
-{% set _ = line.append(protocol['route_map']) %}
-{% endif %}{# route-map #}
-  - "  {{ line|join(' ') }}"
-{% endif %}{# protocol #}
-{% endfor %}{# protocols #}
-{% endif %}{# redistribute #}
+{{ render_redistribute(address_family, "  ") }}
+{% endif %}
 {#  ############################################## neighbors #}
-{% if 'neighbors' in address_family %}
-{% for neighbor_id, neighbor in address_family['neighbors']|sort_by_ip_as_int() %}
-{#  ############################################## activate #}
-{% if 'activate' in neighbor and neighbor['activate'] %}
-  - "  neighbor {{ neighbor_id }} activate"
+{{ render_neighbors(address_family, "  ") }}
+{#  ############################################## distribute-list prefix #}
+{% if 'distribute_list' in address_family %}
+  - "  distribute-list prefix {{ address_family['distribute_list']['prefix_list'] }} {{ address_family['distribute_list']['direction'] }}"
 {% endif %}
-{#  ############################################## soft-reconfiguration #}
-{% if 'soft_reconfiguration_inbound' in neighbor and neighbor['soft_reconfiguration_inbound'] %}
-  - "  neighbor {{ neighbor_id }} soft-reconfiguration inbound"
+{#  ############################################## distance #}
+{% if 'distance' in address_family %}
+  - "  distance bgp {{ address_family['distance']['external'] }} {{ address_family['distance']['internal'] }} {{ address_family['distance']['local'] }}"
 {% endif %}
-{#  ############################################## route-map #}
-{% if 'route_map_in' in neighbor %}
-  - "  neighbor {{ neighbor_id }} route-map {{ neighbor['route_map_in']}} in"
-{% endif %}{# route_map_in #}
-{% if 'route_map_out' in neighbor %}
-  - "  neighbor {{ neighbor_id }} route-map {{ neighbor['route_map_out']}} out"
-{% endif %}{# route_map_out #}
+{#  ############################################## synchronization #}
+{% if 'auto_summary' in address_family and not address_family['auto_summary'] %}
+  - "  no auto-summary"
+{% endif %}
+{#  ############################################## synchronization #}
+{% if 'synchronization' in address_family and not address_family['synchronization'] %}
+  - "  no synchronization"
+{% endif %}
+{#  ############################################## networks #}
+{% if 'network_statements' in address_family  %}
+{% for statement in address_family['network_statements'] %}
+  - "  network {{ statement['network'] }} mask {{ statement['netmask'] }}"
 {% endfor %}
 {% endif %}
 {% endfor %}{# ip_version #}

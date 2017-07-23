@@ -1,0 +1,92 @@
+{% for key, value in vars['interfaces'].iteritems() %}
+{% if value['name'].startswith('Ethernet') %}
+- parents:
+  - interface {{ value['name'] }}
+  lines:
+{% if 'description' in value %}
+  - "  description {{ value['description'] }}"
+{% endif %}{# description #}
+{% if 'lacp' in value and 'rate' in value['lacp'] %}
+  - "  lacp rate {{ value['lacp']['rate'] }}"
+{% endif %}{# lacp rate #}
+{% if 'switchport' in value %}
+  - "  switchport"
+{% if 'mode' in value['switchport'] %}
+  - "  switchport mode {{ value['switchport']['mode'] }}"
+{% endif %}{# switchport mode #}
+{% if 'trunk' in value['switchport'] %}
+{% if 'native_vlan' in value['switchport']['trunk'] %}
+  - "  switchport trunk native vlan {{ value['switchport']['trunk']['native_vlan'] }}"
+{% endif %}{# switchport trunk native_vlan #}
+{% if 'allowed_vlans' in value['switchport']['trunk'] %}
+{% if 'vlans' in value['switchport']['trunk']['allowed_vlans'] %}
+  - "  switchport trunk allowed vlan {{ value['switchport']['trunk']['allowed_vlans']['vlans'] }}"
+{% endif %}{# trunk vlans #}
+{% if 'add' in value['switchport']['trunk']['allowed_vlans'] %}
+{% for add in value['switchport']['trunk']['allowed_vlans']['add'] %}
+  - "  switchport trunk allowed vlan add {{ add }}"
+{% endfor %}{# add entry #}
+{% endif %}{# trunk add vlans #}
+{% endif %}{# trunk allowed-vlans #}
+{% endif %}{# switchport trunk #}
+{% endif %}{# switchport #}
+{% if 'speed' in value %}
+  - "  speed {{ value['speed'] }}"
+{% endif %}{# speed #}
+{% if 'duplex' in value %}
+  - "  duplex {{ value['duplex'] }}"
+{% endif %}{# duplex #}
+{% if 'vrf' in value %}
+  - "  vrf member {{ value['vrf'] }}"
+{% endif %}{# vrf #}
+{% if 'ip' in value %}
+{% if 'flow' in value['ip'] and 'monitor' in value['ip']['flow'] %}
+  - "  ip flow monitor {{ value['ip']['flow']['monitor']['name'] }} {{ value['ip']['flow']['monitor']['direction'] }} sampler {{ value['ip']['flow']['monitor']['sampler'] }}"
+{% endif %}{# flow/monitor #}
+{% if 'redirects' in value['ip'] and 'negate' in value['ip']['redirects'] and value['ip']['redirects']['negate'] %}
+  - "  no ip redirects"
+{% endif %}{# ip redirects #}
+{% if 'address' in value['ip'] %}
+{% if 'ipv4_address' in value['ip']['address'] and 'ipv4_netmask_bits' in value['ip']['address'] %}
+  - "  ip address {{ value['ip']['address']['ipv4_address'] }}/{{ value['ip']['address']['ipv4_netmask_bits'] }}"
+{% endif %}{# ipv4_address #}
+{% endif %}{# address #}
+{% if 'ospf' in value['ip'] and 'passive_interface' in value['ip']['ospf'] and value['ip']['ospf']['passive_interface'] %}
+  - "  ip ospf passive-interface"
+{% endif %}{# ip ospf passive interface #}
+{% if 'router' in value['ip'] and 'ospf' in value['ip']['router'] %}
+  - "  ip router ospf {{ value['ip']['router']['ospf']['process_id'] }} area {{ value['ip']['router']['ospf']['area'] }}"
+{% endif %}{# router/ospf #}
+{% endif %}{# ip #}
+{% if 'dhcp' in value['ip'] and 'relay_addresses' in value['ip']['dhcp'] %}
+{% for relay_address in value['ip']['dhcp']['relay_addresses'] %}
+  - "  ip dhcp relay address {{ relay_address }}"
+{% endfor %}{# relay_address #}
+{% endif %}{# dhcp relay addresses #}
+{% if 'spanning_tree' in value %}
+{% if 'port' in value['spanning_tree'] %}
+{% if 'types' in value['spanning_tree']['port'] %}
+  - "  spanning-tree port type {{ value['spanning_tree']['port']['types']|join(' ') }}"
+{% endif %}{# types #}
+{% endif %}{# port #}
+{% if 'bpduguard' in value['spanning_tree'] %}
+{% if 'enabled' in value['spanning_tree']['bpduguard'] and value['spanning_tree']['bpduguard'] %}
+  - "  spanning-tree bpduguard enable"
+{% endif %}{# bpduguard enabled #}
+{% endif %}{# bpduguard #}
+{% endif %}{# spanning_tree #}
+{% if 'mtu' in value %}
+  - "  mtu {{ value['mtu'] }}"
+{% endif %}{# mtu #}
+{% if 'channel_group' in value and 'id' in value['channel_group'] %}
+{% if 'mode' in value['channel_group'] %}
+  - "  channel-group {{ value['channel_group']['id'] }} mode {{ value['channel_group']['mode'] }}"
+{% else %}
+  - "  channel-group {{ value['channel_group']['id'] }}"
+{% endif %}{# mode #}
+{% endif %}{# channel-group #}
+{% if 'shutdown' in value and 'negate' in value['shutdown'] and value['shutdown']['negate'] %}
+  - "  no shutdown"
+{% endif %}{# no shut #}
+{% endif %}{# ethernet #}
+{% endfor %}

@@ -1,0 +1,442 @@
+- name: vlan_port-channel_interface
+  tags:
+  - interface
+  matches:
+  - name: interface
+    template: interface/other.j2
+    lines:
+    - regex: '^interface ((Vlan|port-channel)\S+)$'
+      exmaples:
+      - 'interface Vlan2103'
+      captures:
+      - name
+      path:
+        interfaces:
+          "{{ name }}":
+            name: "{{ name }}"
+      lines:
+      - regex: '^\s*vrf member (\S*)$'
+        exmaples:
+        - '  vrf member zone1'
+        captures:
+        - vrf
+        path:
+          interfaces:
+            "{{ name }}":
+              vrf: "{{ vrf }}"
+      - regex: '^\s*description (.*)$'
+        exmaples:
+        - 'description My interface description'
+        captures:
+        - description
+        path:
+          interfaces:
+            "{{ name }}":
+              description: "\"{{ description }}\""
+      - regex: '^\s*ip flow monitor (\S+) (\S+) sampler (\S+)$'
+        examples:
+        - '  ip flow monitor monitorTest input sampler f2sampler'
+        captures:
+        - monitor_name
+        - direction
+        - sampler
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                flow:
+                  monitor:
+                    name: "{{ monitor_name }}"
+                    direction: "{{ direction }}"
+                    sampler: "{{ sampler }}"
+      - regex: '^\s*no ip redirects$'
+        examples:
+        -  '  no ip redirects'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                redirects:
+                  negate: true
+      - regex: '^\s*ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/(\d+)$'
+        examples:
+        - '  ip address 10.250.100.1 255.255.255.0'
+        captures:
+        - ipv4_address
+        - ipv4_netmask_bits
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                address:
+                  ipv4_address: "{{ ipv4_address }}"
+                  ipv4_netmask_bits: "{{ ipv4_netmask_bits }}"
+      - regex: '^\s*ip ospf passive-interface$'
+        examples:
+        -  '  ip ospf passive-interface'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                ospf:
+                  passive_interface: true
+      - regex: '^\s*no ip ospf passive-interface$'
+        examples:
+        -  '  no ip ospf passive-interface'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                ospf:
+                  passive_interface: false
+      - regex: '^\s*ip router ospf (\d+) area (\S+)$'
+        examples:
+        - '  ip router ospf 100 area 10.253.128.0'
+        captures:
+        - process_id
+        - area
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                router:
+                  ospf:
+                    process_id: "{{ process_id }}"
+                    area: "{{ area }}"
+      - regex: '^\s*ip dhcp relay address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        examples:
+        -  '  ip dhcp relay address 10.5.15.248'
+        captures:
+        - relay_address
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                dhcp:
+                  relay_addresses:
+                  - "{{ relay_address }}"
+      - regex: '^\s*vrrp (\d+)$'
+        examples:
+        -  '  vrrp 12'
+        captures:
+        - vrrp_id
+        path:
+          interfaces:
+            "{{ name }}":
+              vrrp:
+                "{{ vrrp_id }}":
+                  id: "{{ vrrp_id }}"
+        lines:
+        - regex: '^\s*priority (\d+)$'
+          examples:
+          -  '    priority 105'
+          captures:
+          - vrrp_priority
+          path:
+            interfaces:
+              "{{ name }}":
+                vrrp:
+                  "{{ vrrp_id }}":
+                    priority: "{{ vrrp_priority }}"
+        - regex: '^\s*address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+          examples:
+          -  '    address 10.252.12.1'
+          captures:
+          - vrrp_address
+          path:
+            interfaces:
+              "{{ name }}":
+                vrrp:
+                  "{{ vrrp_id }}":
+                    address: "{{ vrrp_address }}"
+        - regex: '^\s*no shutdown$'
+          examples:
+          -  '    no shutdown'
+          path:
+            interfaces:
+              "{{ name }}":
+                vrrp:
+                  "{{ vrrp_id }}":
+                    shutdown:
+                      negate: true
+        - regex: '^\s*exit$'
+          examples:
+          -  '    exit'
+          path:
+            interfaces:
+              "{{ name }}":
+                vrrp:
+                  "{{ vrrp_id }}":
+                    exit: true
+      - regex: '^\s*switchport$'
+        examples:
+        - ' switchport'
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+      - regex: '^\s*switchport mode (.*)$'
+        examples:
+        - ' switchport mode trunk'
+        captures:
+        - mode
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                mode: "{{ mode }}"
+      - regex: '^\s*switchport trunk native vlan (\d{1,4})$'
+        exmaples:
+        - ' switchport trunk native vlan 5'
+        captures:
+        - vlan
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                trunk:
+                  native_vlan: "{{ vlan }}"
+      - regex: '^\s*switchport trunk allowed vlan (?!(add))(.*)$'
+        exmaples:
+        - 'switchport trunk allowed vlan 1,2,903-905'
+        captures:
+        - not add
+        - vlans
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                trunk:
+                  allowed_vlans:
+                    vlans: "\"{{ vlans }}\""
+      - regex: '^\s*switchport trunk allowed vlan add (.*)$'
+        exmaples:
+        - ' switchport trunk allowed vlan add 1002-1005'
+        captures:
+        - vlans
+        path:
+          interfaces:
+            "{{ name }}":
+              switchport:
+                trunk:
+                  allowed_vlans:
+                    add:
+                    - "\"{{ vlans }}\""
+      - regex: '^\s*spanning-tree port type (.*)$'
+        exmaples:
+        - '  spanning-tree port type edge trunk'
+        captures:
+        - spanning_tree_port_types
+        path:
+          interfaces:
+            "{{ name }}":
+              spanning_tree:
+                port:
+                  types: "{{ spanning_tree_port_types.split() }}"
+      - regex: '^\s*spanning-tree bpduguard enable$'
+        exmaples:
+        - '  spanning-tree bpduguard enable'
+        path:
+          interfaces:
+            "{{ name }}":
+              spanning_tree:
+                bpduguard:
+                  enabled: true
+      - regex: '^\s*vpc peer-link$'
+        exmaples:
+        - ' vpc 32'
+        path:
+          interfaces:
+            "{{ name }}":
+              vpc_peer_link: true
+      - regex: '^\s*speed (\d+)$'
+        exmaples:
+        - ' speed 10000'
+        captures:
+        - speed
+        path:
+          interfaces:
+            "{{ name }}":
+              speed: "{{ speed }}"
+      - regex: '^\s*mtu (\d+)$'
+        exmaples:
+        - ' mtu 9216'
+        captures:
+        - mtu
+        path:
+          interfaces:
+            "{{ name }}":
+              mtu: "{{ mtu }}"
+      - regex: '^\s*vpc (\d+)$'
+        exmaples:
+        - ' vpc 32'
+        captures:
+        - vpc
+        path:
+          interfaces:
+            "{{ name }}":
+              vpc: "{{ vpc }}"
+      - regex: '^\s*no shutdown$'
+        examples:
+        -  ' no shutdown'
+        path:
+          interfaces:
+            "{{ name }}":
+              shutdown:
+                negate: true
+      # - regex: '^ switchport access vlan (\d{1,4})$'
+      #   examples:
+      #   - ' switchport access vlan 900'
+      #   captures:
+      #   - vlan
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           access:
+      #             vlan: "{{ vlan }}"
+      # - regex: '^ switchport trunk encapsulation (\w+)$'
+      #   exmaples:
+      #   - ' switchport trunk encapsulation dot1q'
+      #   captures:
+      #   - switchport_trunk_encapsulation
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           trunk:
+      #             encapsulation: "{{ switchport_trunk_encapsulation }}"
+      # - regex: '^ switchport trunk native vlan (\d{1,4})$'
+      #   exmaples:
+      #   - ' switchport trunk native vlan 5'
+      #   captures:
+      #   - vlan
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           trunk:
+      #             native_vlan: "{{ vlan }}"
+      # - regex: '^ switchport trunk allowed vlan (?!(add))(.*)$'
+      #   exmaples:
+      #   - 'switchport trunk allowed vlan 1,2,903-905'
+      #   captures:
+      #   - not add
+      #   - vlans
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           trunk:
+      #             allowed_vlans:
+      #               vlans: "\"{{ vlans }}\""
+      # - regex: '^ switchport trunk allowed vlan add (.*)$'
+      #   exmaples:
+      #   - ' switchport trunk allowed vlan add 1002-1005'
+      #   captures:
+      #   - vlans
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           trunk:
+      #             allowed_vlans:
+      #               add: "\"{{ vlans }}\""
+      # - regex: '^ switchport mode (.*)$'
+      #   examples:
+      #   - ' switchport mode trunk'
+      #   captures:
+      #   - mode
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           mode: "{{ mode.split() }}"
+      # - regex: '^ channel-group (\d{1,3}) mode (.*)$'
+      #   examples:
+      #   - ' channel-group 1 mode desirable'
+      #   captures:
+      #   - channel_group
+      #   - channel_group_mode
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         channel_group: "{{ channel_group }}"
+      #         channel_group_mode: "{{ channel_group_mode.split() }}"
+      # - regex: '^ no switchport$'
+      #   exmaples:
+      #   - ' no switchport'
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         switchport:
+      #           negate: True
+      # - regex: '^ bandwidth (.*)$'
+      #   examples:
+      #   - ' bandwidth 10000'
+      #   captures:
+      #   - bandwidth
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         bandwidth: "{{ bandwidth }}"
+      # - regex: '^ ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      #   examples:
+      #   - ' ip address 10.250.100.1 255.255.255.0'
+      #   captures:
+      #   - ipv4_address
+      #   - ipv4_netmask
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         ip:
+      #           address:
+      #             ipv4_address: "{{ ipv4_address }}"
+      #             ipv4_netmask: "{{ ipv4_netmask }}"
+      # - regex: '^ no ip address$'
+      #   examples:
+      #   - ' no ip address'
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         ip:
+      #           address:
+      #             negate: True
+      # - regex: '^ ip helper-address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+      #   examples:
+      #   - ' ip helper-address 10.1.1.90'
+      #   captures:
+      #   - ipv4_helper_address
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         ip:
+      #           helper_addresses:
+      #           - ipv4_helper_address: "{{ ipv4_helper_address }}"
+      # - regex: '^ ip route-cache (\w+)$'
+      #   examples:
+      #   - ' ip route-cache policy'
+      #   captures:
+      #   - route_cache
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         ip:
+      #           route_cache: "{{ route_cache }}"
+      # - regex: '^ ip policy route-map (\S+)$'
+      #   examples:
+      #   - ' ip policy route-map foo-test'
+      #   captures:
+      #   - policy_route_map
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         ip:
+      #           policy_route_map: "{{ policy_route_map }}"
+      # - regex: '^ shutdown$'
+      #   examples:
+      #   - ' shutdown'
+      #   path:
+      #     interfaces:
+      #       "{{ name }}":
+      #         shutdown: True

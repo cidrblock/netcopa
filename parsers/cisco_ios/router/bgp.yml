@@ -123,6 +123,29 @@
                   neighbors:
                     "{{ ipv4_address }}":
                       description: "\"{{ description }}\""
+        - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) fall-over bfd$'
+          examples:
+          - ' neighbor 10.0.0.23 fall-over bfd'
+          path:
+            router:
+              bgp:
+                "{{ parent_process_id }}":
+                  neighbors:
+                    "{{ ipv4_address }}":
+                      fall_over_bfd: True
+        - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) update-source (\S+)$'
+          examples:
+          - ' neighbor 10.0.255.1 update-source Loopback0'
+          captures:
+          - ipv4_address
+          - update_source
+          path:
+            router:
+              bgp:
+                "{{ parent_process_id }}":
+                  neighbors:
+                    "{{ ipv4_address }}":
+                      update_source: "{{ update_source }}"
         - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) next-hop-self$'
           examples:
           - ' neighbor 10.0.0.23 next-hop-self'
@@ -264,7 +287,23 @@
                       "\"{{ ip_version }}\"":
                           neighbors:
                             "{{ ipv4_address }}":
+                              ipv4_address: "{{ ipv4_address }}"
                               activate: True
+          - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) next-hop-self$'
+            examples:
+            - ' neighbor 10.0.0.23 next-hop-self'
+            captures:
+            - ipv4_address
+            path:
+              router:
+                bgp:
+                  "{{ parent_process_id }}":
+                    address_families:
+                      "\"{{ ip_version }}\"":
+                          neighbors:
+                            "{{ ipv4_address }}":
+                              ipv4_address: "{{ ipv4_address }}"
+                              next_hop_self: True
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) soft-reconfiguration inbound$'
             examples:
             - '  neighbor 10.0.0.233 soft-reconfiguration inbound'
@@ -278,6 +317,7 @@
                       "\"{{ ip_version }}\"":
                           neighbors:
                             "{{ ipv4_address }}":
+                              ipv4_address: "{{ ipv4_address }}"
                               soft_reconfiguration_inbound: True
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) route-map (\S+) in$'
             examples:
@@ -293,6 +333,7 @@
                       "\"{{ ip_version }}\"":
                           neighbors:
                             "{{ ipv4_address }}":
+                              ipv4_address: "{{ ipv4_address }}"
                               route_map_in: "{{ route_map_in }}"
           - regex: '^\s+neighbor (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) route-map (\S+) out$'
             examples:
@@ -308,10 +349,77 @@
                       "\"{{ ip_version }}\"":
                           neighbors:
                             "{{ ipv4_address }}":
+                              ipv4_address: "{{ ipv4_address }}"
                               route_map_out: "{{ route_map_out }}"
 
-
-
+##### random addr family stuff
+          - regex: '^\s+distribute-list prefix (\S+) (\S+)$'
+            examples:
+            - '  distribute-list prefix deny-ibgp in'
+            captures:
+            - distribute_list_prefix
+            - direction
+            path:
+              router:
+                bgp:
+                  "{{ parent_process_id }}":
+                    address_families:
+                      "\"{{ ip_version }}\"":
+                          distribute_list:
+                            prefix_list: "{{ distribute_list_prefix }}"
+                            direction: "{{ direction }}"
+          - regex: '^\s+distance bgp (\d+) (\d+) (\d+)$'
+            examples:
+            -  '  distance bgp 20 100 200'
+            captures:
+            - external_distance
+            - internal_distance
+            - local_distance
+            path:
+              router:
+                bgp:
+                  "{{ parent_process_id }}":
+                    address_families:
+                      "\"{{ ip_version }}\"":
+                          distance:
+                            external: "{{ external_distance }}"
+                            internal: "{{ internal_distance }}"
+                            local: "{{ local_distance }}"
+          - regex: '^\s+no auto-summary$'
+            examples:
+            -  '  no auto-summary'
+            path:
+              router:
+                bgp:
+                  "{{ parent_process_id }}":
+                    address_families:
+                      "\"{{ ip_version }}\"":
+                          auto_summary: false
+          - regex: '^\s+no synchronization$'
+            examples:
+            - '  no synchronization'
+            path:
+              router:
+                bgp:
+                  "{{ parent_process_id }}":
+                    address_families:
+                      "\"{{ ip_version }}\"":
+                          synchronization: "False"
+          - regex: '^\s+network (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) mask (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+            examples:
+            -   '  network 10.1.0.0 mask 255.255.0.0'
+            captures:
+            - network
+            - netmask
+            path:
+              router:
+                bgp:
+                  "{{ parent_process_id }}":
+                    address_families:
+                      "\"{{ ip_version }}\"":
+                        network_statements:
+                        - network: "{{ network }}"
+                          netmask: "{{ netmask }}"
 
 
         #   - regex: '^\s+no synchronization'

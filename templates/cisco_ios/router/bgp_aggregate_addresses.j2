@@ -1,0 +1,9 @@
+{% macro render_aggregate_addresses(parent, indent) %}
+{% if 'aggregate_addresses' in parent %}
+{% for aggregate_address in parent['aggregate_addresses'] %}
+{% if 'summary_only' in aggregate_address and aggregate_address['summary_only'] %}
+  - "{{ indent }}aggregate-address {{ aggregate_address['network'] }} {{ aggregate_address['netmask'] }} summary-only"
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endmacro %}
