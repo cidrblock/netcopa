@@ -1,4 +1,4 @@
-os: cisco_ios-xe
+os: cisco_xe
 vars:
   aaa:
     accounting:

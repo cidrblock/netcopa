@@ -7,7 +7,7 @@
     lines:
     - regex: '^route-map (\S+) (permit|deny) (\d{1,4})$'
       examples:
-      - 'route-map rt-bgp65139-bgp65003 permit 320'
+      - 'route-map ospf100-eigrp900 permit 10'
       captures:
       - name
       - action
@@ -21,9 +21,21 @@
                 action: "{{ action }}"
                 sequence: "{{ sequence }}"
       lines:
-      - regex: '^ (match|set) (.*)$'
+      - regex: '^\s+description (.*)$'
         examples:
-        - ' match ip address rt-320-apac-ent-video-networks'
+        - ' description this is some text'
+        captures:
+        - description
+        path:
+          route_maps:
+            "{{ name }}":
+              name: "{{ name }}"
+              statements:
+                "{{ sequence }}":
+                  description: "{{ description }}"
+      - regex: '^\s+(match|set) (.*)$'
+        examples:
+        - ' set ip next-hop 10.0.25.1'
         captures:
         - clause
         - value

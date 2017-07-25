@@ -4,10 +4,10 @@
   - route-map {{ vars['route_maps'][route_map]['name'] }} {{ vars['route_maps'][route_map]['statements'][statement]['action'] }} {{ vars['route_maps'][route_map]['statements'][statement]['sequence'] }}
   lines:
 {% if 'description' in vars['route_maps'][route_map]['statements'][statement] %}
-   - " description {{ vars['route_maps'][route_map]['statements'][statement]['description'] }}"
+   - "   description {{ vars['route_maps'][route_map]['statements'][statement]['description'] }}"
 {% endif %}
 {% for entry in vars['route_maps'][route_map]['statements'][statement]['clauses'] %}
-   - " {{ entry['clause'] }} {{ entry['value'] }}"
+   - "   {{ entry['clause'] }} {{ entry['value'] }}"
 {% endfor %}
 {% endfor %}
 {% endfor %}

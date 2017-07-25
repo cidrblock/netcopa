@@ -4,8 +4,8 @@ utilities/keywords.yml
 a_configurations/*
 configurations/*
 !configurations/cisco_ios-00.cfg
-!configurations/cisco_ios-xe-00.cfg
+!configurations/cisco_xe-00.cfg
 host_vars/*
 !host_vars/cisco_ios-00.yml
-!!host_vars/cisco_ios-xe-00.yml
+!host_vars/cisco_xe-00.yml
 configurations_rebuilt/*
