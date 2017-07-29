@@ -215,7 +215,8 @@ vars:
   hostname: dc2lrt001
   interfaces:
     GigabitEthernet0/1:
-      bandwidth: 100000
+      bandwidth:
+      - 100000
       description: Dolorem molestias maxime unde ut.
       ip:
         address:
@@ -255,7 +256,8 @@ vars:
       switchport:
         negate: true
     GigabitEthernet0/2:
-      bandwidth: 100000
+      bandwidth:
+      - 100000
       description: Debitis illum quis expedita itaque.
       ip:
         address:

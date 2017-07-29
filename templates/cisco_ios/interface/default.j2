@@ -103,6 +103,21 @@
   - " ip tcp adjust-mss {{ value['ip']['tcp']['adjust_mss'] }}"
 {% endif %}{# ip tcp adjust-mss #}
 {% endif %}{# tcp #}
+{% if 'nat' in value['ip'] %}
+{% if 'side' in value['ip']['nat'] %}
+  - " ip nat {{ value['ip']['nat']['side'] }}"
+{% endif %}{# nat direction #}
+{% endif %}{# nat #}
+{% if 'inspect' in value['ip'] and 'name' in value['ip']['inspect'] and 'direction' in value['ip']['inspect'] %}
+  - " ip inspect {{ value['ip']['inspect']['name'] }} {{ value['ip']['inspect']['direction'] }}"
+{% endif %}{# inspect #}
+{% if 'virtual_reassembly' in value['ip'] and 'direction' in value['ip']['virtual_reassembly'] %}
+{% if 'negate' in value['ip']['virtual_reassembly'] and value['ip']['virtual_reassembly']['negate'] %}
+  - " no ip virtual-reassembly {{ value['ip']['virtual_reassembly']['direction'] }}"
+{% else %}
+  - " ip virtual-reassembly {{ value['ip']['virtual_reassembly']['direction'] }}"
+{% endif %}{# negate virtual_reassembly #}
+{% endif %}{# virtual_reassembly #}
 {% if 'ospf' in value['ip'] %}
 {% if 'network_type' in value['ip']['ospf'] %}
   - " ip ospf network {{ value['ip']['ospf']['network_type']}}"
@@ -110,6 +125,9 @@
 {% if 'hello_interval' in value['ip']['ospf'] %}
   - " ip ospf hello-interval {{ value['ip']['ospf']['hello_interval']}}"
 {% endif %}{# ospf hello_interval #}
+{% if 'encryption_type' in value['ip']['ospf'] and 'authentication_key' in value['ip']['ospf'] %}
+  - " ip ospf authentication-key {{ value['ip']['ospf']['encryption_type'] }} {{ value['ip']['ospf']['authentication_key'] }}"
+{% endif %}{# authentication-key #}
 {% endif %}{# ospf #}
 {% if 'helper_addresses' in value['ip'] %}
 {% for address in value['ip']['helper_addresses'] %}
@@ -153,6 +171,13 @@
 {% if 'path_mtu_discovery' in value['tunnel'] and value['tunnel']['path_mtu_discovery'] %}
   - " tunnel path-mtu-discovery"
 {% endif %}{# tunnel path_mtu_discovery #}
+{% if 'protection' in value['tunnel'] and 'ipsec_profile' in value['tunnel']['protection'] %}
+{% if 'shared' in value['tunnel']['protection'] %}
+  - " tunnel protection ipsec profile {{ value['tunnel']['protection']['ipsec_profile'] }} shared"
+{% else %}
+  - " tunnel protection ipsec profile {{ value['tunnel']['protection']['ipsec_profile'] }}"
+{% endif %}{# shared tunnel protection #}
+{% endif %}{# tunnel protection #}
 {% endif %}{# tunnel #}
 {% if 'negotiation' in value and value['negotiation']['negate'] %}
   - " no negotiation {{ value['negotiation']['type'] }}"
@@ -163,6 +188,32 @@
 {% if 'ip' in value and 'pim' in value['ip'] %}
   - " ip pim {{ value['ip']['pim']['mode'] }}"
 {% endif %}{# pim mode #}
+{% if 'load_interval' in value %}
+  - " load-interval {{ value['load_interval'] }}"
+{% endif %}{# load_interval #}
+{% if 'duplex' in value %}
+  - " duplex {{ value['duplex'] }}"
+{% endif %}{# duplex #}
+{% if 'speed' in value %}
+  - " speed {{ value['speed'] }}"
+{% endif %}{# speed #}
+{% if 'media_type' in value %}
+  - " media-type {{ value['media_type'] }}"
+{% endif %}{# media_type #}
+{% if 'cdp' in value and not value['cdp']['enabled'] %}
+  - " no cdp enable"
+{% endif %}{# no cdp #}
+{% if 'service_module' in value and 'ip' in value['service_module'] %}
+{% if 'address' in value['service_module']['ip'] and 'ipv4_address' in value['service_module']['ip']['address'] and 'ipv4_netmask' in value['service_module']['ip']['address'] %}
+  - " service-module ip address {{ value['service_module']['ip']['address']['ipv4_address'] }} {{ value['service_module']['ip']['address']['ipv4_netmask'] }}"
+{% endif %}{# service-module ip address #}
+{% if 'default_gateway' in value['service_module']['ip'] and 'ipv4_address' in value['service_module']['ip']['default_gateway'] %}
+  - " service-module ip default-gateway {{ value['service_module']['ip']['default_gateway']['ipv4_address'] }}"
+{% endif %}{# service-module default-gateway #}
+{% endif %}{# service-module #}
+{% if 'keepalive' in value and 'negate' in value['keepalive'] and value['keepalive']['negate'] %}
+  - " no keepalive"
+{% endif %}{# no keepalive #}
 {% if 'service_policies' in value %}
 {% for service_policy in value['service_policies'] %}
   - " service-policy {{ service_policy['direction'] }} {{ service_policy['name'] }}"

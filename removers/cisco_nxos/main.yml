@@ -1,3 +1,5 @@
+pre_parse: []
+post_parse:
 - '^!.*'
 - 'Current configuration.*'
 - 'end'

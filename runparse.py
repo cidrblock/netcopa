@@ -307,29 +307,23 @@ def load_removers(devices):
     for device in devices:
         if not device['failed']:
             print_log('{:s}: {:s}'.format(device['hostname'], device['os']), 'ljust')
-            device['removers'] = []
             directory = '%s/%s' % (REMOVERS, device['os'])
-            remover_files = [y for x in os.walk(directory) \
-                             for y in glob(os.path.join(x[0], '*.yml'))]
-            for remover_file in remover_files:
-                with open(remover_file, 'r') as stream:
-                    try:
-                        device['removers'].extend(yaml.load(stream))
-                    except TypeError:
-                        device['failed'] = True
-                        reason = "Removers appears empty: %s/%s" % (device['os'], remover_files)
-                        device['failed_reason'] = reason
-                        print_log(reason, 'failed')
-                        break
-                    except yaml.YAMLError:
-                        device['failed'] = True
-                        reason = "Error importing removers: %s/%s" % (device['os'], remover_files)
-                        device['failed_reason'] = reason
-                        print_log(reason, 'failed')
-                        break
-            else:
-                print_log('ok', 'ok')
-                continue
+            remover_file = directory + '/main.yml'
+            with open(remover_file, 'r') as stream:
+                try:
+                    device['removers'] = yaml.load(stream)
+                except TypeError:
+                    device['failed'] = True
+                    reason = "Removers appears empty: %s/%s" % (device['os'], remover_file)
+                    device['failed_reason'] = reason
+                    print_log(reason, 'failed')
+                    break
+                except yaml.YAMLError:
+                    device['failed'] = True
+                    reason = "Error importing removers: %s/%s" % (device['os'], remover_file)
+                    device['failed_reason'] = reason
+                    print_log(reason, 'failed')
+                    break
     return devices
 
 def parse(devices):
@@ -501,11 +495,12 @@ def execute_parser(device, parser):
     #     print_log(device['failed_reason'], 'failed')
     return device
 
-def run_removers(devices):
+def run_removers(devices, remove_type):
     """ Run the removers against devices
 
     Args:
         devices (dict): A dict of devices
+        type (string): The type of removers to run
 
     Returns:
         dict: A dict of devices, post removers
@@ -517,7 +512,9 @@ def run_removers(devices):
             device['removals'] = []
             cur_len = len(device['working_configuration'])
             for idx, line in enumerate(reversed(device['working_configuration'])):
-                for remover in device['removers']:
+                print(remove_type)
+                print(device['removers'])
+                for remover in device['removers'][remove_type]:
                     matches = re.match(remover, line)
                     if matches:
                         device['removals'].insert(0,
@@ -604,7 +601,7 @@ def render(tpl_path, context):
     try:
         path, filename = os.path.split(tpl_path)
         env = jinja2.Environment()
-        env.trim_blocks=True
+        env.trim_blocks = True
         env.filters['sort_by_ip_as_int'] = sort_by_ip_as_int
         env.loader = jinja2.FileSystemLoader(path or './')
         return None, env.get_template(filename).render(context)
@@ -792,14 +789,16 @@ def run(args):
     devices = load_removers(devices)
     print_log('Loading OS parsers', 'header')
     devices = load_parsers(devices, args)
+    print_log('Run pre-parse removers', 'header')
+    devices = run_removers(devices, 'pre_parse')
     print_log('Running parsers and comparing template output to actual', 'header')
     devices = parse(devices)
     print_log('Persist vars to temp directory', 'header')
     devices = persist_host_vars(devices, HOST_VARS_TEMP, args)
     print_log('Copy temp directory to host_vars entry', 'header')
     devices = copy_host_vars(devices, HOST_VARS_TEMP, HOST_VARS)
-    print_log('Run removers', 'header')
-    devices = run_removers(devices)
+    print_log('Run post-parse removers', 'header')
+    devices = run_removers(devices, 'post_parse')
     print_log('Report extraction success', 'header')
     report(devices)
     print_log('Remove temp directory', 'header')

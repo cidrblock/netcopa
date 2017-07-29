@@ -1,0 +1,271 @@
+os: cisco_ios
+vars:
+  interfaces:
+    Dialer0:
+      ip:
+        address:
+          negate: true
+      name: Dialer0
+    FastEthernet0/0/0:
+      description: Nulla quia labore iure.
+      duplex: full
+      ip:
+        address:
+          ipv4_address: 10.0.0.70
+          ipv4_netmask: 255.255.255.252
+        flow:
+          directions:
+          - ingress
+          - egress
+        nbar:
+          protocol_discovery: true
+      name: FastEthernet0/0/0
+      speed: 100
+    FastEthernet0/0/1:
+      duplex: auto
+      ip:
+        address:
+          negate: true
+      name: FastEthernet0/0/1
+      shutdown: true
+      speed: auto
+    GigabitEthernet0/0:
+      bandwidth:
+      - 20000
+      description: Sunt temporibus nemo mollitia.
+      duplex: auto
+      ip:
+        address:
+          ipv4_address: 10.0.0.57
+          ipv4_netmask: 255.255.255.252
+        flow:
+          directions:
+          - ingress
+          - egress
+        nbar:
+          protocol_discovery: true
+      load_interval: 30
+      media_type: rj45
+      name: GigabitEthernet0/0
+      service_policies:
+      - direction: input
+        name: qo-global-core-ingress-lan
+      - direction: output
+        name: company-emea-shape-egress-carrier_twocn21-20mbs
+      speed: auto
+    GigabitEthernet0/1:
+      description: Voluptatum deleniti harum voluptatem.
+      duplex: full
+      ip:
+        address:
+          ipv4_address: 10.0.0.29
+          ipv4_netmask: 255.255.255.252
+        flow:
+          directions:
+          - ingress
+          - egress
+        nat:
+          side: inside
+        nbar:
+          protocol_discovery: true
+        ospf:
+          authentication_key: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+          encryption_type: 7
+        virtual_reassembly:
+          direction: in
+          negate: true
+      media_type: rj45
+      name: GigabitEthernet0/1
+      service_policies:
+      - direction: input
+        name: qo-global-core-ingress-lan
+      speed: 1000
+    GigabitEthernet0/2:
+      bandwidth:
+      - 100000
+      description: Et nam iusto est.
+      duplex: full
+      ip:
+        access_groups:
+        - direction: in
+          name: internet->in
+        - direction: out
+          name: blacklist->out
+        address:
+          ipv4_address: 129.44.208.8
+          ipv4_netmask: 255.255.255.248
+        flow:
+          directions:
+          - ingress
+          - egress
+        inspect:
+          direction: out
+          name: internetegress
+        nat:
+          side: outside
+        nbar:
+          protocol_discovery: true
+        virtual_reassembly:
+          direction: in
+      name: GigabitEthernet0/2
+      speed: 100
+    GigabitEthernet0/3:
+      description: Nihil autem nisi rem.
+      duplex: auto
+      ip:
+        address:
+          ipv4_address: 10.0.0.77
+          ipv4_netmask: 255.255.255.252
+        flow:
+          directions:
+          - ingress
+          - egress
+        nbar:
+          protocol_discovery: true
+      name: GigabitEthernet0/3
+      speed: auto
+    Loopback0:
+      description: Exercitationem vero.
+      ip:
+        address:
+          ipv4_address: 10.0.0.1
+          ipv4_netmask: 255.255.255.255
+        flow:
+          directions:
+          - ingress
+          - egress
+        nbar:
+          protocol_discovery: true
+      name: Loopback0
+    SM1/0:
+      ip:
+        address:
+          ipv4_address: 10.0.0.45
+          ipv4_netmask: 255.255.255.252
+        flow:
+          directions:
+          - ingress
+          - egress
+      keepalive:
+        negate: true
+      name: SM1/0
+      service_module:
+        ip:
+          address:
+            ipv4_address: 10.0.0.46
+            ipv4_netmask: 255.255.255.252
+          default_gateway:
+            ipv4_address: 10.0.0.47
+      shutdown: true
+    SM1/1:
+      description: Nihil eos doloribus cupiditate.
+      ip:
+        address:
+          negate: true
+      name: SM1/1
+    Serial0/1/0:15:
+      cdp:
+        enabled: false
+      encapsulation:
+        protocol: hdlc
+      ip:
+        address:
+          negate: true
+      isdn:
+      - switch-type primary-net5
+      - incoming-voice voice
+      - bind-l3 ccm-manager
+      name: Serial0/1/0:15
+    Serial0/1/1:15:
+      cdp:
+        enabled: false
+      encapsulation:
+        protocol: hdlc
+      ip:
+        address:
+          negate: true
+      isdn:
+      - switch-type primary-net5
+      - incoming-voice voice
+      name: Serial0/1/1:15
+      shutdown: true
+    Tunnel0:
+      bandwidth:
+      - 100000
+      - inherit
+      description: Consequuntur a porro autem aut.
+      ip:
+        address:
+          ipv4_address: 10.0.0.132
+          ipv4_netmask: 255.255.255.128
+        flow:
+          directions:
+          - ingress
+          - egress
+        mtu: 1300
+        nbar:
+          holdtime: 600
+          map:
+            ip_address: 10.0.0.133
+            multicast:
+              dynamic: true
+              nbma_address: 8.188.16.28
+            nbma_address: 8.188.16.28
+          network_id: 10
+          nhs: 10.0.0.134
+          protocol_discovery: true
+        ospf:
+          hello_interval: 30
+          network_type: point-to-point
+        redirects:
+          negate: true
+        tcp:
+          adjust_mss: 1260
+      name: Tunnel0
+      shutdown: true
+      tunnel:
+        key: 10
+        mode: gre multipoint
+        path_mtu_discovery: true
+        source: GigabitEthernet0/2
+    Tunnel10:
+      bandwidth:
+      - 100000
+      description: A odit minus iure.
+      ip:
+        address:
+          ipv4_address: 10.0.0.6
+          ipv4_netmask: 255.255.255.128
+        flow:
+          directions:
+          - ingress
+        mtu: 1300
+        nbar:
+          holdtime: 600
+          map:
+            ip_address: 10.0.0.7
+            multicast:
+              dynamic: true
+              nbma_address: 157.23.130.4
+            nbma_address: 157.23.130.4
+          network_id: 100
+          nhs: 10.0.0.8
+        redirects:
+          negate: true
+        tcp:
+          adjust_mss: 1260
+      name: Tunnel10
+      tunnel:
+        key: 100
+        mode: gre multipoint
+        path_mtu_discovery: true
+        protection:
+          ipsec_profile: emea-dmvpn-ipsec1
+          shared: true
+        source: GigabitEthernet0/2
+    Vlan1:
+      ip:
+        address:
+          negate: true
+      name: Vlan1
+      shutdown: true

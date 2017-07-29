@@ -1,6 +1,13 @@
+pre_parse:
+- '^ !Application:'
+
+post_parse:
 - '^!.*'
 - 'Current configuration.*'
 - 'end'
 - 'Building configuration...'
 - '^(?![\s\S])'
 - 'ntp clock-period \d+'
+- '^boot-start-marker$'
+- '^boot-end-marker$'
+- '^ !Application:'

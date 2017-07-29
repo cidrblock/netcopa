@@ -376,6 +376,18 @@
             "{{ name }}":
               tunnel:
                 path_mtu_discovery: true
+      - regex: '^\s*tunnel protection ipsec profile (\S+) shared$'
+        examples:
+        - ' tunnel protection ipsec profile emea-dmvpn-ipsec shared'
+        captures:
+        - tunnel_ipsec_profile_name
+        path:
+          interfaces:
+            "{{ name }}":
+              tunnel:
+                protection:
+                  ipsec_profile: "{{ tunnel_ipsec_profile_name }}"
+                  shared: true
       - regex: '^\s*encapsulation (\S+)$'
         examples:
         - ' encapsulation hdlc'
@@ -396,7 +408,153 @@
             "{{ name }}":
               isdn:
               - "{{ isdn }}"
-# tunnel source GigabitEthernet0/2
-# tunnel mode gre multipoint
-# tunnel key 10
-# tunnel path-mtu-discovery
+      - regex: '^\s*speed (.*)$'
+        examples:
+        - ' speed auto'
+        captures:
+        - speed
+        path:
+          interfaces:
+            "{{ name }}":
+              speed: "{{ speed }}"
+      - regex: '^\s*duplex (.*)$'
+        examples:
+        - ' duplex auto'
+        captures:
+        - duplex
+        path:
+          interfaces:
+            "{{ name }}":
+              duplex: "{{ duplex }}"
+      - regex: '^\s*media-type (\S+)$'
+        examples:
+        - ' media-type rj45'
+        captures:
+        - media_type
+        path:
+          interfaces:
+            "{{ name }}":
+              media_type: "{{ media_type }}"
+      - regex: '^\s*ip nat (\w+)$'
+        examples:
+        - ' ip nat outside'
+        captures:
+        - nat_side
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nat:
+                  side: "{{ nat_side }}"
+      - regex: '^\s*ip inspect (\S+) (\w+)$'
+        examples:
+        -  ' ip inspect internetegress out'
+        captures:
+        - inspection_name
+        - inspection_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                inspect:
+                  name: "{{ inspection_name }}"
+                  direction: "{{ inspection_direction }}"
+      - regex: '^\s*ip virtual-reassembly (\w+)$'
+        examples:
+        -   ' ip virtual-reassembly in'
+        captures:
+        - virtual_reassembly_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                virtual_reassembly:
+                  direction: "{{ virtual_reassembly_direction }}"
+      - regex: '^\s*no ip virtual-reassembly (\w+)$'
+        examples:
+        -   ' no ip virtual-reassembly in'
+        captures:
+        - virtual_reassembly_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                virtual_reassembly:
+                  direction: "{{ virtual_reassembly_direction }}"
+                  negate: true
+      - regex: '^\s*ip ospf authentication-key (\d) (\S+)$'
+        examples:
+        -   ' ip ospf authentication-key 7 075F655C4820375623'
+        captures:
+        - ospf_authentication_key_encryption_type
+        - ospf_authentication_key_encryption_key
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                ospf:
+                  encryption_type: "{{ ospf_authentication_key_encryption_type }}"
+                  authentication_key: "{{ ospf_authentication_key_encryption_key }}"
+      - regex: '^ service-policy (input|output) (\S+)'
+        examples:
+        - ' service-policy input qo-global-core-ingress-lan'
+        captures:
+        - service_policy_direction
+        - service_policy_name
+        path:
+          interfaces:
+            "{{ name }}":
+              service_policies:
+              - name: "{{ service_policy_name }}"
+                direction: "{{ service_policy_direction }}"
+      - regex: '^\s*load-interval (\d+)'
+        examples:
+        -  ' load-interval 30'
+        captures:
+        - load_interval
+        path:
+          interfaces:
+            "{{ name }}":
+              load_interval: "{{ load_interval }}"
+      - regex: '^\s*no cdp enable'
+        examples:
+        -  ' no cdp enable'
+        path:
+          interfaces:
+            "{{ name }}":
+              cdp:
+                enabled: false
+      - regex: '^\s*no keepalive'
+        examples:
+        -  ' no keepalive'
+        path:
+          interfaces:
+            "{{ name }}":
+              keepalive:
+                negate: true
+      - regex: '^\s*service-module ip default-gateway (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        examples:
+        -  ' service-module ip default-gateway 10.69.27.45'
+        captures:
+        - service_module_default_gateway
+        path:
+          interfaces:
+            "{{ name }}":
+              service_module:
+                ip:
+                  default_gateway:
+                    ipv4_address: "{{ service_module_default_gateway }}"
+      - regex: '^\s*service-module ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        examples:
+        -  ' service-module ip address 10.69.27.46 255.255.255.252'
+        captures:
+        - service_module_ipv4_address
+        - service_module_ipv4_netmask
+        path:
+          interfaces:
+            "{{ name }}":
+              service_module:
+                ip:
+                  address:
+                    ipv4_address: "{{ service_module_ipv4_address }}"
+                    ipv4_netmask: "{{ service_module_ipv4_netmask }}"

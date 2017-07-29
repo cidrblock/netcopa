@@ -56,6 +56,9 @@
 {% set _ = line.append(entry['destination_start_port']) %}
 {% set _ = line.append(entry['destination_end_port']) %}
 {% endif %}{# dst start/end port #}
+{% if 'log' in entry and entry['log']%}
+{% set _ = line.append('log') %}
+{% endif %}{# log #}
 {% if line %}
   - " {{ line|join(' ') }}"
 {% endif %}{# line #}

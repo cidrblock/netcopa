@@ -1,0 +1,11 @@
+{% if 'boot' in vars %}
+{% if 'system' in vars['boot'] %}
+{% for entry in vars['boot']['system'] %}
+- parents:
+  lines:
+{% if 'fs' in entry %}
+  - boot system {{ entry['fs'] }}:{{ entry['filename'] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}

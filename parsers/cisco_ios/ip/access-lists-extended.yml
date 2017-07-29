@@ -56,6 +56,26 @@
                       source_wildcard: 255.255.255.255
                       destination_network: "{{ destination_network }}"
                       destination_wildcard: 0.0.0.0
+      - regex: '^\s*(permit|deny)(\s+)(\S+) any host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) log$'
+        examples:
+        - ' permit ip any host 10.255.0.44 log'
+        captures:
+        - action
+        - whitespace
+        - protocol
+        - destination_network
+        path:
+          ip:
+            access_lists:
+              "{{ name }}":
+                  entries:
+                    - protocol: "{{ protocol }}"
+                      action: "{{ action }}"
+                      source_network: 0.0.0.0
+                      source_wildcard: 255.255.255.255
+                      destination_network: "{{ destination_network }}"
+                      destination_wildcard: 0.0.0.0
+                      log: true
 # HOST ANY
       - regex: '^ (permit|deny) (\S+) host (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) any$'
         examples:
