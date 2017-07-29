@@ -312,6 +312,7 @@ def load_removers(devices):
             with open(remover_file, 'r') as stream:
                 try:
                     device['removers'] = yaml.load(stream)
+                    print_log('ok', 'ok')
                 except TypeError:
                     device['failed'] = True
                     reason = "Removers appears empty: %s/%s" % (device['os'], remover_file)
@@ -512,8 +513,6 @@ def run_removers(devices, remove_type):
             device['removals'] = []
             cur_len = len(device['working_configuration'])
             for idx, line in enumerate(reversed(device['working_configuration'])):
-                print(remove_type)
-                print(device['removers'])
                 for remover in device['removers'][remove_type]:
                     matches = re.match(remover, line)
                     if matches:
