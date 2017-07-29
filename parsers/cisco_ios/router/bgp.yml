@@ -77,6 +77,20 @@
                   redistribute:
                     "{{ protocol }}":
                       protocol: "{{ protocol }}"
+        - regex: '^\s+redistribute (\w+) route-map (\S+)$'
+          examples:
+          - '  redistribute connected route-map rt-foo-connected'
+          captures:
+          - protocol
+          - route_map_name
+          path:
+            router:
+              bgp:
+                "{{ parent_process_id }}":
+                  redistribute:
+                    "{{ protocol }}":
+                      protocol: "{{ protocol }}"
+                      route_map: "{{ route_map_name }}"
         - regex: '^\s+redistribute ospf (\d+) match internal external 1 external 2 route-map (\S+)$'
           examples:
           - ' redistribute ospf 100 match internal external 1 external 2 route-map rt-chddc1-ospf100-bgp65003'

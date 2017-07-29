@@ -25,7 +25,7 @@
 {{ render_aggregate_addresses(process, " ") }}
 {#  ############################################## redistribute #}
 {% if 'redistribute' in process %}
-{# {{ render_redistribute(process, " ") }} #}
+{{ render_redistribute(process, " ") }}
 {% endif %}
 {#  ############################################## neighbors #}
 {{ render_neighbors(process, " ") }}
@@ -37,9 +37,9 @@
 {% if 'distance' in process %}
   - " distance {{ process['distance'] }}"
 {% endif %}{# distance #}
-  - " !"
 {# -------------ADDRESS FAMILIES BEGIN---------------- #}
 {% if 'address_families' in process %}
+  - " !"
 {% for ip_version, address_family in process['address_families'].iteritems() %}
   - " address-family {{ address_family['ip_version'] }}"
 {#  ############################################## aggregate_addresses #}

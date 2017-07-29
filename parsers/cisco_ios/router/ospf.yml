@@ -45,6 +45,19 @@
             ospf:
               "{{ parent_process_id }}":
                 auto_cost_reference_bandwidth: "{{ reference_bandwidth }}"
+      - regex: '^\s*area (\S+) authentication'
+        examples:
+        - ' area 0 authentication'
+        captures:
+        - area
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                areas:
+                  "{{ area }}":
+                    area_id: "{{ area }}"
+                    authentication: true
       - regex: '^ summary-address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
         examples:
         - ' summary-address 10.250.0.0 255.254.0.0'
@@ -58,16 +71,18 @@
                   summary_addresses:
                   - network: "{{ summary_network }}"
                     netmask: "{{ summary_netmask }}"
-      - regex: '^ redistribute static subnets$'
+      - regex: '^ redistribute (\S+) subnets$'
         examples:
         - ' redistribute static subnets'
+        captures:
+        - protocol
         path:
           router:
             ospf:
               "{{ parent_process_id }}":
                 redistribute:
-                  static:
-                    protocol: static
+                  "{{ protocol }}":
+                    protocol: "{{ protocol }}"
                     subnets: True
       - regex: '^ redistribute (\w+) (\d+) (metric-type \d) subnets route-map (\S+)$'
         examples:
@@ -88,7 +103,49 @@
                     metric_types: "{{ metric_types.replace(\"metric-type \", \"\").split(' ') }}"
                     subnets: True
                     route_map: "{{ route_map }}"
-
+      - regex: '^\s*redistribute (\w+) (\d+) metric (\d+) subnets route-map (\S+)$'
+        examples:
+        - ' redistribute ospf 100 metric 20 subnets route-map rt-connected'
+        captures:
+        - protocol
+        - redist_process_id
+        - metric
+        - route_map
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                redistribute:
+                  "{{ protocol }}":
+                    protocol: "{{ protocol }}"
+                    process_id: "{{ redist_process_id }}"
+                    metric: "{{ metric }}"
+                    subnets: True
+                    route_map: "{{ route_map }}"
+      - regex: '^\s*redistribute (\w+) (\d+) metric (\d+) metric-type (\d) subnets tag (\S+) route-map (\S+)$'
+        examples:
+        -  ' redistribute bgp 65250 metric 5 metric-type 1 subnets tag 65250 route-map rt-external-rt'
+        captures:
+        - protocol
+        - redist_process_id
+        - metric
+        - metric_type
+        - tag
+        - route_map
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                redistribute:
+                  "{{ protocol }}":
+                    protocol: "{{ protocol }}"
+                    process_id: "{{ redist_process_id }}"
+                    metric: "{{ metric }}"
+                    metric_types:
+                    - "{{ metric_type }}"
+                    subnets: True
+                    tag: "{{ tag }}"
+                    route_map: "{{ route_map }}"
       - regex: '^ passive-interface default$'
         examples:
         - ' passive-interface default'
@@ -124,6 +181,20 @@
                   - network: "{{ network_network }}"
                     netmask: "{{ network_netmask }}"
                     area: "{{ network_area }}"
+      - regex: '^\s*default-information originate metric (\d+) metric-type (\d)$'
+        examples:
+        -  ' default-information originate metric 5 metric-type 1'
+        captures:
+        - metric
+        - metric_type
+        path:
+          router:
+            ospf:
+              "{{ parent_process_id }}":
+                default_information:
+                    originate: true
+                    metric: "{{ metric }}"
+                    metric_type: "{{ metric_type }}"
       - regex: '^ distribute-list route-map (\S+) (\w+)$'
         examples:
         - ' distribute-list route-map rt-seassc-ospf100-eigrp900 in'

@@ -13,7 +13,7 @@
       path:
         interfaces:
           "{{ name }}":
-            name: "{{ name }}"
+            name: "\"{{ name }}\""
       lines:
       - regex: '^ description (.*)$'
         exmaples:
@@ -119,7 +119,8 @@
         path:
           interfaces:
             "{{ name }}":
-              bandwidth: "{{ bandwidth }}"
+              bandwidth:
+              - "{{ bandwidth }}"
       - regex: '^ ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
         examples:
         - ' ip address 10.250.100.1 255.255.255.0'
@@ -142,6 +143,163 @@
               ip:
                 address:
                   negate: True
+      - regex: '^\s*no ip redirects$'
+        examples:
+        -  ' no ip redirects'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                redirects:
+                  negate: true
+      - regex: '^\s*ip mtu (\d+)$'
+        exmaples:
+        - ' ip mtu 1300'
+        captures:
+        - mtu
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                mtu: "{{ mtu }}"
+      - regex: '^\s*ip access-group (\S+) (in|out)$'
+        examples:
+        - ' ip access-group internet->in in'
+        captures:
+        - access_group_name
+        - access_group_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                access_groups:
+                - name: "{{ access_group_name }}"
+                  direction: "{{ access_group_direction }}"
+      - regex: '^\s*ip nbar protocol-discovery$'
+        exmaples:
+        -  ' ip nbar protocol-discovery'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  protocol_discovery: true
+      - regex: '^\s*ip flow (\S+)$'
+        examples:
+        - ' ip flow ingress'
+        captures:
+        - flow_direction
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                flow:
+                  directions:
+                  - "{{ flow_direction }}"
+      - regex: '^\s*ip nhrp map multicast dynamic$'
+        examples:
+        -  ' ip nhrp map multicast dynamic'
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  map:
+                    multicast:
+                      dynamic: true
+      - regex: '^\s*ip nhrp map (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        exmaples:
+        -  ' ip nhrp map 10.10.10.1 83.100.100.100'
+        captures:
+        - nhrp_ip_address
+        - nhrp_nbma_address
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  map:
+                    ip_address: "{{ nhrp_ip_address }}"
+                    nbma_address: "{{ nhrp_nbma_address }}"
+      - regex: '^\s*ip nhrp map multicast (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        exmaples:
+        -  ' ip nhrp map multicast 83.100.100.100'
+        captures:
+        - nhrp_multicast_nbma_address
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  map:
+                    multicast:
+                      nbma_address: "{{ nhrp_multicast_nbma_address }}"
+      - regex: '^\s*ip nhrp network-id (\d+)$'
+        exmaples:
+        -  ' ip nhrp network-id 10'
+        captures:
+        - nhrp_network_id
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  network_id: "{{ nhrp_network_id }}"
+      - regex: '^\s*ip nhrp holdtime (\d+)$'
+        exmaples:
+        -  ' ip nhrp network-id 10'
+        captures:
+        - nhrp_holdtime
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  holdtime: "{{ nhrp_holdtime }}"
+      - regex: '^\s*ip nhrp nhs (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
+        exmaples:
+        -  ' ip nhrp nhs 10.69.254.129'
+        captures:
+        - nhrp_nhs
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                nbar:
+                  nhs: "{{ nhrp_nhs }}"
+      - regex: '^\s+ip tcp adjust-mss (\d+)$'
+        examples:
+        - ' ip tcp adjust-mss 1260'
+        captures:
+        - tcp_adjust_mss
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                tcp:
+                  adjust_mss: "{{ tcp_adjust_mss }}"
+      - regex: '^\s+ip ospf network (\S+)$'
+        examples:
+        - ' ip ospf network point-to-point'
+        captures:
+        - ospf_network
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                ospf:
+                  network_type: "{{ ospf_network }}"
+      - regex: '^\s+ip ospf hello-interval (\d+)$'
+        examples:
+        - ' ip ospf hello-interval 30'
+        captures:
+        - ospf_hello_interval
+        path:
+          interfaces:
+            "{{ name }}":
+              ip:
+                ospf:
+                  hello_interval: "{{ ospf_hello_interval }}"
       - regex: '^ ip helper-address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$'
         examples:
         - ' ip helper-address 10.1.1.90'
@@ -180,3 +338,65 @@
           interfaces:
             "{{ name }}":
               shutdown: True
+      - regex: '^\s*tunnel source (\S+)$'
+        examples:
+        - ' tunnel source GigabitEthernet0/2'
+        captures:
+        - tunnel_source
+        path:
+          interfaces:
+            "{{ name }}":
+              tunnel:
+                source: "{{ tunnel_source }}"
+      - regex: '^\s*tunnel mode (.*)$'
+        examples:
+        - ' tunnel mode gre multipoint'
+        captures:
+        - tunnel_mode
+        path:
+          interfaces:
+            "{{ name }}":
+              tunnel:
+                mode: "{{ tunnel_mode }}"
+      - regex: '^\s*tunnel key (\S+)$'
+        examples:
+        - ' tunnel key 10'
+        captures:
+        - tunnel_key
+        path:
+          interfaces:
+            "{{ name }}":
+              tunnel:
+                key: "{{ tunnel_key }}"
+      - regex: '^\s*tunnel path-mtu-discovery$'
+        examples:
+        - ' tunnel path-mtu-discovery'
+        path:
+          interfaces:
+            "{{ name }}":
+              tunnel:
+                path_mtu_discovery: true
+      - regex: '^\s*encapsulation (\S+)$'
+        examples:
+        - ' encapsulation hdlc'
+        captures:
+        - encapsulation
+        path:
+          interfaces:
+            "{{ name }}":
+              encapsulation:
+                protocol: "{{ encapsulation }}"
+      - regex: '^\s*isdn (.*)$'
+        examples:
+        - ' isdn foo'
+        captures:
+        - isdn
+        path:
+          interfaces:
+            "{{ name }}":
+              isdn:
+              - "{{ isdn }}"
+# tunnel source GigabitEthernet0/2
+# tunnel mode gre multipoint
+# tunnel key 10
+# tunnel path-mtu-discovery

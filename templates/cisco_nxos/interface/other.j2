@@ -41,7 +41,9 @@
   - "  no shutdown"
 {% endif %}{# no shut #}
 {% if 'switchport' in value %}
+{% if 'switchport' in value['switchport'] and value['switchport']['switchport'] %}
   - "  switchport"
+{% endif %}
 {% if 'mode' in value['switchport'] %}
   - "  switchport mode {{ value['switchport']['mode'] }}"
 {% endif %}{# switchport mode #}

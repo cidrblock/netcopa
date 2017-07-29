@@ -1,5 +1,11 @@
-{% if 'clock' in vars and 'timezone' in vars['clock'] and 'hours_offset' in vars['clock'] %}
+{% if 'clock' in vars and 'timezone' in vars['clock'] %}
 - parents:
   lines:
+{% if 'hours_offset' in vars['clock'] %}
+{% if 'minutes_offset' in vars['clock'] %}
+  - clock timezone {{ vars['clock']['timezone'] }} {{ vars['clock']['hours_offset'] }} {{ vars['clock']['minutes_offset'] }}
+{% else %}
   - clock timezone {{ vars['clock']['timezone'] }} {{ vars['clock']['hours_offset'] }}
+{% endif %}
+{% endif %}
 {% endif %}

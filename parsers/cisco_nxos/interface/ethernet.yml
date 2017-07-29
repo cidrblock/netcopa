@@ -176,6 +176,7 @@
           interfaces:
             "{{ name }}":
               switchport:
+                switchport: true
       - regex: '^\s*switchport mode (.*)$'
         examples:
         - ' switchport mode trunk'

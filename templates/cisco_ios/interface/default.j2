@@ -1,96 +1,171 @@
-{% for interface in vars['interfaces'] %}
+{% for key, value in vars['interfaces'].iteritems() %}
 - parents:
-  - interface {{ vars['interfaces'][interface]['name'] }}
+  - interface {{ value['name'] }}
   lines:
-{% if 'description' in vars['interfaces'][interface] %}
-  - " description {{ vars['interfaces'][interface]['description'] }}"
-{% if 'subdescription' in vars['interfaces'][interface] %}
-  - "  subdescription {{ vars['interfaces'][interface]['subdescription'] }}"
+{% if 'description' in value %}
+  - " description {{ value['description'] }}"
+{% if 'subdescription' in value %}
+  - "  subdescription {{ value['subdescription'] }}"
 {% endif %}
 {% endif %}
-{% if 'vrf' in vars['interfaces'][interface] %}
-  - " vrf forwarding {{ vars['interfaces'][interface]['vrf'] }}"
+{% if 'vrf' in value %}
+  - " vrf forwarding {{ value['vrf'] }}"
 {% endif %}
-{% if 'encapsulation' in vars['interfaces'][interface] %}
-  - " encapsulation {{ vars['interfaces'][interface]['encapsulation']['protocol'] }} {{ vars['interfaces'][interface]['encapsulation']['tag'] }}"
-{% endif %}
-{% if 'switchport' in vars['interfaces'][interface] %}
-{% if 'access' in vars['interfaces'][interface]['switchport'] %}
-{% if 'vlan' in vars['interfaces'][interface]['switchport']['access'] %}
-  - " switchport access vlan {{ vars['interfaces'][interface]['switchport']['access']['vlan'] }}"
-{% endif %} #vlan
-{% endif %} #access
-{% if 'trunk' in vars['interfaces'][interface]['switchport'] %}
-{% if 'encapsulation' in vars['interfaces'][interface]['switchport']['trunk'] %}
-  - " switchport trunk encapsulation {{ vars['interfaces'][interface]['switchport']['trunk']['encapsulation'] }}"
-{% endif %} #encapsulation
-{% if 'native_vlan' in vars['interfaces'][interface]['switchport']['trunk'] %}
-  - " switchport trunk native vlan {{ vars['interfaces'][interface]['switchport']['trunk']['native_vlan'] }}"
-{% endif %} #native-vlan
-{% if 'allowed_vlans' in vars['interfaces'][interface]['switchport']['trunk'] %}
-{% if 'vlans' in vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans'] %}
-  - " switchport trunk allowed vlan {{ vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans']['vlans'] }}"
-{% endif %} #vlans
-{% if 'add' in vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans'] %}
-  - " switchport trunk allowed vlan add {{ vars['interfaces'][interface]['switchport']['trunk']['allowed_vlans']['add'] }}"
-{% endif %} #add
-{% endif %} #allowed-vlans
-{% endif %} #trunk
-{% if 'mode' in vars['interfaces'][interface]['switchport'] %}
-  - " switchport mode {{ vars['interfaces'][interface]['switchport']['mode']|join(' ') }}"
-{% endif %} #mode
-{% if 'negate' in vars['interfaces'][interface]['switchport'] and vars['interfaces'][interface]['switchport']['negate'] %}
+{% if 'switchport' in value %}
+{% if 'access' in value['switchport'] %}
+{% if 'vlan' in value['switchport']['access'] %}
+  - " switchport access vlan {{ value['switchport']['access']['vlan'] }}"
+{% endif %}{# vlan #}
+{% endif %}{# access #}
+{% if 'trunk' in value['switchport'] %}
+{% if 'encapsulation' in value['switchport']['trunk'] %}
+  - " switchport trunk encapsulation {{ value['switchport']['trunk']['encapsulation'] }}"
+{% endif %}{# encapsulation #}
+{% if 'native_vlan' in value['switchport']['trunk'] %}
+  - " switchport trunk native vlan {{ value['switchport']['trunk']['native_vlan'] }}"
+{% endif %}{# native-vlan #}
+{% if 'allowed_vlans' in value['switchport']['trunk'] %}
+{% if 'vlans' in value['switchport']['trunk']['allowed_vlans'] %}
+  - " switchport trunk allowed vlan {{ value['switchport']['trunk']['allowed_vlans']['vlans'] }}"
+{% endif %}{# vlans #}
+{% if 'add' in value['switchport']['trunk']['allowed_vlans'] %}
+  - " switchport trunk allowed vlan add {{ value['switchport']['trunk']['allowed_vlans']['add'] }}"
+{% endif %}{# add #}
+{% endif %}{# allowed-vlans #}
+{% endif %}{# trunk #}
+{% if 'mode' in value['switchport'] %}
+  - " switchport mode {{ value['switchport']['mode']|join(' ') }}"
+{% endif %}{# mode #}
+{% if 'negate' in value['switchport'] and value['switchport']['negate'] %}
   - " no switchport"
-{% endif %} #negate
-{% endif %} #switchport
-{% if 'channel_group' in vars['interfaces'][interface] %}
-  - " channel-group {{ vars['interfaces'][interface]['channel_group'] }} mode {{ vars['interfaces'][interface]['channel_group_mode']|join(' ') }}"
-{% endif %} #channel_group
-{% if 'bandwidth' in vars['interfaces'][interface] %}
-  - " bandwidth {{ vars['interfaces'][interface]['bandwidth'] }}"
-{% endif %} #bandwidth
-{% if 'ip' in vars['interfaces'][interface] %}
-{% if 'address' in vars['interfaces'][interface]['ip'] %}
-{% if 'ipv4_address' in vars['interfaces'][interface]['ip']['address'] and 'ipv4_netmask' in vars['interfaces'][interface]['ip']['address'] %}
-  - " ip address {{ vars['interfaces'][interface]['ip']['address']['ipv4_address'] }} {{ vars['interfaces'][interface]['ip']['address']['ipv4_netmask'] }}"
-{% endif %} #ipv4_address
-{% if 'negate' in vars['interfaces'][interface]['ip']['address'] and vars['interfaces'][interface]['ip']['address']['negate'] %}
+{% endif %}{# negate #}
+{% endif %}{# switchport #}
+{% if 'channel_group' in value %}
+  - " channel-group {{ value['channel_group'] }} mode {{ value['channel_group_mode']|join(' ') }}"
+{% endif %}{# channel_group #}
+{% if 'bandwidth' in value %}
+{% for entry in value['bandwidth'] %}
+  - " bandwidth {{ entry }}"
+{% endfor %}
+{% endif %}{# bandwidth #}
+{% if 'ip' in value %}
+{% if 'address' in value['ip'] %}
+{% if 'ipv4_address' in value['ip']['address'] and 'ipv4_netmask' in value['ip']['address'] %}
+  - " ip address {{ value['ip']['address']['ipv4_address'] }} {{ value['ip']['address']['ipv4_netmask'] }}"
+{% endif %}{# ipv4_address #}
+{% if 'negate' in value['ip']['address'] and value['ip']['address']['negate'] %}
   - " no ip address"
-{% endif %} #negate
-{% endif %} #address
-{% if 'flow' in vars['interfaces'][interface]['ip'] %}
-{% for direction in vars['interfaces'][interface]['ip']['flow']['directions'] %}
+{% endif %}{# negate #}
+{% endif %}{# address #}
+{% if 'redirects' in value['ip'] and 'negate' in value['ip']['redirects'] and value['ip']['redirects']['negate'] %}
+  - " no ip redirects"
+{% endif %}{# ip redirects #}
+{% if 'mtu' in value['ip']  %}
+  - " ip mtu {{ value['ip']['mtu'] }}"
+{% endif %}{# ip mtu #}
+{% if 'access_groups' in value['ip'] %}
+{% for entry in value['ip']['access_groups'] %}
+  - " ip access-group {{ entry['name'] }} {{ entry['direction'] }}"
+{% endfor %}
+{% endif %}
+{% if 'nbar' in value['ip'] and 'protocol_discovery' in value['ip']['nbar'] and value['ip']['nbar']['protocol_discovery'] %}
+  - " ip nbar protocol-discovery"
+{% endif %}{# ip nbar protocol-discovery #}
+{% if 'flow' in value['ip'] %}
+{% for direction in value['ip']['flow']['directions'] %}
   - " ip flow {{ direction }}"
-{% endfor %} # #flow directions
-{% endif %} #flow
-{% if 'helper_addresses' in vars['interfaces'][interface]['ip'] %}
-{% for address in vars['interfaces'][interface]['ip']['helper_addresses'] %}
+{% endfor %}{# flow directions #}
+{% endif %}{# flow #}
+{% if 'nbar' in value['ip'] %}
+{% if 'map' in value['ip']['nbar'] %}
+{% if 'multicast' in value['ip']['nbar']['map'] and 'dynamic' in value['ip']['nbar']['map']['multicast'] and value['ip']['nbar']['map']['multicast']['dynamic'] %}
+  - " ip nhrp map multicast dynamic"
+{% endif %}{# ip nhrp map multicast dynamic #}
+{% if 'ip_address' in value['ip']['nbar']['map'] and 'nbma_address' in value['ip']['nbar']['map'] %}
+  - " ip nhrp map {{ value['ip']['nbar']['map']['ip_address'] }} {{ value['ip']['nbar']['map']['nbma_address'] }}"
+{% endif %}{# ip nhrp map 1.1.1.1 2.2.2.2 #}
+{% if 'multicast' in value['ip']['nbar']['map'] and 'nbma_address' in value['ip']['nbar']['map']['multicast'] %}
+  - " ip nhrp map multicast {{ value['ip']['nbar']['map']['nbma_address'] }}"
+{% endif %}{# ip nhrp map multicast 2.2.2.2 #}
+{% endif %}{# ip nhrp map #}
+{% if 'network_id' in value['ip']['nbar'] %}
+  - " ip nhrp network-id {{ value['ip']['nbar']['network_id'] }}"
+{% endif %}{# ip nhrp network-id #}
+{% if 'holdtime' in value['ip']['nbar'] %}
+  - " ip nhrp holdtime {{ value['ip']['nbar']['holdtime'] }}"
+{% endif %}{# ip nhrp holdtime #}
+{% if 'nhs' in value['ip']['nbar'] %}
+  - " ip nhrp nhs {{ value['ip']['nbar']['nhs'] }}"
+{% endif %}{# ip nhrp nhs #}
+{% endif %}{# ip nhrp  #}
+{% if 'tcp' in value['ip'] %}
+{% if 'adjust_mss' in value['ip']['tcp'] %}
+  - " ip tcp adjust-mss {{ value['ip']['tcp']['adjust_mss'] }}"
+{% endif %}{# ip tcp adjust-mss #}
+{% endif %}{# tcp #}
+{% if 'ospf' in value['ip'] %}
+{% if 'network_type' in value['ip']['ospf'] %}
+  - " ip ospf network {{ value['ip']['ospf']['network_type']}}"
+{% endif %}{# ospf network_type #}
+{% if 'hello_interval' in value['ip']['ospf'] %}
+  - " ip ospf hello-interval {{ value['ip']['ospf']['hello_interval']}}"
+{% endif %}{# ospf hello_interval #}
+{% endif %}{# ospf #}
+{% if 'helper_addresses' in value['ip'] %}
+{% for address in value['ip']['helper_addresses'] %}
   - " ip helper-address {{ address['ipv4_helper_address'] }}"
-{% endfor %} # helpers
-{% endif %} #helper_addresses
-{% if 'route_cache' in vars['interfaces'][interface]['ip'] %}
-  - " ip route-cache {{ vars['interfaces'][interface]['ip']['route_cache'] }}"
-{% endif %} #route-cache
-{% if 'policy_route_map' in vars['interfaces'][interface]['ip'] %}
-  - " ip policy route-map {{ vars['interfaces'][interface]['ip']['policy_route_map'] }}"
-{% endif %} #policy_route_map
-{% endif %} #ip
-{% if 'shutdown' in vars['interfaces'][interface] and vars['interfaces'][interface]['shutdown'] %}
+{% endfor %}{# helpers #}
+{% endif %}{# helper_addresses #}
+{% if 'route_cache' in value['ip'] %}
+  - " ip route-cache {{ value['ip']['route_cache'] }}"
+{% endif %}{# route-cache #}
+{% if 'policy_route_map' in value['ip'] %}
+  - " ip policy route-map {{ value['ip']['policy_route_map'] }}"
+{% endif %}{# policy_route_map #}
+{% endif %}{# ip #}
+{% if 'encapsulation' in value %}
+{% if 'protocol' in value['encapsulation'] %}
+{% if 'tag' in value['encapsulation'] %}
+  - " encapsulation {{ value['encapsulation']['protocol'] }} {{ value['encapsulation']['tag'] }}"
+{% else %}
+  - " encapsulation {{ value['encapsulation']['protocol'] }}"
+{% endif %}{# tag #}
+{% endif %}{# protocol #}
+{% endif %}{# encapsulation #}
+{% if 'shutdown' in value and value['shutdown'] %}
   - " shutdown"
-{% endif %} #shutdown
-{% if 'negotiation' in vars['interfaces'][interface] and vars['interfaces'][interface]['negotiation']['negate'] %}
-  - " no negotiation {{ vars['interfaces'][interface]['negotiation']['type'] }}"
-{% endif %} #no negotiation
-{% if 'negotiation' in vars['interfaces'][interface] and not vars['interfaces'][interface]['negotiation']['negate'] %}
-  - " negotiation {{ vars['interfaces'][interface]['negotiation']['type'] }}"
-{% endif %} # negotiation
-{% if 'ip' in vars['interfaces'][interface] and 'pim' in vars['interfaces'][interface]['ip'] %}
-  - " ip pim {{ vars['interfaces'][interface]['ip']['pim']['mode'] }}"
-{% endif %} #pim mode
-{% if 'service_policies' in vars['interfaces'][interface] %}
-{% for service_policy in vars['interfaces'][interface]['service_policies'] %}
+{% endif %}{# shutdown #}
+{% if 'isdn' in value %}
+{% for entry in value['isdn'] %}
+  - " isdn {{ entry }}"
+{% endfor %}{# isdn lines #}
+{% endif %}{# isdn #}
+{% if 'tunnel' in value %}
+{% if 'source' in value['tunnel'] %}
+  - " tunnel source {{ value['tunnel']['source'] }}"
+{% endif %}{# tunnel source #}
+{% if 'mode' in value['tunnel'] %}
+  - " tunnel mode {{ value['tunnel']['mode'] }}"
+{% endif %}{# tunnel mode #}
+{% if 'key' in value['tunnel'] %}
+  - " tunnel key {{ value['tunnel']['key'] }}"
+{% endif %}{# tunnel key #}
+{% if 'path_mtu_discovery' in value['tunnel'] and value['tunnel']['path_mtu_discovery'] %}
+  - " tunnel path-mtu-discovery"
+{% endif %}{# tunnel path_mtu_discovery #}
+{% endif %}{# tunnel #}
+{% if 'negotiation' in value and value['negotiation']['negate'] %}
+  - " no negotiation {{ value['negotiation']['type'] }}"
+{% endif %}{# no negotiation #}
+{% if 'negotiation' in value and not value['negotiation']['negate'] %}
+  - " negotiation {{ value['negotiation']['type'] }}"
+{% endif %}{# negotiation #}
+{% if 'ip' in value and 'pim' in value['ip'] %}
+  - " ip pim {{ value['ip']['pim']['mode'] }}"
+{% endif %}{# pim mode #}
+{% if 'service_policies' in value %}
+{% for service_policy in value['service_policies'] %}
   - " service-policy {{ service_policy['direction'] }} {{ service_policy['name'] }}"
-{% endfor %} # helpers
-{% endif %} #helper_addresses
-
+{% endfor %}{# helpers #}
+{% endif %}{# helper_addresses #}
 {% endfor %}
